@@ -11,12 +11,12 @@ var Controller = (function(){
         Init: function(eCanvas){
             m_eCanvas = eCanvas;
             
-            Hammer(m_eCanvas).on("tap", function(e){
+            /*Hammer(m_eCanvas).on("tap", function(e){
                 for (var sKey in m_cBoundEvents.tap)
                 {
                     m_cBoundEvents.tap[sKey](e.gesture.touches[0].clientX, e.gesture.touches[0].clientY);
                 }
-            });
+            });*/
         },
         Bind: function(sEventType, fOnEvent){
             var nId = m_nEventId++;
@@ -30,3 +30,5 @@ var Controller = (function(){
         }
     };
 })();
+
+//# sourceURL=control/controller.js

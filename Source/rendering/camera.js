@@ -26,3 +26,5 @@ function Camera()
     
     Init();
 }
+
+//# sourceURL=rendering/camera.js

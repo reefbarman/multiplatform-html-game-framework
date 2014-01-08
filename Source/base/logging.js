@@ -78,3 +78,5 @@
     })(console.error);
     
 })();
+
+//# sourceURL=base/logging.js

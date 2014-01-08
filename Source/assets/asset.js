@@ -55,3 +55,5 @@ Asset.prototype.Draw = function(cRenderer){};
  * 
  * @param {Error|undefined} cErr - An error if anything failed to load otherwise not set
  */
+
+//# sourceURL=assets/asset.js

@@ -4,3 +4,4 @@ function Vector(x, y)
     this.y = y;
 }
 
+//# sourceURL=rendering/vector.js

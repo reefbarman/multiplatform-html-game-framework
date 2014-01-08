@@ -1,10 +1,9 @@
-//Test
 var Express = require("express");
 
 var cApp = Express();
 
 cApp.use(Express.static(__dirname + '/static'));
-cApp.use("/Game", Express.static(__dirname + '/../game', { index: "main.html" }));
+cApp.use("/Game", Express.static(process.cwd(), { index: "main.html" }));
 cApp.use(Express.favicon());
 
 var sPort = 1777;

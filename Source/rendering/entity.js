@@ -1,3 +1,5 @@
+include("rendering/vector.js", true);
+
 function Entity()
 {
     this.m_aChildren = [];
@@ -39,3 +41,5 @@ Entity.prototype.Draw = function(cRenderer){
         this.m_aChildren[i].Draw(cRenderer);
     }
 };
+
+//# sourceURL=rendering/entity.js

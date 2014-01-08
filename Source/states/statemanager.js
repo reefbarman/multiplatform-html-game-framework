@@ -163,3 +163,5 @@ StateManager.TRANSITIONS = {
  * State manager starts empty and states are registered during initialization
  */
 StateManager.STATES = {};
+
+//# sourceURL=states/statemanager.js

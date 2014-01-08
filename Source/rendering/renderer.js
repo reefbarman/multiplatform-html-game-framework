@@ -70,3 +70,5 @@ function Renderer(eCanvas)
     
     Init();
 }
+
+//# sourceURL=rendering/renderer.js

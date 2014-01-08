@@ -1,3 +1,5 @@
+include("assets/asset.js", true);
+
 function SpriteAsset(sFileName)
 {
     //Super constructor
@@ -108,3 +110,5 @@ SpriteAsset.prototype.Update = function(nDt){
 SpriteAsset.prototype.Draw = function(cRenderer){
     this.m_cImages[this.m_sAnimation].Draw(cRenderer);
 };
+
+//# sourceURL=assets/spriteasset.js

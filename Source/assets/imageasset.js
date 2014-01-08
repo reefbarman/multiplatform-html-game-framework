@@ -1,3 +1,5 @@
+include("assets/asset.js", true);
+
 /**
  * @class
  * @classdesc The ImageAsset class handles the drawing and loading of basic images such as pngs, jpegs, etc
@@ -90,3 +92,5 @@ ImageAsset.prototype.Draw = function(cRenderer){
         cRenderer.DrawImage(this.m_cBaseImage, this.m_cPos, this.m_cOptions.visibleWidth, this.m_cOptions.visibleHeight, this.m_cOffset.y, this.m_cOffset.x);
     }
 };
+
+//# sourceURL=assets/imageasset.js

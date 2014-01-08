@@ -209,3 +209,5 @@ function ajaxLoad(cOptions)
         cOptions.onComplete(new Error("Missing source parameter"));
     }
 }
+
+//# sourceURL=base/base.js

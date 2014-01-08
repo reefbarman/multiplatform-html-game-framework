@@ -46,3 +46,5 @@ var Loader = (function() {
 })();
 
 /** @callback Loader~OnLoadCallback */
+
+//# sourceURL=base/loader.js
