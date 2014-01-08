@@ -1,0 +1,53 @@
+html, body{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: black;
+    font-size: 12px;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+}
+
+#iCQ_FPSUpdate{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    color: green;
+}
+
+#iCQ_DeviceFrame{
+    position: relative;
+    top: 50%;
+    left: 50%;
+}
+
+#iCQ_DeviceSandbox{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    border: none;
+}
+
+#iCQ_ControlBar{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #c7c7c7;
+    background: linear-gradient(to bottom, #dcdcdc 0%, #c7c7c7 100%);
+    border-bottom: 1px solid #aaaaab;
+    border-top: 1px solid #969a9f;
+    padding: 7px 0;
+    height: 18px;
+}
+
+#iCQ_ControlBar > div{
+    margin-left: 10px;
+    float: left;
+}
+
+#iCQ_ControlBar > div input{
+    position: relative;
+    top: 2px;
+}

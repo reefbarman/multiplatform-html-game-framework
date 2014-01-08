@@ -1,0 +1,39 @@
+#iCQ_ConsoleLog{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    min-width: 30px;
+    max-width: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+}
+
+.cCQ_DragBar{
+    width: 2px;
+    height: 100%;
+    background: #c7c7c7;
+    cursor: col-resize;
+    float: left;
+}
+
+.cCQ_LogContainer{
+    overflow: auto;
+    height: 100%;
+}
+
+.cCQ_LogContainer aside{
+    padding: 10px;
+}
+
+.cCQ_LogLevelInfo{
+    color: green;
+}
+
+.cCQ_LogLevelWarn{
+    color: yellow;
+}
+
+.cCQ_LogLevelError{
+    color: red;
+}
