@@ -57,6 +57,15 @@ function Renderer(eCanvas)
         m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth, nHeight);
     };
     
+    this.DrawCircle = function(cPos, nRadius, sColor){
+        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
+        
+        m_cCtx.beginPath();
+        m_cCtx.fillStyle = sColor;
+        m_cCtx.arc(cScreenPos.x, cScreenPos.y, nRadius, 0, Math.PI * 2);
+        m_cCtx.fill();
+    };
+    
     Init();
 }
 

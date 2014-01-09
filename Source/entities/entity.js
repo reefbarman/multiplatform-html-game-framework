@@ -7,8 +7,19 @@ function Entity()
     
     this.Width = 0;
     this.Height = 0;
+    
+    this.m_bInited = false;
 }
 
-Entity.prototype.Update = function(nDt){};
+Entity.prototype.__Init = function(){
+    this.m_bInited = true;
+};
+
+Entity.prototype.Update = function(nDt){
+    if (!this.m_bInited)
+    {
+        this.__Init();
+    }
+};
 
 //# sourceURL=entities/entity.js
