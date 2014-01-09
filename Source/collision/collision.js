@@ -8,6 +8,9 @@ var Collision = (function(){
         Init: function(nWorldWidth, nWorldHeight){
             CollisionGrid.Init(m_nCollisionGridSize, nWorldWidth, nWorldHeight);
         },
+        Update: function(aEntities){
+            CollisionGrid.UpdateGrid(aEntities);
+        },
         GetPointCollision: function(cPos){
             var cCollidingEntity = null;
             
@@ -21,6 +24,11 @@ var Collision = (function(){
             });
             
             return cCollidingEntity;
+        },
+        GetCollidingPairs: function(){
+            var aChecked = [];
+            
+            
         }
     };
 })();

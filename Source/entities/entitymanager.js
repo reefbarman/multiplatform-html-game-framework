@@ -3,9 +3,11 @@ include("collision/collisiongrid.js", true);
 var EntityManager = (function(){
     
     var m_aEntities = [];
+    var m_nCurrentId = 0;
     
     return {
         RegisterEntity: function(cEntity){
+            cEntity.ID = m_nCurrentId++;
             m_aEntities.push(cEntity);
         },
         Update: function(nDt){
@@ -13,7 +15,9 @@ var EntityManager = (function(){
                 cEntity.Update(nDt);
             });
             
-            CollisionGrid.UpdateGrid(m_aEntities);
+            Collision.Update(m_aEntities);
+            
+            Collision.GetCollidingPairs();
         }
     };
 })();

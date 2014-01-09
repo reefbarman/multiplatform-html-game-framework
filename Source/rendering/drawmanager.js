@@ -45,6 +45,10 @@ var DrawManager = (function(){
             var cCameraXMax = cCameraPos.x + cViewport.width;
             var cCameraYMax = cCameraPos.y + cViewport.height;
             
+            m_aDrawables.sort(function(a, b){
+                return a.zIndex - b.zIndex;
+            });
+            
             m_aDrawables.forEach(function(cDrawable){
                 var cDrawablePos = cDrawable.Pos;
                 

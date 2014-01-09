@@ -3,11 +3,9 @@
  * @classdesc Represents a game state used within the StateManager state machine. Handles the loading/unloading and updating/drawing of a state
  * 
  * @constructor
- * @param {Renderer} cRenderer - The renderer to use within the state
  */
-function State(cRenderer)
+function State()
 {
-    this.m_cRenderer = cRenderer;
 }
 
 /**

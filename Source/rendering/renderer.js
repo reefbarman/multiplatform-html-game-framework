@@ -62,7 +62,7 @@ function Renderer(eCanvas)
         
         m_cCtx.beginPath();
         m_cCtx.fillStyle = sColor;
-        m_cCtx.arc(cScreenPos.x, cScreenPos.y, nRadius, 0, Math.PI * 2);
+        m_cCtx.arc(cScreenPos.x + nRadius, cScreenPos.y + nRadius, nRadius, 0, Math.PI * 2);
         m_cCtx.fill();
     };
     

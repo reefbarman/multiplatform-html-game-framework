@@ -2,6 +2,8 @@ include("rendering/vector.js", true);
 
 function Entity()
 {
+    this.ID = null;
+    
     //Pos, Width and Height used for rendering and collision detection
     this.Pos = new Vector(0, 0);
     
