@@ -49,6 +49,8 @@ function Game()
     
     this.m_cRenderer = new Renderer(eCanvas);
     DrawManager.Init(this.m_cRenderer);
+    
+    Controller.Init(eCanvas);
 }
 
 Game.prototype.Update = function(nDt){

@@ -23,10 +23,12 @@ var Controller = (function(){
     
     function InputMove(e)
     {
-        for (var sKey in m_cBoundEvents.drag)
-        {
-            m_cBoundEvents.drag[sKey].onDrag(e.clientX, e.clientY);
-        }
+        setTimeout(function(){
+            for (var sKey in m_cBoundEvents.drag)
+            {
+                m_cBoundEvents.drag[sKey].onDrag(e.clientX, e.clientY);
+            }
+        }, 0);
     }
     
     function InputEnd(e)

@@ -1,3 +1,5 @@
+include("collision/collisiongrid.js", true);
+
 var EntityManager = (function(){
     
     var m_aEntities = [];
@@ -10,6 +12,8 @@ var EntityManager = (function(){
             m_aEntities.forEach(function(cEntity){
                 cEntity.Update(nDt);
             });
+            
+            CollisionGrid.UpdateGrid(m_aEntities);
         }
     };
 })();
