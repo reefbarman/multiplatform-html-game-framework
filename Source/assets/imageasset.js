@@ -29,13 +29,9 @@ function ImageAsset(sFileName, cOptions)
     this.m_cBasePattern = null;
     
     this.m_cOffset = new Vector(0, 0);
-    
-    this.m_nImageWidth = 0;
-    this.m_nImageHeight = 0;
 }
 
-ImageAsset.prototype = new Asset();
-ImageAsset.prototype.constructor = ImageAsset;
+inherits(ImageAsset, Asset);
 
 /**
  * Set rendering offset within image
@@ -55,25 +51,15 @@ ImageAsset.prototype.Load = function(fOnLoad){
     this.m_cBaseImage.onload = function(){
         fOnLoad.apply(self);
         
-        self.m_nImageWidth = this.width;
-        self.m_nImageHeight = this.height;
-        
-        if (!self.m_cOptions.visibleWidth)
-        {
-            self.m_cOptions.visibleWidth = this.width;
-        }
-        
-        if (!self.m_cOptions.visibleHeight)
-        {
-            self.m_cOptions.visibleHeight = this.height;
-        }
+        self.Width = self.m_cOptions.visibleWidth || this.width;
+        self.Height = self.m_cOptions.visibleHeight || this.height;
     };
 
     this.m_cBaseImage.onerror = function(){
         fOnLoad(new Error("Failed to load image: " + this.m_sFileName));
     };
     
-    this.m_cBaseImage.src = window.cannonQuest.resourcePath + "/images/" + this.m_sFileName;
+    this.m_cBaseImage.src = window.EN.resourcePath + "/images/" + this.m_sFileName;
 };
 
 ImageAsset.prototype.Draw = function(cRenderer){
@@ -85,11 +71,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cBasePattern, this.m_cPos, this.m_cOptions.visibleWidth, this.m_cOptions.visibleHeight);
+        cRenderer.DrawTiledImage(this.m_cBasePattern, this.Pos, this.Width, this.Height);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cBaseImage, this.m_cPos, this.m_cOptions.visibleWidth, this.m_cOptions.visibleHeight, this.m_cOffset.y, this.m_cOffset.x);
+        cRenderer.DrawImage(this.m_cBaseImage, this.Pos, this.Width, this.Height, this.m_cOffset.y, this.m_cOffset.x);
     }
 };
 

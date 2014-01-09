@@ -14,14 +14,13 @@ function SpriteAsset(sFileName)
     this.m_nPreviousFramesElapsed = 0;
 }
 
-SpriteAsset.prototype = new Asset();
-SpriteAsset.prototype.constructor = SpriteAsset;
-    
+inherits(SpriteAsset, Asset);
+
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
     ajaxLoad({
-        src: window.cannonQuest.resourcePath + "/sprites/" + self.m_sFileName + ".json",
+        src: window.EN.resourcePath + "/sprites/" + self.m_sFileName + ".json",
         onComplete: function(cErr, cSprite){
             if (!cErr)
             {
@@ -81,6 +80,9 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                 
                 cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
                 self.m_cCurrentAnimation = cCurrentAnimation;
+                
+                self.Width = self.m_cCurrentAnimation.width;
+                self.Height = self.m_cCurrentAnimation.height;
 
                 fLoadDependencies();
             }
@@ -100,11 +102,12 @@ SpriteAsset.prototype.Update = function(nDt){
         this.m_nCurrentFrame = Math.floor(this.m_nCurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
         this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - Math.floor(this.m_nPreviousFramesElapsed);
     }
-
-    var nWidth = this.m_cCurrentAnimation.width;
+    
+    this.Width = this.m_cCurrentAnimation.width;
+    this.Height = this.m_cCurrentAnimation.height;
 
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
-    this.m_cImages[this.m_sAnimation].SetRenderOffset(0, this.m_nCurrentFrame * nWidth);
+    this.m_cImages[this.m_sAnimation].SetRenderOffset(0, this.m_nCurrentFrame * this.Width);
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){

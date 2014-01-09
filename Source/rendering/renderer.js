@@ -3,7 +3,7 @@ function Renderer(eCanvas)
     var m_eCanvas = eCanvas;
     var m_cCtx = null;
     
-    var m_aCameraStack = [];
+    var m_cCamera = null;
     
     function Init()
     {
@@ -13,17 +13,8 @@ function Renderer(eCanvas)
         m_eCanvas.height = window.innerHeight;
     }
     
-    function GetCamera()
-    {
-        return m_aCameraStack[m_aCameraStack.length - 1];
-    }
-    
-    this.PushCamera = function(cCamera){
-        m_aCameraStack.push(cCamera);
-    };
-    
-    this.PopCamera = function(){
-        m_aCameraStack.pop();
+    this.SetCamera = function(cCamera){
+        m_cCamera = cCamera;
     };
     
     this.Clear = function(){
@@ -31,7 +22,7 @@ function Renderer(eCanvas)
     };
     
     this.DrawImage = function(cImg, cPos, nWidth, nHeight, nImageTop, nImageLeft){
-        var cScreenPos = GetCamera().WorldPosToScreenPos(cPos);
+        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
         m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cScreenPos.x, cScreenPos.y, nWidth, nHeight);
     };
     
@@ -40,18 +31,16 @@ function Renderer(eCanvas)
     };
     
     this.DrawTiledImage = function(cPattern, cPos, nWidth, nHeight){
-        var cCamera = GetCamera();
-        
         /* To deal with the fact that a repeating image will always start at the bounds of the canvas
          * No Matter where you tell it to draw from. We have to translate the canvas by the distance
          * the camera is from World 0,0 and then add that much length to the rect we are drawing to
          * compensate for the translation.
          */
-        var cScreenPos = cCamera.WorldPosToScreenPos(cPos);
+        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
         
         m_cCtx.save();
         
-        var cCameraPos = cCamera.Pos;
+        var cCameraPos = m_cCamera.Pos;
         
         m_cCtx.translate(-cCameraPos.x, -cCameraPos.y);
         
@@ -62,7 +51,7 @@ function Renderer(eCanvas)
     };
     
     this.DrawRectangle = function(cPos, nWidth, nHeight, sColor){
-        var cScreenPos = GetCamera().WorldPosToScreenPos(cPos);
+        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
         
         m_cCtx.fillStyle = sColor;
         m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth, nHeight);

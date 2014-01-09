@@ -1,24 +1,22 @@
+include("rendering/drawable.js", true);
+
 /**
  * 
  * @class
  * @constructor
  * @param {string} sFileName - The file name of the asset to load
+ * 
+ * @extends Asset
  */
 function Asset(sFileName)
 {
+    //super constructor
+    Drawable.call(this);
+    
     this.m_sFileName = sFileName;
-    this.m_cPos = new Vector(0, 0);
 }
 
-Object.defineProperty(Asset.prototype, "Pos", {
-    get: function(){
-        return this.m_cPos;
-    },
-    set: function(cPos){
-        this.m_cPos = cPos;
-    },
-    enumerable: true
-});
+inherits(Asset, Drawable);
 
 Object.defineProperty(Asset.prototype, "FileName", {
     get: function(){
@@ -42,13 +40,6 @@ Asset.prototype.Load = function(fOnLoad){
  * @param {number} nDt - The delta between this frame and last
  */
 Asset.prototype.Update = function(nDt){};
-
-/**
- * Draws the asset to the screen
- * 
- * @param {Renderer} cRenderer - The rendered to draw the asset with
- */
-Asset.prototype.Draw = function(cRenderer){};
 
 /** 
  * @callback Asset~OnLoadCallback 

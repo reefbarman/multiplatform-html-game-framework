@@ -6,7 +6,6 @@ var StateManager = (function(){
     var m_cTransitions = {};
     var m_cTransitionUpdate = null;
     
-    var m_cRenderer = null;
     var m_cCamera = null;
     
     function Init()
@@ -40,10 +39,10 @@ var StateManager = (function(){
                         fOnEnd();
                     }
                 },
-                Draw: function(){
-                    m_cRenderer.PushCamera(m_cCamera);
-                    m_cRenderer.DrawRectangle({x: 0, y: 0}, window.cannonQuest.device.width, window.cannonQuest.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
-                    m_cRenderer.PopCamera();
+                Draw: function(cRenderer){
+                    DrawManager.PushCamera(m_cCamera);
+                    cRenderer.DrawRectangle({x: 0, y: 0}, window.EN.device.width, window.EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
+                    DrawManager.PopCamera();
                 }
             };
         };
@@ -54,7 +53,7 @@ var StateManager = (function(){
                     fOnSwitch();
                     fOnEnd();
                 },
-                Draw: function(){}
+                Draw: function(cRenderer){}
             };
         };
     }
@@ -78,10 +77,8 @@ var StateManager = (function(){
     }
     
     return {
-        Init: function(cRegisteredStates, cRenderer){
+        Init: function(cRegisteredStates){
             m_cRegisteredStats = cRegisteredStates;
-            m_cRenderer = cRenderer;
-            
             Init();
         },
         ChangeState: function(sState, transition){
@@ -131,15 +128,10 @@ var StateManager = (function(){
                 m_cTransitionUpdate.Update(nDt);
             }
         },
-        Draw: function(){
-            if (m_cRegisteredStats[m_sCurrentState])
-            {
-                m_cRegisteredStats[m_sCurrentState].Draw();
-            }
-            
+        Draw: function(cRenderer){
             if (m_cTransitionUpdate)
             {
-                m_cTransitionUpdate.Draw();
+                m_cTransitionUpdate.Draw(cRenderer);
             }
         }
     };

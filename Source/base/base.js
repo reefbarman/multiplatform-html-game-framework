@@ -210,4 +210,13 @@ function ajaxLoad(cOptions)
     }
 }
 
+function inherits(child, parent)
+{
+    function Inherited(){};
+    Inherited.prototype = parent.prototype;
+    
+    child.prototype = new Inherited();
+    child.prototype.constructor = child;
+}
+
 //# sourceURL=base/base.js
