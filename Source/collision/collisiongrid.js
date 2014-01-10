@@ -6,9 +6,6 @@ var CollisionGrid = (function(){
     var m_nGridColumns = 0;
     var m_nGridRows = 0;
     
-    var m_nColumnIter = 0;
-    var m_nRowIter = 0;
-    
     return {
         Init: function(nGridSize, nGridWidth, nGridHeight){
             m_nGridSize = nGridSize;
@@ -68,13 +65,19 @@ var CollisionGrid = (function(){
             return aEntities;
         },
         IterateGrid: function(fOnCollisionGroup){
-            for (var i = 0; i < m_aGrid.length; i++)
+            if (m_aGrid)
             {
-                for (var j = 0; j < m_aGrid[i].length; j++)
+                for (var i = 0; i < m_aGrid.length; i++)
                 {
-                    if (m_aGrid[i][j].length)
+                    if (m_aGrid[i])
                     {
-                        fOnCollisionGroup(m_aGrid[i][j]);
+                        for (var j = 0; j < m_aGrid[i].length; j++)
+                        {
+                            if (m_aGrid[i][j])
+                            {
+                                fOnCollisionGroup(m_aGrid[i][j]);
+                            }
+                        }
                     }
                 }
             }

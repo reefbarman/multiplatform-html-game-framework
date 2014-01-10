@@ -16,8 +16,7 @@ var EntityManager = (function(){
             });
             
             Collision.Update(m_aEntities);
-            
-            Collision.GetCollidingPairs();
+            Collision.HandleEntityCollisions();
         }
     };
 })();

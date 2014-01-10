@@ -10,6 +10,8 @@ function Entity()
     this.Width = 0;
     this.Height = 0;
     
+    this.zIndex = 0;
+    
     this.m_bInited = false;
 }
 
