@@ -6,11 +6,13 @@ var StateManager = (function(){
     var m_cTransitions = {};
     var m_cTransitionUpdate = null;
     
-    var m_cCamera = null;
-    
     function Init()
     {
-        m_cCamera = new Camera();
+        var cCameraState = {
+            Pos: new Vector(0, 0),
+            ViewportWidth: EN.device.width,
+            ViewportHeight: EN.device.height
+        };
         
         m_cTransitions[StateManager.TRANSITIONS.FADE] = function(fOnSwitch, fOnEnd){
             var nAlpha = 0;
@@ -40,9 +42,9 @@ var StateManager = (function(){
                     }
                 },
                 Draw: function(cRenderer){
-                    DrawManager.PushCamera(m_cCamera);
+                    Camera.PushState(cCameraState);
                     cRenderer.DrawRectangle({x: 0, y: 0}, window.EN.device.width, window.EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
-                    DrawManager.PopCamera();
+                    Camera.PopState();
                 }
             };
         };

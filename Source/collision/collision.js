@@ -1,4 +1,5 @@
 include("collision/collisionutils.js", true);
+include("collision/collisiongrid.js", true);
 
 var Collision = (function(){
     

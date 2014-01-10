@@ -107,7 +107,7 @@ SpriteAsset.prototype.Update = function(nDt){
     this.Height = this.m_cCurrentAnimation.height;
 
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
-    this.m_cImages[this.m_sAnimation].SetRenderOffset(0, this.m_nCurrentFrame * this.Width);
+    this.m_cImages[this.m_sAnimation].Offset = new Vector(0, this.m_nCurrentFrame * this.Width);
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){

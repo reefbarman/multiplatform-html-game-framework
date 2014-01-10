@@ -1,4 +1,4 @@
-include("collision/collisiongrid.js", true);
+include("collision/collision.js", true);
 
 var EntityManager = (function(){
     

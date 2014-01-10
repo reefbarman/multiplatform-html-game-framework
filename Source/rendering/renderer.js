@@ -3,7 +3,7 @@ function Renderer(eCanvas)
     var m_eCanvas = eCanvas;
     var m_cCtx = null;
     
-    var m_cCamera = null;
+    var m_sClearColor = "rgb(0,0,0)";
     
     function Init()
     {
@@ -13,16 +13,17 @@ function Renderer(eCanvas)
         m_eCanvas.height = window.innerHeight;
     }
     
-    this.SetCamera = function(cCamera){
-        m_cCamera = cCamera;
+    this.Clear = function(){
+        m_cCtx.fillStyle = m_sClearColor;
+        m_cCtx.fillRect(0, 0, m_eCanvas.width, m_eCanvas.height);
     };
     
-    this.Clear = function(){
-        m_cCtx.clearRect(0, 0, m_eCanvas.width, m_eCanvas.height);
+    this.SetClearColor = function(sColor){
+        m_sClearColor = sColor;
     };
     
     this.DrawImage = function(cImg, cPos, nWidth, nHeight, nImageTop, nImageLeft){
-        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
+        var cScreenPos = Camera.WorldPosToScreenPos(cPos);
         m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cScreenPos.x, cScreenPos.y, nWidth, nHeight);
     };
     
@@ -30,13 +31,13 @@ function Renderer(eCanvas)
         return m_cCtx.createPattern(cImg, "repeat");
     };
     
-    this.DrawTiledImage = function(cPattern, cPos, nWidth, nHeight){
+    this.DrawTiledImage = function(cPattern, cPos, cOffset, nWidth, nHeight){
         /* To deal with the fact that a repeating image will always start at the bounds of the canvas
          * No Matter where you tell it to draw from. We have to translate the canvas by the distance
          * the camera is from World 0,0 and then add that much length to the rect we are drawing to
          * compensate for the translation.
          */
-        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
+        /*var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
         
         m_cCtx.save();
         
@@ -47,18 +48,29 @@ function Renderer(eCanvas)
         m_cCtx.fillStyle = cPattern;
         m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth + cCameraPos.x, nHeight + cCameraPos.y);
         
+        m_cCtx.restore();*/
+        
+        var cScreenPos = Camera.WorldPosToScreenPos(cPos);
+        
+        m_cCtx.save();
+        
+        m_cCtx.translate(cScreenPos.x, cScreenPos.y);
+        
+        m_cCtx.fillStyle = cPattern;
+        m_cCtx.fillRect(0, 0, nWidth, nHeight);
+        
         m_cCtx.restore();
     };
     
     this.DrawRectangle = function(cPos, nWidth, nHeight, sColor){
-        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
+        var cScreenPos = Camera.WorldPosToScreenPos(cPos);
         
         m_cCtx.fillStyle = sColor;
         m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth, nHeight);
     };
     
     this.DrawCircle = function(cPos, nRadius, sColor){
-        var cScreenPos = m_cCamera.WorldPosToScreenPos(cPos);
+        var cScreenPos = Camera.WorldPosToScreenPos(cPos);
         
         m_cCtx.beginPath();
         m_cCtx.fillStyle = sColor;

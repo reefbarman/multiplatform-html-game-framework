@@ -28,21 +28,10 @@ function ImageAsset(sFileName, cOptions)
     this.m_cBaseImage = null;
     this.m_cBasePattern = null;
     
-    this.m_cOffset = new Vector(0, 0);
+    this.Offset = new Vector(0, 0);
 }
 
 inherits(ImageAsset, Asset);
-
-/**
- * Set rendering offset within image
- * 
- * @param {number} nTop
- * @param {number} nLeft
- */
-ImageAsset.prototype.SetRenderOffset = function(nTop, nLeft){
-    this.m_cOffset.x = nTop;
-    this.m_cOffset.y = nLeft;
-};
 
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
@@ -71,11 +60,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cBasePattern, this.Pos, this.Width, this.Height);
+        cRenderer.DrawTiledImage(this.m_cBasePattern, this.Pos, this.Offset, this.Width, this.Height);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cBaseImage, this.Pos, this.Width, this.Height, this.m_cOffset.y, this.m_cOffset.x);
+        cRenderer.DrawImage(this.m_cBaseImage, this.Pos, this.Width, this.Height, this.Offset.y, this.Offset.x);
     }
 };
 

@@ -1,6 +1,8 @@
 include("rendering/renderer.js", true);
 include("rendering/drawmanager.js", true);
 include("entities/entitymanager.js", true);
+include("control/controller.js", true);
+include("states/statemanager.js", true);
 
 function Game()
 {
@@ -49,6 +51,7 @@ function Game()
     
     this.m_cRenderer = new Renderer(eCanvas);
     DrawManager.Init(this.m_cRenderer);
+    Camera.Init();
     
     Controller.Init(eCanvas);
 }
