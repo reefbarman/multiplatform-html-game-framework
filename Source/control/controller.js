@@ -10,32 +10,53 @@ var Controller = (function(){
     
     function InputStart(e)
     {
-        for (var sKey in m_cBoundEvents.tap)
+        try
         {
-            m_cBoundEvents.tap.onTap[sKey](e.clientX, e.clientY);
+            for (var sKey in m_cBoundEvents.tap)
+            {
+                m_cBoundEvents.tap[sKey].onTap(e.clientX, e.clientY);
+            }
+
+            for (var sKey in m_cBoundEvents.drag)
+            {
+                m_cBoundEvents.drag[sKey].onDragStart(e.clientX, e.clientY);
+            }
         }
-        
-        for (var sKey in m_cBoundEvents.drag)
+        catch (e)
         {
-            m_cBoundEvents.drag[sKey].onDragStart(e.clientX, e.clientY);
+            console.error(e.stack);
         }
     }
     
     function InputMove(e)
     {
         setTimeout(function(){
-            for (var sKey in m_cBoundEvents.drag)
+            try
             {
-                m_cBoundEvents.drag[sKey].onDrag(e.clientX, e.clientY);
+                for (var sKey in m_cBoundEvents.drag)
+                {
+                    m_cBoundEvents.drag[sKey].onDrag(e.clientX, e.clientY);
+                }
+            }
+            catch (e)
+            {
+                console.error(e.stack);
             }
         }, 0);
     }
     
     function InputEnd(e)
     {
-        for (var sKey in m_cBoundEvents.drag)
+        try
         {
-            m_cBoundEvents.drag[sKey].onDragEnd(e.clientX, e.clientY);
+            for (var sKey in m_cBoundEvents.drag)
+            {
+                m_cBoundEvents.drag[sKey].onDragEnd(e.clientX, e.clientY);
+            }
+        }
+        catch (e)
+        {
+            console.error(e.stack);
         }
     }
     

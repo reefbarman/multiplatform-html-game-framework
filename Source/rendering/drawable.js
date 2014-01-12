@@ -1,9 +1,12 @@
+include("collision/collidable.js", true);
+
 function Drawable()
 {
+    Collidable.call(this);
+    
     this.zIndex = 0;
-    this.Pos = new Vector(0, 0);
-    this.Width = 0;
-    this.Height = 0;
 }
+
+inherits(Drawable, Collidable);
 
 Drawable.prototype.Draw = function(cRenderer){};

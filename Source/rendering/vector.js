@@ -28,6 +28,10 @@ Vector.prototype.Dot = function(cVec){
     return this.x * cVec.x + this.y * cVec.y;
 };
 
+Vector.prototype.Lerp = function(cVec, nAlpha){
+    return new Vector(this.x + (cVec.x - this.x) * nAlpha, this.y + (cVec.y - this.y) * nAlpha);
+};
+
 Vector.prototype.Normalize = function(){
     var nLength = this.Length();
     

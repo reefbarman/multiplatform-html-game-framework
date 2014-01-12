@@ -90,29 +90,38 @@ function ControlBar()
     
     function DebugLog(cLogging)
     {
+        var $Element = $("<p>").addClass("cCQ_LogLevel" + cLogging.level);
+        
         for (var i in cLogging.args)
         {
             var val = cLogging.args[i];
             var sTypeOf = typeof val;
             
-            var $Element = $("<p>");
-            var sValString = "LOG ERROR";
+            var formattedVal = "LOG ERROR";
             
             switch (sTypeOf)
             {
                 case "object":
-                    sValString = JSON.stringify(val, null, 2);
-                    $Element = $("<pre>");
+                    formattedVal = $("<pre>").text(JSON.stringify(val, null, 2));
                     break;
                 default:
-                    sValString = val;
+                    formattedVal = val;
                     break;
             }
             
-            m_$ConsoleLog.find("aside").append(
-                $Element.addClass("cCQ_LogLevel" + cLogging.level).text(sValString)
-            );
+            if (i > 0)
+            {
+                $Element.append(", ");
+            }
+            
+            $Element.append(formattedVal);
         }
+        
+        var $Aside = m_$ConsoleLog.find("aside");
+        
+        $Aside.append($Element);
+        
+        //$Aside.parent().scrollTop($Aside.get(0).scrollHeight);
     }
     
     this.OnDeviceWindowAvailable = function(cDeviceWindow){

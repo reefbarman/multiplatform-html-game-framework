@@ -30,9 +30,9 @@ var DrawManager = (function(){
             });
             
             m_aDrawables.forEach(function(cDrawable){
-                var cDrawablePos = cDrawable.Pos;
+                var cAABB = cDrawable.GetBounds();
                 
-                if (!(cDrawablePos.x > cCameraXMax || cDrawablePos.y > cCameraYMax || (cDrawablePos.x + cDrawable.Width) < cCameraPos.x || (cDrawablePos.y + cDrawable.Height) < cCameraPos.y))
+                if (!(cAABB.x1 > cCameraXMax || cAABB.y1 > cCameraYMax || cAABB.x2 < cCameraPos.x || cAABB.y2 < cCameraPos.y))
                 {
                     cDrawable.Draw(m_cRenderer);
                 }

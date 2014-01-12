@@ -76,22 +76,29 @@ Game.prototype.Run = function(){
     var fTime = Date.now;
 
     var fUpdate = function(){
-        var nCurrentTime = fTime();
-        var nDt = nCurrentTime - nLastUpdate;
-
-        //Send smoothed dt to playground for fps
-        if (window.playgroundFPSUpdate)
+        try
         {
-            var nUpdateDt = nDt * 0.02 + nLastDt * 0.98;
-            window.playgroundFPSUpdate(nUpdateDt);
-            nLastDt = nUpdateDt;
+            var nCurrentTime = fTime();
+            var nDt = nCurrentTime - nLastUpdate;
+
+            //Send smoothed dt to playground for fps
+            if (window.playgroundFPSUpdate)
+            {
+                var nUpdateDt = nDt * 0.02 + nLastDt * 0.98;
+                window.playgroundFPSUpdate(nUpdateDt);
+                nLastDt = nUpdateDt;
+            }
+
+            nLastUpdate = nCurrentTime;
+
+            self.Update(nDt);
+            self.Draw();
+            requestAnimationFrame(fUpdate);
         }
-
-        nLastUpdate = nCurrentTime;
-
-        self.Update(nDt);
-        self.Draw();
-        requestAnimationFrame(fUpdate);
+        catch (e)
+        {
+            console.error(e.stack);
+        }
     };
 
     nLastUpdate = fTime();

@@ -1,12 +1,12 @@
 (function(){
     
-    var nLogLevel = 0;
+    var nLogLevel = 3;
     
     console.LOG_LEVELS = {
-        INFO: 0,
-        WARN: 1,
-        ERROR: 2,
-        DISABLED: 3
+        INFO: 3,
+        WARN: 2,
+        ERROR: 1,
+        DISABLED: 0
     };
     
     console.log = (function(fOrigLog){
@@ -18,7 +18,7 @@
                 if (isset(window.playgroundDebugLog))
                 {
                     window.playgroundDebugLog({
-                        level: "Info",
+                        level: "Log",
                         args: arguments
                     });
                 }

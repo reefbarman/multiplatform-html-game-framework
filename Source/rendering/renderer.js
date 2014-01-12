@@ -13,6 +13,10 @@ function Renderer(eCanvas)
         m_eCanvas.height = window.innerHeight;
     }
     
+    this.GetRawContext = function(){
+        return m_cCtx;
+    };
+    
     this.Clear = function(){
         m_cCtx.fillStyle = m_sClearColor;
         m_cCtx.fillRect(0, 0, m_eCanvas.width, m_eCanvas.height);
