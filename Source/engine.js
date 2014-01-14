@@ -2,16 +2,16 @@
     
     var cIncludedFiles = {};
     
-    window.include = function(sFile, bUseIncludePath){
+    window.include = function(sFile, bEngineInclude){
         try
         {
             if (!cIncludedFiles[sFile])
             {
                 var cRequest = new XMLHttpRequest();
 
-                var sPath = bUseIncludePath ? window.EN.settings.includePath + sFile : sFile;
+                var sIncludePath = bEngineInclude ? window.EN.settings.enginePath : window.EN.settings.gamePath;
 
-                cRequest.open("GET", sPath, false);
+                cRequest.open("GET", sIncludePath + sFile, false);
                 cRequest.send(null);
 
                 if (cRequest.status === 200)
@@ -28,6 +28,7 @@
         catch (e)
         {
             console.error(e.stack);
+            throw e;
         }
     };
 })();
@@ -55,6 +56,7 @@ window.EN.Init = function(fOnInit){
         catch (e)
         {
             console.error(e.stack);
+            throw e;
         }
     };
     

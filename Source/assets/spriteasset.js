@@ -8,10 +8,11 @@ function SpriteAsset(sFileName)
     this.m_cBaseSprite = null;
     this.m_cImages = {};
     
-    this.m_sAnimation = "default";
+    this.m_sAnimation = "";
     this.m_cCurrentAnimation = null;
-    this.m_nCurrentFrame = 0;
+    this.CurrentFrame = 0;
     this.m_nPreviousFramesElapsed = 0;
+    this.m_bAnimationRunning = true;
 }
 
 inherits(SpriteAsset, Asset);
@@ -20,7 +21,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
     ajaxLoad({
-        src: window.EN.resourcePath + "/sprites/" + self.m_sFileName + ".json",
+        src: window.EN.settings.resourcePath + "/sprites/" + self.m_sFileName + ".json",
         onComplete: function(cErr, cSprite){
             if (!cErr)
             {
@@ -76,14 +77,8 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                     }
                 }
                 
-                var cCurrentAnimation = cSprite.animations[self.m_sAnimation];
+                self.ChangeAnimation(cSprite.default);
                 
-                cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
-                self.m_cCurrentAnimation = cCurrentAnimation;
-                
-                self.Width = self.m_cCurrentAnimation.width;
-                self.Height = self.m_cCurrentAnimation.height;
-
                 fLoadDependencies();
             }
             else
@@ -95,23 +90,47 @@ SpriteAsset.prototype.Load = function(fOnLoad){
 };
     
 SpriteAsset.prototype.Update = function(nDt){
-    this.m_nPreviousFramesElapsed += nDt / this.m_cCurrentAnimation.frameDelta;
-
-    if (this.m_nPreviousFramesElapsed >= 1)
+    if (this.m_bAnimationRunning)
     {
-        this.m_nCurrentFrame = Math.floor(this.m_nCurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
-        this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - Math.floor(this.m_nPreviousFramesElapsed);
+        this.m_nPreviousFramesElapsed += nDt / this.m_cCurrentAnimation.frameDelta;
+
+        if (this.m_nPreviousFramesElapsed >= 1)
+        {
+            this.CurrentFrame = Math.floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
+            this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - Math.floor(this.m_nPreviousFramesElapsed);
+        }
+
+        this.m_cImages[this.m_sAnimation].Offset = new Vector(this.CurrentFrame * this.Width % this.m_cImages[this.m_sAnimation].ImageWidth, Math.floor(this.CurrentFrame * this.Width / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height);
     }
     
-    this.Width = this.m_cCurrentAnimation.width;
-    this.Height = this.m_cCurrentAnimation.height;
-
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
-    this.m_cImages[this.m_sAnimation].Offset = new Vector(0, this.m_nCurrentFrame * this.Width);
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){
     this.m_cImages[this.m_sAnimation].Draw(cRenderer);
+};
+
+SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
+    this.m_sAnimation = sAnimation;
+    
+    this.CurrentFrame = 0;
+    this.m_nPreviousFramesElapsed = 0;
+    
+    var cCurrentAnimation = this.m_cBaseSprite.animations[this.m_sAnimation];
+                
+    cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
+    this.m_cCurrentAnimation = cCurrentAnimation;
+    
+    this.m_cImages[this.m_sAnimation].CoordAlignment = this.CoordAlignment;
+    
+    this.Width = this.m_cCurrentAnimation.width;
+    this.Height = this.m_cCurrentAnimation.height;
+    this.BoundingBox.Width = this.Width;
+    this.BoundingBox.Height = this.Height;
+};
+
+SpriteAsset.prototype.PauseAnimation = function(bPaused){
+    this.m_bAnimationRunning = !bPaused;
 };
 
 //# sourceURL=assets/spriteasset.js

@@ -1,3 +1,5 @@
+include("collision/boundingbox.js", true);
+
 function Collidable()
 {
     this.CoordAlignment = "TopLeft";
@@ -5,30 +7,31 @@ function Collidable()
     this.Width = 0;
     this.Height = 0;
     this.Rotation = 0;
+    this.BoundingBox = new BoundingBox();
 }
 
 Collidable.prototype.GetBounds = function(){
-    var cAABB = {};
+    return this.BoundingBox.GetBounds(this.Pos, this.CoordAlignment);
+};
+
+Collidable.prototype.GetAlignedCoords = function(){
+    var cCoords = null;
     
     switch (this.CoordAlignment)
     {
         case "TopLeft":
-            cAABB = {
-                x1: this.Pos.x,
-                y1: this.Pos.y,
-                x2: this.Pos.x + this.Width,
-                x3: this.Pos.y + this.Height
-            };
+            cCoords = this.Pos;
             break;
         case "Center":
-            cAABB = {
-                x1: this.Pos.x - this.Width / 2,
-                y1: this.Pos.y - this.Height / 2,
-                x2: this.Pos.x + this.Width / 2,
-                y2: this.Pos.y + this.Height / 2
-            };
+            cCoords = new Vector(this.Pos.x - this.Width / 2, this.Pos.y - this.Height / 2);
+            break;
+        case "BottomRight":
+            cCoords = new Vector(this.Pos.x - this.Width, this.Pos.y - this.Height);
+            break;
+        case "BottomLeft":
+            cCoords = new Vector(this.Pos.x, this.Pos.y - this.Height);
             break;
     }
     
-    return cAABB;
+    return cCoords;
 };

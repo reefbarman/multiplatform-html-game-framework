@@ -1,15 +1,15 @@
 var CollisionUtils = (function(){
     return {
-        TestPointIntersect: function(cPos, cEntity){
-            var cEntityPos = cEntity.Pos;
+        TestPointIntersect: function(cPos, cCollidable){
+            var cBounds = cCollidable.GetBounds();
             
-            return !(cPos.x < cEntityPos.x || cPos.x > (cEntityPos.x + cEntity.Width) || cPos.y < cEntityPos.y || cPos.y > (cEntityPos.y + cEntity.Height));
+            return !(cPos.x < cBounds.x1 || cPos.x > cBounds.x2 || cPos.y < cBounds.y1 || cPos.y > cBounds.y2);
         },
-        TestEntityIntersect: function(cEntity1, cEntity2){
-            var cPos1 = cEntity1.Pos;
-            var cPos2 = cEntity2.Pos;
+        TestEntityIntersect: function(cCollidable1, cCollidable2){
+            var cBounds1 = cCollidable1.GetBounds();
+            var cBounds2 = cCollidable2.GetBounds();
             
-            return (!(cPos1.x > (cPos2.x + cEntity2.Width) || cPos1.y > (cPos2.y + cEntity2.Height) || (cPos1.x + cEntity1.Width) < cPos2.x || (cPos1.y + cEntity1.Height) < cPos2.y));
+            return (!(cBounds1.x1 > cBounds2.x2 || cBounds1.y1 > cBounds1.y2 || cBounds1.x2 < cBounds2.x1 || cBounds1.y2 < cBounds2.y1));
         }
     };
 })();

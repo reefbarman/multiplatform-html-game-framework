@@ -40,8 +40,6 @@ function Game()
     
     var sOrigin = window.location.origin || "";
         
-    window.EN.resourcePath = sOrigin + "/Game/resources";
-
     var eCanvas = document.createElement("canvas");
 
     eCanvas.width = window.EN.device.width;
@@ -73,31 +71,41 @@ Game.prototype.Run = function(){
     
     var nLastUpdate = null;
     var nLastDt = 0;
+    var nAccumulated = 0;
+    var nDt = 1000 / 60;
     var fTime = Date.now;
 
     var fUpdate = function(){
         try
         {
             var nCurrentTime = fTime();
-            var nDt = nCurrentTime - nLastUpdate;
+            var nFrameTime = nCurrentTime - nLastUpdate;
 
             //Send smoothed dt to playground for fps
             if (window.playgroundFPSUpdate)
             {
-                var nUpdateDt = nDt * 0.02 + nLastDt * 0.98;
+                var nUpdateDt = nFrameTime * 0.02 + nLastDt * 0.98;
                 window.playgroundFPSUpdate(nUpdateDt);
                 nLastDt = nUpdateDt;
             }
 
             nLastUpdate = nCurrentTime;
-
-            self.Update(nDt);
+            
+            nAccumulated += nFrameTime;
+            
+            while (nAccumulated >= nDt)
+            {
+                self.Update(nDt);
+                nAccumulated -= nDt;
+            }
+            
             self.Draw();
             requestAnimationFrame(fUpdate);
         }
         catch (e)
         {
             console.error(e.stack);
+            throw (e);
         }
     };
 

@@ -7,8 +7,15 @@ var EntityManager = (function(){
     
     return {
         RegisterEntity: function(cEntity){
-            cEntity.ID = m_nCurrentId++;
+            if (cEntity.ID === null)
+            {
+                cEntity.ID = m_nCurrentId++;
+            }
+            
             m_aEntities.push(cEntity);
+        },
+        UnregisterEntity: function(cEntity){
+            m_aEntities.splice(m_aEntities.indexOf(cEntity), 1);
         },
         Update: function(nDt){
             m_aEntities.forEach(function(cEntity){

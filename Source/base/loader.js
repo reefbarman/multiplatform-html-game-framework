@@ -14,13 +14,26 @@ var Loader = (function() {
          */
         Load: function(aObjects, fOnLoad) {
             var nLoadedObjects = 0;
+            
+            var nObjectsToLoad = 0;
+            
+            aObjects.forEach(function(loadable) {
+                if (Array.isArray(loadable))
+                {
+                    nObjectsToLoad += loadable.length;
+                }
+                else
+                {
+                    nObjectsToLoad++;
+                }
+            });
 
             var fLoaded = function(cErr) {
                 if (!cErr)
                 {
                     nLoadedObjects++;
 
-                    if (nLoadedObjects >= aObjects.length)
+                    if (nLoadedObjects >= nObjectsToLoad)
                     {
                         fOnLoad();
                     }
@@ -31,14 +44,30 @@ var Loader = (function() {
                 }
             };
 
-            aObjects.forEach(function(cObject) {
-                if (isset(cObject.Load))
+            aObjects.forEach(function(loadable) {
+                if (Array.isArray(loadable))
                 {
-                    cObject.Load(fLoaded);
+                    loadable.forEach(function(cObject) {
+                        if (isset(cObject.Load))
+                        {
+                            cObject.Load(fLoaded);
+                        }
+                        else
+                        {
+                            fLoaded();
+                        }
+                    });
                 }
                 else
                 {
-                    fLoaded();
+                    if (isset(loadable.Load))
+                    {
+                        loadable.Load(fLoaded);
+                    }
+                    else
+                    {
+                        fLoaded();
+                    }
                 }
             });
         }

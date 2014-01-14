@@ -29,9 +29,47 @@ function ImageAsset(sFileName, cOptions)
     this.m_cBasePattern = null;
     
     this.Offset = new Vector(0, 0);
+    
+    this.m_nScale = 1;
+    this.m_nHeight = 0;
+    this.m_nWidth = 0;
+    this.ImageHeight = 0;
+    this.ImageWidth = 0;
 }
 
 inherits(ImageAsset, Asset);
+
+Object.defineProperty(ImageAsset.prototype, "Width", {
+    enumerable: true,
+    get: function(){
+        return this.m_nWidth;
+    },
+    set: function(nWidth){
+        this.m_nWidth = nWidth * this.Scale;
+    }
+});
+
+Object.defineProperty(ImageAsset.prototype, "Height", {
+    enumerable: true,
+    get: function(){
+        return this.m_nHeight;
+    },
+    set: function(nHeight){
+        this.m_nHeight = nHeight * this.Scale;
+    }
+});
+
+Object.defineProperty(ImageAsset.prototype, "Scale", {
+    enumerable: true,
+    get: function(){
+        return this.m_nScale;
+    },
+    set: function(nScale){
+        this.m_nHeight = this.m_nHeight * (1 / this.m_nScale * nScale);
+        this.m_nWidth = this.m_nWidth * (1 / this.m_nScale * nScale);
+        this.m_nScale = nScale;
+    }
+});
 
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
@@ -40,15 +78,21 @@ ImageAsset.prototype.Load = function(fOnLoad){
     this.m_cBaseImage.onload = function(){
         fOnLoad.apply(self);
         
+        self.ImageWidth = this.width;
+        self.ImageHeight = this.height;
+        
         self.Width = self.m_cOptions.visibleWidth || this.width;
         self.Height = self.m_cOptions.visibleHeight || this.height;
+        
+        self.BoundingBox.Width = self.Width;
+        self.BoundingBox.Height = self.Height;
     };
 
     this.m_cBaseImage.onerror = function(){
         fOnLoad(new Error("Failed to load image: " + this.m_sFileName));
     };
     
-    this.m_cBaseImage.src = window.EN.resourcePath + "/images/" + this.m_sFileName;
+    this.m_cBaseImage.src = window.EN.settings.resourcePath + "/images/" + this.m_sFileName;
 };
 
 ImageAsset.prototype.Draw = function(cRenderer){
@@ -64,7 +108,7 @@ ImageAsset.prototype.Draw = function(cRenderer){
     }
     else
     {
-        cRenderer.DrawImage(this.m_cBaseImage, this.Pos, this.Width, this.Height, this.Offset.y, this.Offset.x);
+        cRenderer.DrawImage(this.m_cBaseImage, this.GetAlignedCoords(), this.m_cOptions.visibleWidth || this.ImageWidth, this.m_cOptions.visibleHeight || this.ImageHeight, this.Offset.x, this.Offset.y, this.Scale);
     }
 };
 

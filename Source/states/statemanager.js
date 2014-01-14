@@ -1,7 +1,7 @@
 var StateManager = (function(){
     var m_cRegisteredStats = {};
-    var m_sCurrentState = null;
     var m_sNextState = null;
+    var m_aStateStack = [];
     
     var m_cTransitions = {};
     var m_cTransitionUpdate = null;
@@ -60,16 +60,42 @@ var StateManager = (function(){
         };
     }
     
+    function ReplaceStates()
+    {
+        var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
+        var sPreviousState = m_aStateStack[m_aStateStack.length - 2];
+        
+        if (sCurrentState)
+        {
+            m_cRegisteredStats[sCurrentState].Exit();
+            m_aStateStack.pop();
+        }
+        
+        if (sPreviousState == m_sNextState)
+        {
+            m_cRegisteredStats[m_sNextState].Resume();
+        }
+        else
+        {
+            m_cRegisteredStats[m_sNextState].Enter();
+            m_aStateStack.push(m_sNextState);
+        }
+        
+        m_sNextState = null;
+    }
+    
     function SwitchStates()
     {
-        if (m_sCurrentState)
+        var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
+        
+        if (sCurrentState)
         {
-            m_cRegisteredStats[m_sCurrentState].Exit();
+            m_cRegisteredStats[sCurrentState].Pause();
         }
         
         m_cRegisteredStats[m_sNextState].Enter();
+        m_aStateStack.push(m_sNextState);
         
-        m_sCurrentState = m_sNextState;
         m_sNextState = null;
     }
     
@@ -78,51 +104,64 @@ var StateManager = (function(){
         m_cTransitionUpdate = null;
     }
     
+    function ChangeStates(sState, fOnStateChange, transition)
+    {
+        var sTransitionType = typeof transition;
+            
+        var fTransition = m_cTransitions[StateManager.TRANSITIONS.FADE];
+
+        switch(sTransitionType)
+        {
+            case "string":
+                if (isset(m_cTransitions[transition]))
+                {
+                    fTransition = m_cTransitions[transition];
+                }
+                break;
+            case "function":
+                fTransition = transition;
+                break;
+        }
+
+        if (m_cRegisteredStats[sState])
+        {
+            var sPreviousState = m_aStateStack[m_aStateStack.length - 2];
+            
+            if (isset(m_cRegisteredStats[sState].Load) && sPreviousState != sState)
+            {
+                m_cRegisteredStats[sState].Load(function(){
+                    m_sNextState = sState;
+                    m_cTransitionUpdate = fTransition(fOnStateChange, TransitionEnd);
+                });
+            }
+            else
+            {
+                m_sNextState = sState;
+                m_cTransitionUpdate = fTransition(fOnStateChange, TransitionEnd);
+            }
+        }
+    }
+    
     return {
         Init: function(cRegisteredStates){
             m_cRegisteredStats = cRegisteredStates;
             Init();
         },
         ChangeState: function(sState, transition){
-            //TODO TC: May have to implement a queue of state changes so we don't miss or override any!
-    
-            var sTransitionType = typeof transition;
-            
-            var fTransition = m_cTransitions[StateManager.TRANSITIONS.FADE];
-    
-            switch(sTransitionType)
-            {
-                case "string":
-                    if (isset(m_cTransitions[transition]))
-                    {
-                        fTransition = m_cTransitions[transition];
-                    }
-                    break;
-                case "function":
-                    fTransition = transition;
-                    break;
-            }
-            
-            if (m_cRegisteredStats[sState])
-            {
-                if (isset(m_cRegisteredStats[sState].Load))
-                {
-                    m_cRegisteredStats[sState].Load(function(){
-                        m_sNextState = sState;
-                        m_cTransitionUpdate = fTransition(SwitchStates, TransitionEnd);
-                    });
-                }
-                else
-                {
-                    m_sNextState = sState;
-                    m_cTransitionUpdate = fTransition(SwitchStates, TransitionEnd);
-                }
-            }
+            ChangeStates(sState, ReplaceStates, transition);
+        },
+        PushState: function(sState, transition){
+            ChangeStates(sState, SwitchStates, transition);
+        },
+        PopState: function(){
+            ChangeStates(m_aStateStack[m_aStateStack.length - 2], ReplaceStates);
         },
         Update: function(nDt){
-            if (m_cRegisteredStats[m_sCurrentState])
+            var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
+            
+            if (m_cRegisteredStats[sCurrentState])
             {
-                m_cRegisteredStats[m_sCurrentState].Update(nDt);
+                m_cRegisteredStats[sCurrentState].Update(nDt);
             }
             
             if (m_cTransitionUpdate)

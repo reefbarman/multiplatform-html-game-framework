@@ -26,9 +26,13 @@ function Renderer(eCanvas)
         m_sClearColor = sColor;
     };
     
-    this.DrawImage = function(cImg, cPos, nWidth, nHeight, nImageTop, nImageLeft){
+    this.DrawImage = function(cImg, cPos, nWidth, nHeight, nImageTop, nImageLeft, nScale){
         var cScreenPos = Camera.WorldPosToScreenPos(cPos);
-        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cScreenPos.x, cScreenPos.y, nWidth, nHeight);
+        
+        m_cCtx.save();
+        m_cCtx.scale(nScale, nScale);
+        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cScreenPos.x * (1 / nScale), cScreenPos.y * (1 / nScale), nWidth, nHeight);
+        m_cCtx.restore();
     };
     
     this.CreatePattern = function(cImg){
@@ -80,6 +84,21 @@ function Renderer(eCanvas)
         m_cCtx.fillStyle = sColor;
         m_cCtx.arc(cScreenPos.x + nRadius, cScreenPos.y + nRadius, nRadius, 0, Math.PI * 2);
         m_cCtx.fill();
+    };
+    
+    this.DrawText = function(cPos, sText, sFont, sColor){
+        var cScreenPos = Camera.WorldPosToScreenPos(cPos);
+        
+        m_cCtx.textBaseline = "top";
+        m_cCtx.textAlign = "left";
+        m_cCtx.font = sFont;
+        m_cCtx.fillStyle = sColor;
+        m_cCtx.fillText(sText, cScreenPos.x, cScreenPos.y);
+    };
+    
+    this.MeasureText = function(sText, sFont){
+        m_cCtx.font = sFont;
+        return m_cCtx.measureText(sText);
     };
     
     Init();
