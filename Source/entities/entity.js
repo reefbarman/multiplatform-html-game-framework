@@ -1,4 +1,5 @@
 include("rendering/vector.js", true);
+include("collision/collidable.js", true);
 
 function Entity()
 {
