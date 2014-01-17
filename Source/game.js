@@ -38,8 +38,6 @@ function Game()
     
     EnvironmentDetection();
     
-    var sOrigin = window.location.origin || "";
-        
     var eCanvas = document.createElement("canvas");
 
     eCanvas.width = window.EN.device.width;
@@ -71,8 +69,8 @@ Game.prototype.Run = function(){
     
     var nLastUpdate = null;
     var nLastDt = 0;
-    var nAccumulated = 0;
-    var nDt = 1000 / 60;
+    //var nAccumulated = 0;
+    //var nDt = 1000 / 60;
     var fTime = Date.now;
 
     var fUpdate = function(){
@@ -91,14 +89,15 @@ Game.prototype.Run = function(){
 
             nLastUpdate = nCurrentTime;
             
-            nAccumulated += nFrameTime;
+            //nAccumulated += nFrameTime;
             
-            while (nAccumulated >= nDt)
+            /*while (nAccumulated >= nDt)
             {
                 self.Update(nDt);
                 nAccumulated -= nDt;
-            }
+            }*/
             
+            self.Update(nFrameTime);
             self.Draw();
             requestAnimationFrame(fUpdate);
         }
