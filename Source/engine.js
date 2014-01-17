@@ -58,6 +58,8 @@ window.EN.Init = function(fOnInit){
             console.error(e.stack);
             throw e;
         }
+        
+        fInit = null;
     };
     
     var cParams = parseQueryParams();
@@ -99,7 +101,10 @@ window.EN.Init = function(fOnInit){
                             }
                         });
                         
-                        fInit();
+                        if (fInit)
+                        {
+                            fInit();
+                        }
 
                         break;
                 }

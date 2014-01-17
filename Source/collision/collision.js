@@ -13,20 +13,27 @@ var Collision = (function(){
         Update: function(aEntities){
             CollisionGrid.UpdateGrid(aEntities);
         },
-        RegisterCollisionResponse: function(sType1, sType2, fOnCollision){
-            if (!m_cCollisionResponse[sType1])
+        RegisterCollisionResponse: function(cMap, fOnCollision){
+            for (var sType1 in cMap)
             {
-                m_cCollisionResponse[sType1] = {};
+                var aCollisionEntities = cMap[sType1];
+                
+                aCollisionEntities.forEach(function(sType2){
+                    if (!m_cCollisionResponse[sType1])
+                    {
+                        m_cCollisionResponse[sType1] = {};
+                    }
+
+                    m_cCollisionResponse[sType1][sType2] = fOnCollision;
+
+                    if (!m_cCollisionResponse[sType2])
+                    {
+                        m_cCollisionResponse[sType2] = {};
+                    }
+
+                    m_cCollisionResponse[sType2][sType1] = fOnCollision;
+                });
             }
-            
-            m_cCollisionResponse[sType1][sType2] = fOnCollision;
-            
-            if (!m_cCollisionResponse[sType2])
-            {
-                m_cCollisionResponse[sType2] = {};
-            }
-            
-            m_cCollisionResponse[sType2][sType1] = fOnCollision;
         },
         GetPointCollision: function(cPos){
             var cCollidingEntity = null;
