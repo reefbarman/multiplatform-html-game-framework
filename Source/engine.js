@@ -9,7 +9,7 @@
             {
                 var cRequest = new XMLHttpRequest();
 
-                var sIncludePath = bEngineInclude ? window.EN.settings.enginePath : window.EN.settings.gamePath;
+                var sIncludePath = bEngineInclude ? EN.settings.enginePath : EN.settings.gamePath;
 
                 cRequest.open("GET", sIncludePath + sFile, false);
                 cRequest.send(null);
@@ -43,9 +43,9 @@
     };
 })();
 
-if (typeof window["EN"] == "undefined")
+if (typeof EN == "undefined")
 {
-    window.EN = {
+    EN = {
         settings: {
             includePath: "/"
         }
@@ -58,7 +58,7 @@ include("base/base.js", true);
 include("base/logging.js", true);
 include("base/game.js", true);
 
-window.EN.Init = function(fOnInit){
+EN.Init = function(fOnInit){
     var fInit = function(){
         try
         {
