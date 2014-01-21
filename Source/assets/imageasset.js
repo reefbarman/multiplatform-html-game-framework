@@ -92,7 +92,7 @@ ImageAsset.prototype.Load = function(fOnLoad){
         fOnLoad(new Error("Failed to load image: " + this.m_sFileName));
     };
     
-    this.m_cBaseImage.src = window.EN.settings.resourcePath + "/images/" + this.m_sFileName;
+    this.m_cBaseImage.src = window.EN.settings.resourcePath + "images/" + this.m_sFileName;
 };
 
 ImageAsset.prototype.Draw = function(cRenderer){

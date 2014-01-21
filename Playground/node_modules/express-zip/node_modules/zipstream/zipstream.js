@@ -77,7 +77,7 @@ ZipStream.prototype._read = function() {
     }
   }
 
-  process.nextTick(function() { self._read(); }); //TODO improve
+  setImmediate(function() { self._read(); }); //TODO improve
 }
 
 

@@ -1,6 +1,7 @@
 var Express = require("express");
 var extend = require("xtend");
 var fs = require("fs");
+var path = require("path");
 var zip = require("express-zip");
 
 var cConfig = require(process.cwd() + "/config.json");
@@ -19,14 +20,69 @@ cApp.set('views', __dirname + '/views');
 
 cApp.use(Express.static(__dirname + '/static'));
 
-/*cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
+cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     
-    fs.readdir(process.cwd(), function(cErr, aFiles){
+    var sBaseDir = process.cwd();
+    
+    var fReadDir = function(sDir, fOnComplete){
+        var aFiles = [];
         
-    });
+        fs.readdir(sDir, function(cErr, aPaths){
+            var nPaths = aPaths.length;
+            
+            var fPathComplete = function(){
+                if (!(--nPaths))
+                {
+                    fOnComplete(aFiles);
+                }
+            };
+
+            aPaths.forEach(function(sPath){
+                if (sPath[0] !== "." && sPath !== "Playground")
+                {
+                    var sFullPath = path.join(sDir, sPath);
+
+                    fs.stat(sFullPath, function(cErr, cStat){
+                        if (!cErr)
+                        {
+                            if (cStat.isDirectory())
+                            {
+                                setImmediate(function(){
+                                    fReadDir(sFullPath, function(aDirFiles){
+                                        aFiles = aFiles.concat(aDirFiles);
+                                        fPathComplete();
+                                    });
+                                });
+                            }
+                            else
+                            {
+                                aFiles.push({
+                                    path: sFullPath,
+                                    name: path.relative(sBaseDir, sFullPath)
+                                });
+                                
+                                fPathComplete();
+                            }
+                        }
+                        else
+                        {
+                            fPathComplete();
+                        }
+                    });
+                }
+                else
+                {
+                    fPathComplete();
+                }
+            });
+        });
+    };
     
-    fNext();
-});*/
+    fReadDir(sBaseDir, function(aFiles){
+        cRes.zip(aFiles);
+        cRes.setHeader('Content-disposition', 'attachment; filename=game.zip');
+    });
+});
 
 cApp.use("/Game", Express.static(process.cwd(), { index: "main.html" }));
 

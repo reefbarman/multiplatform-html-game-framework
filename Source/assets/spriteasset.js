@@ -21,7 +21,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
     ajaxLoad({
-        src: window.EN.settings.resourcePath + "/sprites/" + self.m_sFileName + ".json",
+        src: window.EN.settings.resourcePath + "sprites/" + self.m_sFileName + ".json",
         onComplete: function(cErr, cSprite){
             if (!cErr)
             {
