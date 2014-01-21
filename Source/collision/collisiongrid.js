@@ -1,4 +1,9 @@
-var CollisionGrid = (function(){
+var max = Math.max;
+var min = Math.min;
+var floor = Math.floor;
+var ceil = Math.ceil;
+
+EN.CollisionGrid = (function(){
     
     var m_bInited = false;
     var m_aGrid = null;
@@ -10,8 +15,8 @@ var CollisionGrid = (function(){
         Init: function(nGridSize, nGridWidth, nGridHeight){
             m_nGridSize = nGridSize;
             
-            m_nGridColumns = Math.ceil(nGridWidth / m_nGridSize);
-            m_nGridRows = Math.ceil(nGridHeight / m_nGridSize);
+            m_nGridColumns = ceil(nGridWidth / m_nGridSize);
+            m_nGridRows = ceil(nGridHeight / m_nGridSize);
             
             m_bInited = true;
         },
@@ -23,10 +28,10 @@ var CollisionGrid = (function(){
                 aEntities.forEach(function(cEntity){
                     var cBounds = cEntity.GetBounds();
 
-                    var nMinColumn = Math.max(0, Math.floor(cBounds.x1 / m_nGridSize));
-                    var nMaxColumn = Math.min(m_nGridColumns - 1, Math.floor(cBounds.x2 / m_nGridSize));
-                    var nMinRow = Math.max(0, Math.floor(cBounds.y1 / m_nGridSize));
-                    var nMaxRow = Math.min(m_nGridRows - 1, Math.floor(cBounds.y2 / m_nGridSize));
+                    var nMinColumn = max(0, floor(cBounds.x1 / m_nGridSize));
+                    var nMaxColumn = min(m_nGridColumns - 1, floor(cBounds.x2 / m_nGridSize));
+                    var nMinRow = max(0, floor(cBounds.y1 / m_nGridSize));
+                    var nMaxRow = min(m_nGridRows - 1, floor(cBounds.y2 / m_nGridSize));
 
                     for (var i = nMinColumn; i <= nMaxColumn; i++)
                     {
@@ -51,8 +56,8 @@ var CollisionGrid = (function(){
         GetPointCollision: function(cPos){
             var aEntities = [];
             
-            var nColumnPos = Math.floor(cPos.x / m_nGridSize);
-            var nRowPos = Math.floor(cPos.y / m_nGridSize);
+            var nColumnPos = floor(cPos.x / m_nGridSize);
+            var nRowPos = floor(cPos.y / m_nGridSize);
             
             if (nColumnPos >= 0 && nColumnPos < m_nGridColumns && nRowPos >= 0 && nRowPos < m_nGridRows)
             {
@@ -85,4 +90,4 @@ var CollisionGrid = (function(){
     };
 })();
 
-//# sourceURL=collision/collisiongrid.js
+//# sourceURL=engine/collision/collisiongrid.js

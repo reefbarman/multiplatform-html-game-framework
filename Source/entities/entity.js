@@ -3,7 +3,7 @@ include("collision/collidable.js", true);
 
 function Entity()
 {
-    Collidable.call(this);
+    EN.Collidable.call(this);
     this.ID = null;
     
     this.zIndex = 0;
@@ -11,7 +11,7 @@ function Entity()
     this.m_bInited = false;
 }
 
-inherits(Entity, Collidable);
+inherits(Entity, EN.Collidable);
 
 Entity.prototype.__Init = function(){
     this.m_bInited = true;
@@ -24,4 +24,5 @@ Entity.prototype.Update = function(nDt){
     }
 };
 
-//# sourceURL=entities/entity.js
+EN.Entity = Entity;
+//# sourceURL=engine/entities/entity.js

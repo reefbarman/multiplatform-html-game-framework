@@ -1,4 +1,4 @@
-var CollisionUtils = (function(){
+EN.CollisionUtils = (function(){
     return {
         TestPointIntersect: function(cPos, cCollidable){
             var cBounds = cCollidable.GetBounds();
@@ -14,4 +14,4 @@ var CollisionUtils = (function(){
     };
 })();
 
-//# sourceURL=collision/collisionutils.js
+//# sourceURL=engine/collision/collisionutils.js

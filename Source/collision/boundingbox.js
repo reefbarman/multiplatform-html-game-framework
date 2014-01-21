@@ -1,6 +1,8 @@
+include("rendering/vector.js", true);
+
 function BoundingBox()
 {
-    this.Offset = new Vector(0, 0);
+    this.Offset = new EN.Vector(0, 0);
     this.Width = 0;
     this.Height = 0;
 }
@@ -36,3 +38,7 @@ BoundingBox.prototype.GetBounds = function(cPos, sAlignment){
         y2: nTop + this.Height
     };
 };
+
+EN.BoundingBox = BoundingBox;
+
+//# sourceURL=engine/collision/boundingbox.js

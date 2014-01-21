@@ -11,12 +11,12 @@ include("rendering/drawable.js", true);
 function Asset(sFileName)
 {
     //super constructor
-    Drawable.call(this);
+    EN.Drawable.call(this);
     
     this.m_sFileName = sFileName;
 }
 
-inherits(Asset, Drawable);
+inherits(Asset, EN.Drawable);
 
 Object.defineProperty(Asset.prototype, "FileName", {
     get: function(){
@@ -47,4 +47,5 @@ Asset.prototype.Update = function(nDt){};
  * @param {Error|undefined} cErr - An error if anything failed to load otherwise not set
  */
 
-//# sourceURL=assets/asset.js
+EN.Asset = Asset;
+//# sourceURL=engine/assets/asset.js

@@ -39,4 +39,5 @@ Vector.prototype.Normalize = function(){
     this.y = this.y / nLength;
 };
 
-//# sourceURL=rendering/vector.js
+EN.Vector = Vector;
+//# sourceURL=engine/rendering/vector.js

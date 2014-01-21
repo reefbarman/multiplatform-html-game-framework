@@ -1,6 +1,6 @@
 include("rendering/camera.js", true);
 
-var DrawManager = (function(){
+EN.DrawManager = (function(){
     
     var m_aDrawables = [];
     
@@ -20,8 +20,8 @@ var DrawManager = (function(){
             m_cRenderer.SetClearColor(sColor);
         },
         Draw: function(){
-            var cCameraPos = Camera.Pos;
-            var cViewport = Camera.Viewport;
+            var cCameraPos = EN.Camera.Pos;
+            var cViewport = EN.Camera.Viewport;
             var cCameraXMax = cCameraPos.x + cViewport.width;
             var cCameraYMax = cCameraPos.y + cViewport.height;
             
@@ -41,4 +41,4 @@ var DrawManager = (function(){
     };
 })();
 
-//# sourceURL=rendering/drawmanager.js
+//# sourceURL=engine/rendering/drawmanager.js

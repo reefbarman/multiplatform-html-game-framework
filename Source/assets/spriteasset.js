@@ -1,9 +1,12 @@
 include("assets/asset.js", true);
 
+var floor = Math.floor;
+var Vec = EN.Vector;
+
 function SpriteAsset(sFileName)
 {
     //Super constructor
-    Asset.call(this, sFileName);
+    EN.Asset.call(this, sFileName);
     
     this.m_cBaseSprite = null;
     this.m_cImages = {};
@@ -13,15 +16,15 @@ function SpriteAsset(sFileName)
     this.CurrentFrame = 0;
     this.m_nPreviousFramesElapsed = 0;
     this.m_bAnimationRunning = true;
-}
+};
 
-inherits(SpriteAsset, Asset);
+inherits(SpriteAsset, EN.Asset);
 
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
     ajaxLoad({
-        src: window.EN.settings.resourcePath + "sprites/" + self.m_sFileName + ".json",
+        src: EN.settings.resourcePath + "sprites/" + self.m_sFileName + ".json",
         onComplete: function(cErr, cSprite){
             if (!cErr)
             {
@@ -55,7 +58,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                                 {
                                     var cAnimation = cSprite.animations[sImageKey];
                                     
-                                    var cImage = new ImageAsset(cSprite.dependencies[sKey][sImageKey], {
+                                    var cImage = new EN.ImageAsset(cSprite.dependencies[sKey][sImageKey], {
                                         visibleWidth: cAnimation.width,
                                         visibleHeight: cAnimation.height
                                     });
@@ -66,7 +69,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                                 
                                 fLoadDependencies = (function(fLoadDependencies){
                                     return function(){
-                                        Loader.Load(aImages, fOnDependenciesLoaded);
+                                        EN.Loader.Load(aImages, fOnDependenciesLoaded);
                                         fLoadDependencies();
                                     };
                                 }(fLoadDependencies));
@@ -96,11 +99,11 @@ SpriteAsset.prototype.Update = function(nDt){
 
         if (this.m_nPreviousFramesElapsed >= 1)
         {
-            this.CurrentFrame = Math.floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
-            this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - Math.floor(this.m_nPreviousFramesElapsed);
+            this.CurrentFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
+            this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
         }
 
-        this.m_cImages[this.m_sAnimation].Offset = new Vector(this.CurrentFrame * this.Width % this.m_cImages[this.m_sAnimation].ImageWidth, Math.floor(this.CurrentFrame * this.Width / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height);
+        this.m_cImages[this.m_sAnimation].Offset = new Vec(this.CurrentFrame * this.Width % this.m_cImages[this.m_sAnimation].ImageWidth, floor(this.CurrentFrame * this.Width / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height);
     }
     
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
@@ -133,4 +136,5 @@ SpriteAsset.prototype.PauseAnimation = function(bPaused){
     this.m_bAnimationRunning = !bPaused;
 };
 
-//# sourceURL=assets/spriteasset.js
+EN.SpriteAsset = SpriteAsset;
+//# sourceURL=engine/assets/spriteasset.js

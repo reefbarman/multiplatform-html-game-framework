@@ -16,7 +16,17 @@
 
                 if (cRequest.status === 200)
                 {
-                    eval.call(window, cRequest.responseText);
+                    (function(){
+                        var exports = {};
+                        
+                        eval(cRequest.responseText);
+                        
+                        for (var sExport in exports)
+                        {
+                            window[sExport] = exports[sExport];
+                        }
+                    })();
+                    
                     cIncludedFiles[sFile] = true;
                 }
                 else
@@ -42,10 +52,11 @@ if (typeof window["EN"] == "undefined")
     };
 }
 
+include("lib/hammer/hammer-1.0.6dev.min.js", true);
+
 include("base/base.js", true);
 include("base/logging.js", true);
-include("lib/hammer/hammer-1.0.6dev.min.js", true);
-include("game.js", true);
+include("base/game.js", true);
 
 window.EN.Init = function(fOnInit){
     var fInit = function(){

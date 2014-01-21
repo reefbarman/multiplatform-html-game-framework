@@ -4,6 +4,10 @@ include("entities/entitymanager.js", true);
 include("control/controller.js", true);
 include("states/statemanager.js", true);
 
+var DM = EN.DrawManager;
+var SM = EN.StateManager;
+var EM = EN.EntityManager;
+
 function Game()
 {
     function EnvironmentDetection()
@@ -45,23 +49,23 @@ function Game()
 
     document.body.appendChild(eCanvas);
     
-    this.m_cRenderer = new Renderer(eCanvas);
-    DrawManager.Init(this.m_cRenderer);
-    Camera.Init();
+    this.m_cRenderer = new EN.Renderer(eCanvas);
+    DM.Init(this.m_cRenderer);
+    EN.Camera.Init();
     
-    Controller.Init(eCanvas);
+    EN.Controller.Init(eCanvas);
 }
 
 Game.prototype.Update = function(nDt){
-    StateManager.Update(nDt);
-    EntityManager.Update(nDt);
+    SM.Update(nDt);
+    EM.Update(nDt);
 };
 
 Game.prototype.Draw = function(){
     this.m_cRenderer.Clear();
     
-    DrawManager.Draw();
-    StateManager.Draw(this.m_cRenderer);
+    DM.Draw();
+    SM.Draw(this.m_cRenderer);
 };
     
 Game.prototype.Run = function(){
@@ -112,4 +116,5 @@ Game.prototype.Run = function(){
     fUpdate();
 };
 
-//# sourceURL=game.js
+EN.Game = Game;
+//# sourceURL=engine/base/game.js

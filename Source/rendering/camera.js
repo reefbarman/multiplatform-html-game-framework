@@ -1,29 +1,31 @@
 include("rendering/vector.js", true);
 
-var Camera = new (function(){
+var Vec = EN.Vector;
+
+EN.Camera = new (function(){
     var m_nViewportWidth = 0;
     var m_nViewportHeight = 0;
     
     var m_aStates = [{
-        Pos: new Vector(0, 0),
+        Pos: new Vec(0, 0),
         ViewportWidth: 0,
         ViewportHeight: 0
     }];
     
-    this.Pos = new Vector(0, 0);
+    this.Pos = new Vec(0, 0);
     
     this.Init = function(){
         this.Reset();
     };
     
     this.Reset = function(){
-        this.Pos = new Vector(0, 0);
+        this.Pos = new Vec(0, 0);
         m_nViewportWidth = window.EN.device.width;
         m_nViewportHeight = window.EN.device.height; 
     };
       
     this.WorldPosToScreenPos = function(cWorldPos){
-        return new Vector(cWorldPos.x - this.Pos.x, cWorldPos.y - this.Pos.y);
+        return new Vec(cWorldPos.x - this.Pos.x, cWorldPos.y - this.Pos.y);
     };
     
     this.PushState = function(cState){
@@ -57,4 +59,4 @@ var Camera = new (function(){
     });
 })();
 
-//# sourceURL=rendering/camera.js
+//# sourceURL=engine/rendering/camera.js

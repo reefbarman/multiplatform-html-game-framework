@@ -49,4 +49,5 @@ State.prototype.Update = function(nDt){};
  */
 State.prototype.Draw = function(){};
 
-//# sourceURL=states/state.js
+EN.State = State;
+//# sourceURL=engine/states/state.js

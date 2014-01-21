@@ -1,8 +1,10 @@
 include("collision/collisionutils.js", true);
 include("collision/collisiongrid.js", true);
 
-var Collision = (function(){
-    
+var CollisionGrid = EN.CollisionGrid;
+var CollisionUtils = EN.CollisionUtils;
+
+EN.Collision = (function(){
     var m_nCollisionGridSize = 100;
     var m_cCollisionResponse = {};
     
@@ -94,4 +96,4 @@ var Collision = (function(){
     };
 })();
 
-//# sourceURL=collision/collision.js
+//# sourceURL=engine/collision/collision.js

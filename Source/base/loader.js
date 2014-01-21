@@ -3,7 +3,7 @@
  *   
  * @namespace 
  * */
-var Loader = (function() {
+EN.Loader = (function() {
     /** @lends Loader */
     return {
         /**
@@ -76,4 +76,4 @@ var Loader = (function() {
 
 /** @callback Loader~OnLoadCallback */
 
-//# sourceURL=base/loader.js
+//# sourceURL=engine/base/loader.js

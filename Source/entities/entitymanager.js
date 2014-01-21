@@ -1,6 +1,8 @@
 include("collision/collision.js", true);
 
-var EntityManager = (function(){
+var Collision = EN.Collision;
+
+EN.EntityManager = (function(){
     
     var m_aEntities = [];
     var m_nCurrentId = 0;
@@ -28,4 +30,4 @@ var EntityManager = (function(){
     };
 })();
 
-//# sourceURL=entities/entitymanager.js
+//# sourceURL=engine/entities/entitymanager.js

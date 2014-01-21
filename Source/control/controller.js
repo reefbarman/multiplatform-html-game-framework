@@ -1,4 +1,4 @@
-var Controller = (function(){
+EN.Controller = (function(){
     var m_eCanvas = null;
     
     var m_cBoundEvents = {
@@ -119,4 +119,4 @@ var Controller = (function(){
     };
 })();
 
-//# sourceURL=control/controller.js
+//# sourceURL=engine/control/controller.js

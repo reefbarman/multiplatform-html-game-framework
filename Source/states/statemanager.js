@@ -1,3 +1,8 @@
+include("rendering/vector.js", true);
+include("rendering/camera.js", true);
+
+var Cam = EN.Camera;
+
 var StateManager = (function(){
     var m_cRegisteredStats = {};
     var m_sNextState = null;
@@ -9,7 +14,7 @@ var StateManager = (function(){
     function Init()
     {
         var cCameraState = {
-            Pos: new Vector(0, 0),
+            Pos: new EN.Vector(0, 0),
             ViewportWidth: EN.device.width,
             ViewportHeight: EN.device.height
         };
@@ -42,9 +47,9 @@ var StateManager = (function(){
                     }
                 },
                 Draw: function(cRenderer){
-                    Camera.PushState(cCameraState);
-                    cRenderer.DrawRectangle({x: 0, y: 0}, window.EN.device.width, window.EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
-                    Camera.PopState();
+                    Cam.PushState(cCameraState);
+                    cRenderer.DrawRectangle({x: 0, y: 0}, EN.device.width, EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
+                    Cam.PopState();
                 }
             };
         };
@@ -197,4 +202,5 @@ StateManager.TRANSITIONS = {
  */
 StateManager.STATES = {};
 
-//# sourceURL=states/statemanager.js
+EN.StateManager = StateManager;
+//# sourceURL=engine/states/statemanager.js

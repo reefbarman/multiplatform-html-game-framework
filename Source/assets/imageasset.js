@@ -15,7 +15,7 @@ include("assets/asset.js", true);
  */
 function ImageAsset(sFileName, cOptions)
 {
-    Asset.call(this, sFileName);
+    EN.Asset.call(this, sFileName);
     
     var cDefaults = {
         visibleWidth: null,
@@ -28,7 +28,7 @@ function ImageAsset(sFileName, cOptions)
     this.m_cBaseImage = null;
     this.m_cBasePattern = null;
     
-    this.Offset = new Vector(0, 0);
+    this.Offset = new EN.Vector(0, 0);
     
     this.m_nScale = 1;
     this.m_nHeight = 0;
@@ -37,7 +37,7 @@ function ImageAsset(sFileName, cOptions)
     this.ImageWidth = 0;
 }
 
-inherits(ImageAsset, Asset);
+inherits(ImageAsset, EN.Asset);
 
 Object.defineProperty(ImageAsset.prototype, "Width", {
     enumerable: true,
@@ -92,7 +92,7 @@ ImageAsset.prototype.Load = function(fOnLoad){
         fOnLoad(new Error("Failed to load image: " + this.m_sFileName));
     };
     
-    this.m_cBaseImage.src = window.EN.settings.resourcePath + "images/" + this.m_sFileName;
+    this.m_cBaseImage.src = EN.settings.resourcePath + "images/" + this.m_sFileName;
 };
 
 ImageAsset.prototype.Draw = function(cRenderer){
@@ -112,4 +112,5 @@ ImageAsset.prototype.Draw = function(cRenderer){
     }
 };
 
-//# sourceURL=assets/imageasset.js
+EN.ImageAsset = ImageAsset;
+//# sourceURL=engine/assets/imageasset.js
