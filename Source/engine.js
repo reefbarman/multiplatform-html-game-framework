@@ -1,3 +1,14 @@
+if (typeof EN == "undefined")
+{
+    EN = { settings: {} };
+}
+
+//Check include paths have been set
+if (typeof EN.settings.enginePath == "undefined" || typeof EN.settings.gamePath == "undefined" || typeof EN.settings.resourcePath == "undefined")
+{
+    throw new Error("Please ensure you have defined all the required includes paths in your main.html before including engine.js");
+}
+
 (function(){
     
     var cIncludedFiles = {};
@@ -42,15 +53,6 @@
         }
     };
 })();
-
-if (typeof EN == "undefined")
-{
-    EN = {
-        settings: {
-            includePath: "/"
-        }
-    };
-}
 
 include("lib/hammer/hammer-1.0.6dev.min.js", true);
 

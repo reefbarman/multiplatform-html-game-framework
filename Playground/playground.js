@@ -1,10 +1,16 @@
-var Express = require("express");
+var express = require("express");
 var extend = require("xtend");
 var fs = require("fs");
 var path = require("path");
 var zip = require("express-zip");
 
-var cConfig = require(process.cwd() + "/config.json");
+var cConfig = {};
+
+try
+{
+    cConfig = require(path.join(process.cwd(), "config.json"));
+}
+catch(e){}
 
 var cPlaygroundConfig = extend({
     title: "",
@@ -13,12 +19,13 @@ var cPlaygroundConfig = extend({
     }
 }, cConfig);
 
-var cApp = Express();
+var cApp = express();
 
 cApp.engine(".ejsh", require("ejs").__express);
 cApp.set('views', __dirname + '/views');
 
-cApp.use(Express.static(__dirname + '/static'));
+cApp.use(express.static(__dirname + '/static'));
+cApp.use(express.favicon());
 
 cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     
@@ -84,19 +91,23 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     });
 });
 
-cApp.use("/Game", Express.static(process.cwd(), { index: "main.html" }));
+cApp.use("/Game", express.static(process.cwd(), { index: "main.html" }));
 
-cApp.use("/", function(cReq, cRes){
-    cRes.render("index.ejsh", {
-        title: cPlaygroundConfig.title + " Playground"
-    });
+cApp.use("/", function(cReq, cRes, fNext){
+    if (cReq.url === "/")
+    {
+        cRes.render("index.ejsh", {
+            title: cPlaygroundConfig.title + " Playground"
+        });
+    }
+    else
+    {
+        fNext();
+    }
 });
 
-cApp.use(Express.favicon());
-
 var sPort = cPlaygroundConfig.playground.port;
-var sBindAddr = "0.0.0.0";
 
-cApp.listen(sPort, sBindAddr, function(){
+cApp.listen(sPort, "0.0.0.0", function(){
     console.log("Listening on port " + sPort);
 });
