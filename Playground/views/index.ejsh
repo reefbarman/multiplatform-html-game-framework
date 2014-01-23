@@ -21,7 +21,7 @@
         </div>
         <div id="iCQ_ControlBar"></div>
     
-        <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0-beta2.js"></script>
+        <script type="text/javascript" src="/js/lib/jquery/jquery-2.1.0-beta2.js"></script>
         
         <script type="text/javascript" src="/js/lib/jquery/plugin/jquery.cookie.js"></script>
         
