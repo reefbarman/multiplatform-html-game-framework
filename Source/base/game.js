@@ -74,7 +74,7 @@ Game.prototype.Draw = function(){
 Game.prototype.Run = function(){
     var self = this;
     
-    var nLastUpdate = null;
+    var nLastUpdate = now();
     var nLastDt = 0;
     //var nAccumulated = 0;
     //var nDt = 1000 / 60;
@@ -114,7 +114,6 @@ Game.prototype.Run = function(){
         }
     };
 
-    nLastUpdate = fTime();
     fUpdate();
 };
 
