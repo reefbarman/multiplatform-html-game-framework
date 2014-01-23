@@ -3,6 +3,7 @@ include("rendering/drawmanager.js", true);
 include("entities/entitymanager.js", true);
 include("control/controller.js", true);
 include("states/statemanager.js", true);
+include("states/state.js", true);
 
 var DM = EN.DrawManager;
 var SM = EN.StateManager;

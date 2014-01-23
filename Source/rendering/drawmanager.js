@@ -30,11 +30,14 @@ EN.DrawManager = (function(){
             });
             
             m_aDrawables.forEach(function(cDrawable){
-                var cAABB = cDrawable.GetBounds();
-                
-                if (!(cAABB.x1 > cCameraXMax || cAABB.y1 > cCameraYMax || cAABB.x2 < cCameraPos.x || cAABB.y2 < cCameraPos.y))
+                if (cDrawable.Active)
                 {
-                    cDrawable.Draw(m_cRenderer);
+                    var cAABB = cDrawable.GetBounds();
+
+                    if (!(cAABB.x1 > cCameraXMax || cAABB.y1 > cCameraYMax || cAABB.x2 < cCameraPos.x || cAABB.y2 < cCameraPos.y))
+                    {
+                        cDrawable.Draw(m_cRenderer);
+                    }
                 }
             });
         }

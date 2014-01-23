@@ -5,6 +5,7 @@ function Drawable()
     EN.Collidable.call(this);
     
     this.zIndex = 0;
+    this.Active = true;
 }
 
 inherits(Drawable, EN.Collidable);
