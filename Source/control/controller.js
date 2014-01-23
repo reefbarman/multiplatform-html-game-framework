@@ -59,9 +59,23 @@ EN.Controller = (function(){
         setTimeout(function(){
             try
             {
+                var nX = 0;
+                var nY = 0;
+
+                if (isset(e.touches))
+                {
+                    nX = e.touches[0].clientX;
+                    nY = e.touches[0].clientY;
+                }
+                else
+                {
+                    nX = e.clientX;
+                    nY = e.clientY;
+                }
+
                 for (var sKey in m_cBoundEvents.drag)
                 {
-                    m_cBoundEvents.drag[sKey].onDrag(e.clientX, e.clientY);
+                    m_cBoundEvents.drag[sKey].onDrag(nX, nY);
                 }
             }
             catch (e)
