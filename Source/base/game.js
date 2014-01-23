@@ -9,6 +9,8 @@ var DM = EN.DrawManager;
 var SM = EN.StateManager;
 var EM = EN.EntityManager;
 
+var now = Date.now;
+
 function Game()
 {
     function EnvironmentDetection()
@@ -76,12 +78,11 @@ Game.prototype.Run = function(){
     var nLastDt = 0;
     //var nAccumulated = 0;
     //var nDt = 1000 / 60;
-    var fTime = Date.now;
 
     var fUpdate = function(){
         try
         {
-            var nCurrentTime = fTime();
+            var nCurrentTime = now();
             var nFrameTime = nCurrentTime - nLastUpdate;
 
             //Send smoothed dt to playground for fps
