@@ -31,3 +31,8 @@
     padding: 10px;
     color: green;
 }
+
+.cPG_ParticleControls{
+    position: absolute;
+    top: 40px;
+}

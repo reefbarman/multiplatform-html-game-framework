@@ -1,4 +1,5 @@
 include("math/math.js", true);
+include("rendering/color.js", true);
 
 var floor = Math.floor;
 var random = EN.Math.Random;
@@ -13,9 +14,10 @@ function Emitter(cConfig)
         Life: 1000,
         LifeVariance: 500,
         ParticleSpeed: 0.1,
-        ParticleRadius: 20,
+        ParticleRadius: 10,
         Angle: 90,
-        AngleVariance: 10
+        AngleVariance: 10,
+        StartColor: new EN.Color(255, 0, 0, 1)
     };
     
     cConfig = extend(cDefaults, cConfig || {});
@@ -102,6 +104,79 @@ Emitter.prototype.Update = function(nDt){
         {
             this.__Recycle(i);
         }
+    }
+};
+
+Emitter.prototype.GetValues = function(){
+    var cValues = {};
+    
+    cValues.EmissionRate = this.EmissionRate;
+    cValues.MaxParticles = this.MaxParticles;
+    cValues.Life = this.Life;
+    cValues.LifeVariance = this.LifeVariance;
+    cValues.ParticleSpeed = this.ParticleSpeed;
+    cValues.ParticleRadius = this.ParticleRadius;
+    cValues.Angle = this.Angle;
+    cValues.AngleVariance = this.AngleVariance;
+    
+    cValues.PosX = this.Pos.x;
+    cValues.PosY = this.Pos.y;
+    
+    return cValues;
+};
+
+Emitter.prototype.UpdateValue = function(sValue, value){
+    var self = this;
+    
+    var fUpdateValue = function(){
+        if (isset(self[sValue]))
+        {
+            self[sValue] = value;
+        }
+    };
+    
+    switch(sValue)
+    {
+        case "PosX":
+            this.Pos.x = value;
+            break;
+        case "PosY":
+            this.Pos.y = value;
+            break;
+        case "EmissionRate":
+            this.m_nEmitAccumulator = 0;
+            fUpdateValue();
+            break;
+        case "MaxParticles":
+            if (value > this.MaxParticles)
+            {
+                for (var i = this.MaxParticles; i < value; i++)
+                {
+                    var cParticle = new EN.Particle();
+
+                    EN.DrawManager.RegisterDrawable(cParticle);
+                    this.m_aParticles.push(cParticle);
+                }
+            }
+            else if (value < this.MaxParticles)
+            {
+                this.m_nActiveParticles = Math.min(value, this.m_nActiveParticles);
+                
+                for (var i = value; i < this.MaxParticles; i++)
+                {
+                    var cParticle = this.m_aParticles[i];
+
+                    EN.DrawManager.UnregisterDrawable(cParticle);
+                }
+                
+                this.m_aParticles = this.m_aParticles.slice(0, value);
+            }
+            
+            fUpdateValue();
+            break;
+        default:
+            fUpdateValue();
+            break;
     }
 };
 

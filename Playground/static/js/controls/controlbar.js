@@ -7,11 +7,15 @@ function ControlBar()
     
     var m_cInstruments = {
         FPS: {
-            enabled: true,
+            enabled: false,
             instance: null
         },
         Console:  {
-            enabled: true,
+            enabled: false,
+            instance: null
+        },
+        Particles:  {
+            enabled: false,
             instance: null
         }
     };
@@ -27,6 +31,13 @@ function ControlBar()
             HandleCommunication(cEvent.originalEvent.data);
         }).resize(function(){
             EventDispatcher.Trigger("WindowResize", m_$ControlBar.outerHeight());
+        });
+        
+        EventDispatcher.Bind("SendMessage", function(cArgs){
+            if (m_cDeviceWindow)
+            {
+                m_cDeviceWindow.postMessage(cArgs, "*");
+            }
         });
         
         InitControls();
@@ -47,6 +58,9 @@ function ControlBar()
                     break;
                 case "Console":
                     m_cInstruments[sKey].instance = new Console();
+                    break;
+                case "Particles":
+                    m_cInstruments[sKey].instance = new ParticleControl();
                     break;
             }
             

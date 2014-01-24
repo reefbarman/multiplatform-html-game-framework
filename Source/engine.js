@@ -79,10 +79,12 @@ EN.Init = function(fOnInit){
     
     if (isset(cParams.Playground))
     {
+        EN.playgroundEnv = true;
+        
         window.addEventListener("message", (function(){
             var cParentWindow = null;
 
-            var aValidInstruments = ["FPS", "Console"];
+            var aValidInstruments = ["FPS", "Console", "Particles"];
 
             return function(cEvent){
                 switch (cEvent.data.message)
@@ -90,6 +92,18 @@ EN.Init = function(fOnInit){
                     case "InitPGConnection":
                         cParentWindow = cEvent.source;
                         cParentWindow.postMessage({ message: "PGConnectionSuccessful" }, "*");
+                        break;
+                    case "RequestParticleEmitterUpdate":
+                        if (isset(window["playgroundGetParticleEmitters"]))
+                        {
+                            playgroundGetParticleEmitters(cEvent.data.data);
+                        }
+                        break;
+                    case "ModifyParticleEmitter":
+                        if (isset(window["playgroundModifyParticleEmitter"]))
+                        {
+                            playgroundModifyParticleEmitter(cEvent.data.data);
+                        }
                         break;
                     case "InstrumentUpdate":
                         aValidInstruments.forEach(function(sInstrument){

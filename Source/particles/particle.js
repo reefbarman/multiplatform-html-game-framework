@@ -85,7 +85,7 @@ Object.defineProperty(Particle.prototype, "Radius", {
 Particle.prototype.Draw = function(cRenderer){
     if (this.Life > 0)
     {
-        cRenderer.DrawCircle(this.Pos, 10, "rgba(255, 0, 0,  0.2)");
+        cRenderer.DrawCircle(this.Pos, this.m_nRadius, "rgba(255, 0, 0,  0.2)");
     }
 };
 

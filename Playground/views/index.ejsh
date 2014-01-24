@@ -12,12 +12,14 @@
     <body>
         <script type="text/javascript" src="/js/lib/jquery/jquery-2.1.0-beta2.js"></script>
         <script type="text/javascript" src="/js/lib/jquery/plugin/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/js/lib/dat.gui/dat.gui.min.js"></script>
         
         <script type="text/javascript" src="/js/utils/eventdispatcher.js"></script>
         
         <script type="text/javascript" src="/js/ui/deviceui.js"></script>
         <script type="text/javascript" src="/js/controls/fpsmeter.js"></script>
         <script type="text/javascript" src="/js/controls/console.js"></script>
+        <script type="text/javascript" src="/js/controls/particlecontrol.js"></script>
         <script type="text/javascript" src="/js/controls/controlbar.js"></script>
         <script type="text/javascript" src="/js/index.js"></script>
     </body>
