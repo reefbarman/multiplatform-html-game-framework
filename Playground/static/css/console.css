@@ -1,16 +1,15 @@
-#iCQ_ConsoleLog{
+.cPG_Console{
     position: absolute;
     top: 0;
     right: 0;
-    width: 300px;
-    min-width: 30px;
-    max-width: 50%;
     background: rgba(0, 0, 0, 0.8);
-    display: none;
-    font-weight: normal;
+    z-index: 1;
+    width: 300px;
+    min-width: 100px;
+    max-width: 50%;
 }
 
-.cCQ_DragBar{
+.cPG_ConsoleDragBar{
     width: 2px;
     height: 100%;
     background: #c7c7c7;
@@ -18,28 +17,28 @@
     float: left;
 }
 
-.cCQ_LogContainer{
+.cPG_ConsoleLog{
     overflow: auto;
-    height: 100%;
 }
 
-.cCQ_LogContainer aside{
-    padding: 10px;
+.cPG_ConsoleLog aside{
+    padding: 0 10px;
+    font-weight: normal;
 }
 
-.cCQ_LogLevelLog{
+.cPG_ConsoleLogLevelLog{
     color: green;
 }
 
-.cCQ_LogLevelInfo{
+.cPG_ConsoleLogLevelInfo{
     color: lightskyblue;
 }
 
-.cCQ_LogLevelWarn{
+.cPG_ConsoleLogLevelWarn{
     color: yellow;
 }
 
-.cCQ_LogLevelError{
+.cPG_ConsoleLogLevelError{
     color: red;
     font-weight: bold;
 }

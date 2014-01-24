@@ -13,9 +13,9 @@ console.log = (function(fOrigLog){
         {
             fOrigLog.apply(console, arguments);
 
-            if (isset(window.playgroundDebugLog))
+            if (isset(window.playgroundConsole))
             {
-                window.playgroundDebugLog({
+                window.playgroundConsole({
                     level: "Log",
                     args: arguments
                 });
@@ -30,9 +30,9 @@ console.info = (function(fOrigLog){
         {
             fOrigLog.apply(console, arguments);
 
-            if (isset(window.playgroundDebugLog))
+            if (isset(window.playgroundConsole))
             {
-                window.playgroundDebugLog({
+                window.playgroundConsole({
                     level: "Info",
                     args: arguments
                 });
@@ -47,9 +47,9 @@ console.warn = (function(fOrigLog){
         {
             fOrigLog.apply(console, arguments);
 
-            if (isset(window.playgroundDebugLog))
+            if (isset(window.playgroundConsole))
             {
-                window.playgroundDebugLog({
+                window.playgroundConsole({
                     level: "Warn",
                     args: arguments
                 });
@@ -64,9 +64,9 @@ console.error = (function(fOrigLog){
         {
             fOrigLog.apply(console, arguments);
 
-            if (isset(window.playgroundDebugLog))
+            if (isset(window.playgroundConsole))
             {
-                window.playgroundDebugLog({
+                window.playgroundConsole({
                     level: "Error",
                     args: arguments
                 });

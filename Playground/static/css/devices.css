@@ -1,4 +1,17 @@
-.cCQ_Device_iOS_iPhone5{
+.cPG_DeviceFrame{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.cPG_DeviceSandbox{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    border: none;
+}
+
+.cPG_Device_iOS_iPhone5{
     background: url(/img/devices/Device_iOS_iPhone5.png);
     width: 804px;
     height: 380px;

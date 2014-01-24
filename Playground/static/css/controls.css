@@ -1,0 +1,33 @@
+.cPG_MainControlBar{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.cPG_ControlBar{
+    background: #c7c7c7;
+    background: linear-gradient(to bottom, #dcdcdc 0%, #c7c7c7 100%);
+    border-bottom: 1px solid #aaaaab;
+    border-top: 1px solid #969a9f;
+    padding: 7px 0;
+    height: 18px;
+}
+
+.cPG_ControlBar > div{
+    margin-left: 10px;
+    float: left;
+}
+
+.cPG_ControlBar > div input{
+    position: relative;
+    top: 2px;
+    margin: 0;
+}
+
+.cPG_FPSMeter{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    color: green;
+}

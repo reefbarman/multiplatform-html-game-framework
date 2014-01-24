@@ -86,10 +86,10 @@ Game.prototype.Run = function(){
             var nFrameTime = nCurrentTime - nLastUpdate;
 
             //Send smoothed dt to playground for fps
-            if (window.playgroundFPSUpdate)
+            if (window.playgroundFPS)
             {
                 var nUpdateDt = nFrameTime * 0.02 + nLastDt * 0.98;
-                window.playgroundFPSUpdate(nUpdateDt);
+                window.playgroundFPS(nUpdateDt);
                 nLastDt = nUpdateDt;
             }
 

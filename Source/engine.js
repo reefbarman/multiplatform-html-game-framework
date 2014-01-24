@@ -82,14 +82,14 @@ EN.Init = function(fOnInit){
         window.addEventListener("message", (function(){
             var cParentWindow = null;
 
-            var aValidInstruments = ["FPSUpdate", "DebugLog"];
+            var aValidInstruments = ["FPS", "Console"];
 
             return function(cEvent){
                 switch (cEvent.data.message)
                 {
-                    case "HandShake":
+                    case "InitPGConnection":
                         cParentWindow = cEvent.source;
-                        cParentWindow.postMessage({ message: "HandShakeSuccessful" }, "*");
+                        cParentWindow.postMessage({ message: "PGConnectionSuccessful" }, "*");
                         break;
                     case "InstrumentUpdate":
                         aValidInstruments.forEach(function(sInstrument){
