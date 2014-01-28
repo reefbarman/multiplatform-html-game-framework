@@ -62,11 +62,11 @@ EN.Renderer = function(eCanvas){
         m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth, nHeight);
     };
     
-    this.DrawCircle = function(cPos, nRadius, sColor){
+    this.DrawCircle = function(cPos, nRadius, cColor){
         var cScreenPos = Cam.WorldPosToScreenPos(cPos);
         
         m_cCtx.beginPath();
-        m_cCtx.fillStyle = sColor;
+        m_cCtx.fillStyle = cColor.toString();
         m_cCtx.arc(cScreenPos.x + nRadius, cScreenPos.y + nRadius, nRadius, 0, Math.PI * 2);
         m_cCtx.fill();
     };

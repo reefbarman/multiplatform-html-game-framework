@@ -44,9 +44,17 @@ function ParticleControl()
                 ParticleRadius: 10,
                 StartColor: {
                     color: true,
-                    value: [255, 0, 0]
+                    value: "rgb(255, 0, 0)"
                 },
                 StartColorAlpha: {
+                    minMax: [0, 1],
+                    value: 1
+                },
+                EndColor: {
+                    color: true,
+                    value: "rgb(255, 0, 0)"
+                },
+                EndColorAlpha: {
                     minMax: [0, 1],
                     value: 1
                 }

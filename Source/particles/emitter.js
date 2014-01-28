@@ -17,7 +17,8 @@ function Emitter(cConfig)
         ParticleRadius: 10,
         Angle: 90,
         AngleVariance: 10,
-        StartColor: new EN.Color(255, 0, 0, 1)
+        StartColor: new EN.Color(255, 0, 0, 0.2),
+        EndColor: new EN.Color(255, 0, 0, 0.2)
     };
     
     cConfig = extend(cDefaults, cConfig || {});
@@ -45,6 +46,9 @@ Emitter.prototype.__Emit = function(){
         cNewParticle.Speed = this.ParticleSpeed;
         cNewParticle.Radius = this.ParticleRadius;
         cNewParticle.Angle = this.Angle + random(-1, 1) * this.AngleVariance;
+        
+        cNewParticle.StartColor = this.StartColor;
+        cNewParticle.EndColor = this.EndColor;
         
         cNewParticle.Pos.Set(this.Pos);
         
@@ -122,6 +126,12 @@ Emitter.prototype.GetValues = function(){
     cValues.PosX = this.Pos.x;
     cValues.PosY = this.Pos.y;
     
+    cValues.StartColor = this.StartColor.toString("rgb");
+    cValues.StartColorAlpha = this.StartColor.a;
+    
+    cValues.EndColor = this.EndColor.toString("rgb");
+    cValues.EndColorAlpha = this.EndColor.a;
+    
     return cValues;
 };
 
@@ -137,6 +147,18 @@ Emitter.prototype.UpdateValue = function(sValue, value){
     
     switch(sValue)
     {
+        case "StartColor":
+            this.StartColor.SetHex(value);
+            break;
+        case "StartColorAlpha":
+            this.StartColor.a = value;
+            break;
+        case "EndColor":
+            this.EndColor.SetHex(value);
+            break;
+        case "EndColorAlpha":
+            this.EndColor.a = value;
+            break;
         case "PosX":
             this.Pos.x = value;
             break;
