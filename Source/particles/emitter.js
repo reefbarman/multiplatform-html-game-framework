@@ -2,6 +2,8 @@ include("rendering/drawable.js", true);
 include("math/math.js", true);
 include("rendering/color.js", true);
 
+var Vec = EN.Vector;
+
 var floor = Math.floor;
 var random = EN.Math.Random;
 
@@ -9,7 +11,7 @@ function Emitter(cConfig)
 {
     EN.Drawable.call(this);
     
-    this.Pos = new EN.Vector(0, 0);
+    this.Pos = new Vec(0, 0);
     
     var cDefaults = {
         MaxParticles: 100,
@@ -22,7 +24,8 @@ function Emitter(cConfig)
         AngleVariance: 10,
         StartColor: new EN.Color(255, 0, 0, 0.2),
         EndColor: new EN.Color(255, 0, 0, 0.2),
-        AdditiveColor: false
+        AdditiveColor: false,
+        PosVariance: new Vec(0, 0)
     };
     
     cConfig = extend(cDefaults, cConfig || {});
@@ -57,8 +60,9 @@ Emitter.prototype.__Emit = function(){
         
         cNewParticle.StartColor = this.StartColor;
         cNewParticle.EndColor = this.EndColor;
-        
-        cNewParticle.Pos.Set(this.Pos);
+
+        cNewParticle.Pos.x = this.Pos.x + random(-1, 1) * this.PosVariance.x;
+        cNewParticle.Pos.y = this.Pos.y + random(-1, 1) * this.PosVariance.y;
         
         this.m_nActiveParticles++;
         
@@ -154,6 +158,9 @@ Emitter.prototype.GetValues = function(){
     cValues.PosX = this.Pos.x;
     cValues.PosY = this.Pos.y;
     
+    cValues.PosVarianceX = this.PosVariance.x;
+    cValues.PosVarianceY = this.PosVariance.y;
+    
     cValues.StartColor = this.StartColor.toString("rgb");
     cValues.StartColorAlpha = this.StartColor.a;
     
@@ -194,6 +201,12 @@ Emitter.prototype.UpdateValue = function(sValue, value){
             break;
         case "PosY":
             this.Pos.y = value;
+            break;
+        case "PosVarianceX":
+            this.PosVariance.x = value;
+            break;
+        case "PosVarianceY":
+            this.PosVariance.y = value;
             break;
         case "EmissionRate":
             this.m_nEmitAccumulator = 0;
