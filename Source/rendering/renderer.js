@@ -65,9 +65,10 @@ EN.Renderer = function(eCanvas){
     this.DrawCircle = function(cPos, nRadius, cColor){
         var cScreenPos = Cam.WorldPosToScreenPos(cPos);
         
-        m_cCtx.beginPath();
         m_cCtx.fillStyle = cColor.toString();
+        m_cCtx.beginPath();
         m_cCtx.arc(cScreenPos.x + nRadius, cScreenPos.y + nRadius, nRadius, 0, Math.PI * 2);
+        m_cCtx.closePath();
         m_cCtx.fill();
     };
     

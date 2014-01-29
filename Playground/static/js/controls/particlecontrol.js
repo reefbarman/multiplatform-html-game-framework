@@ -57,7 +57,8 @@ function ParticleControl()
                 EndColorAlpha: {
                     minMax: [0, 1],
                     value: 1
-                }
+                },
+                AdditiveColor: false
             }
         }
     };

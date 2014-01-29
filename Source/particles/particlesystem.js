@@ -67,6 +67,8 @@ EN.ParticleSystem = (function(){
             m_aEmitters.push(cEmitter);
             cEmitter.Init();
             
+            EN.DrawManager.RegisterDrawable(cEmitter);
+            
             SendEmitterState(m_nPlaygroundSelectedEmitter);
         },
         Update: function(nDt){

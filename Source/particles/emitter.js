@@ -1,3 +1,4 @@
+include("rendering/drawable.js", true);
 include("math/math.js", true);
 include("rendering/color.js", true);
 
@@ -6,6 +7,8 @@ var random = EN.Math.Random;
 
 function Emitter(cConfig)
 {
+    EN.Drawable.call(this);
+    
     this.Pos = new EN.Vector(0, 0);
     
     var cDefaults = {
@@ -18,7 +21,8 @@ function Emitter(cConfig)
         Angle: 90,
         AngleVariance: 10,
         StartColor: new EN.Color(255, 0, 0, 0.2),
-        EndColor: new EN.Color(255, 0, 0, 0.2)
+        EndColor: new EN.Color(255, 0, 0, 0.2),
+        AdditiveColor: false
     };
     
     cConfig = extend(cDefaults, cConfig || {});
@@ -32,7 +36,11 @@ function Emitter(cConfig)
     this.m_nActiveParticles = 0;
     
     this.m_nEmitAccumulator = 0;
+    
+    this.IgnoreBounds = true;
 }
+
+inherits(Emitter, EN.Drawable);
 
 Emitter.prototype.__Emit = function(){
     var nEmitted = 0;
@@ -76,7 +84,6 @@ Emitter.prototype.Init = function(){
     {
         var cParticle = new EN.Particle();
         
-        EN.DrawManager.RegisterDrawable(cParticle);
         this.m_aParticles.push(cParticle);
     }
 };
@@ -111,6 +118,27 @@ Emitter.prototype.Update = function(nDt){
     }
 };
 
+Emitter.prototype.Draw = function(cRenderer){
+    var cCtx = cRenderer.GetRawContext();
+    
+    if (this.AdditiveColor)
+    {
+        cCtx.globalCompositeOperation = "lighter";
+    }
+    
+    for (var i = 0; i < this.m_nActiveParticles; i++)
+    {
+        var cParticle = this.m_aParticles[i];
+        
+        if (cParticle.Life > 0)
+        {
+            cParticle.Draw(cRenderer);
+        }
+    }
+    
+    cCtx.globalCompositeOperation = "source-over";
+};
+
 Emitter.prototype.GetValues = function(){
     var cValues = {};
     
@@ -131,6 +159,8 @@ Emitter.prototype.GetValues = function(){
     
     cValues.EndColor = this.EndColor.toString("rgb");
     cValues.EndColorAlpha = this.EndColor.a;
+    
+    cValues.AdditiveColor = this.AdditiveColor;
     
     return cValues;
 };
@@ -175,22 +205,12 @@ Emitter.prototype.UpdateValue = function(sValue, value){
                 for (var i = this.MaxParticles; i < value; i++)
                 {
                     var cParticle = new EN.Particle();
-
-                    EN.DrawManager.RegisterDrawable(cParticle);
                     this.m_aParticles.push(cParticle);
                 }
             }
             else if (value < this.MaxParticles)
             {
                 this.m_nActiveParticles = Math.min(value, this.m_nActiveParticles);
-                
-                for (var i = value; i < this.MaxParticles; i++)
-                {
-                    var cParticle = this.m_aParticles[i];
-
-                    EN.DrawManager.UnregisterDrawable(cParticle);
-                }
-                
                 this.m_aParticles = this.m_aParticles.slice(0, value);
             }
             

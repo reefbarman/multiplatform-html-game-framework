@@ -1,4 +1,3 @@
-include("rendering/drawable.js", true);
 include("rendering/color.js", true);
 
 var Vec = EN.Vector;
@@ -11,17 +10,16 @@ var floor = Math.floor;
 
 function Particle()
 {
-    EN.Drawable.call(this);
-    
     this.__Init();
 }
-
-inherits(Particle, EN.Drawable);
 
 Particle.prototype.__Init = function(){
     this.Active = false;
     
+    this.Pos = new EN.Vector(0, 0);
+    
     this.Life = 0;
+    this.Radius = 10;
     
     this.m_nUsedLife = 0;
     
@@ -102,23 +100,6 @@ Object.defineProperty(Particle.prototype, "Angle", {
     }
 });
 
-Object.defineProperty(Particle.prototype, "Radius", {
-    get: function(){
-        return this.m_nRadius;
-    },
-    set: function(nRadius){
-        this.m_nRadius = nRadius;
-        
-        var nWidth = nRadius * 2;
-        
-        this.Width = nWidth;
-        this.Height = nWidth;
-
-        this.BoundingBox.Width = nWidth;
-        this.BoundingBox.Height = nWidth;
-    }
-});
-
 Particle.prototype.Draw = function(cRenderer){
     if (this.Life > 0)
     {
@@ -131,7 +112,9 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
-        cRenderer.DrawCircle(this.Pos, this.m_nRadius, cColor);
+        var cCtx = cRenderer.GetRawContext();
+        
+        cRenderer.DrawCircle(this.Pos, this.Radius, cColor);
     }
 };
 

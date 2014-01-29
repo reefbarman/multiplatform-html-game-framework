@@ -6,6 +6,7 @@ function Drawable()
     
     this.zIndex = 0;
     this.Active = true;
+    this.IgnoreBounds = false;
 }
 
 inherits(Drawable, EN.Collidable);
