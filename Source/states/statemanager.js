@@ -19,6 +19,13 @@ var StateManager = (function(){
             ViewportHeight: EN.device.height
         };
         
+        var cDrawTransform = {
+            Pos: { x: 0, y: 0 },
+            Scale: 1,
+            Rotation: 0,
+            WorldSpace: false
+        };
+        
         m_cTransitions[StateManager.TRANSITIONS.FADE] = function(fOnSwitch, fOnEnd){
             var nAlpha = 0;
             var bFade = true;
@@ -48,7 +55,7 @@ var StateManager = (function(){
                 },
                 Draw: function(cRenderer){
                     Cam.PushState(cCameraState);
-                    cRenderer.DrawRectangle({x: 0, y: 0}, EN.device.width, EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
+                    cRenderer.DrawRectangle(cDrawTransform, EN.device.width, EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
                     Cam.PopState();
                 }
             };

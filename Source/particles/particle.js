@@ -112,9 +112,13 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
-        var cCtx = cRenderer.GetRawContext();
-        
-        cRenderer.DrawCircle(this.Pos, this.Radius, cColor);
+        //TODO: Draw transform needs to be smarter and be based of the emitter for scale rotation etc
+        cRenderer.DrawCircle({
+            Pos: this.Pos,
+            Scale: 1,
+            Rotation: 0,
+            WorldSpace: true
+        }, this.Radius, cColor);
     }
 };
 

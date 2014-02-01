@@ -29,12 +29,12 @@ EN.Renderer = function(eCanvas){
         m_sClearColor = sColor;
     };
     
-    this.DrawImage = function(cImg, cPos, nWidth, nHeight, nImageTop, nImageLeft, nScale){
-        var cScreenPos = Cam.WorldPosToScreenPos(cPos);
+    this.DrawImage = function(cImg, cDrawTransform, nWidth, nHeight, nImageTop, nImageLeft){
+        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
         
         m_cCtx.save();
-        m_cCtx.scale(nScale, nScale);
-        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cScreenPos.x * (1 / nScale), cScreenPos.y * (1 / nScale), nWidth, nHeight);
+        m_cCtx.scale(cDrawTransform.Scale, cDrawTransform.Scale);
+        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cPos.x * (1 / cDrawTransform.Scale), cPos.y * (1 / cDrawTransform.Scale), nWidth, nHeight);
         m_cCtx.restore();
     };
     
@@ -42,12 +42,12 @@ EN.Renderer = function(eCanvas){
         return m_cCtx.createPattern(cImg, "repeat");
     };
     
-    this.DrawTiledImage = function(cPattern, cPos, cOffset, nWidth, nHeight){
-        var cScreenPos = Cam.WorldPosToScreenPos(cPos);
+    this.DrawTiledImage = function(cPattern, cDrawTransform, nWidth, nHeight){
+        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
         
         m_cCtx.save();
         
-        m_cCtx.translate(cScreenPos.x, cScreenPos.y);
+        m_cCtx.translate(cPos.x, cPos.y);
         
         m_cCtx.fillStyle = cPattern;
         m_cCtx.fillRect(0, 0, nWidth, nHeight);
@@ -55,31 +55,31 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawRectangle = function(cPos, nWidth, nHeight, sColor){
-        var cScreenPos = Cam.WorldPosToScreenPos(cPos);
+    this.DrawRectangle = function(cDrawTransform, nWidth, nHeight, sColor){
+        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
         
         m_cCtx.fillStyle = sColor;
-        m_cCtx.fillRect(cScreenPos.x, cScreenPos.y, nWidth, nHeight);
+        m_cCtx.fillRect(cPos.x, cPos.y, nWidth, nHeight);
     };
     
-    this.DrawCircle = function(cPos, nRadius, cColor){
-        var cScreenPos = Cam.WorldPosToScreenPos(cPos);
+    this.DrawCircle = function(cDrawTransform, nRadius, cColor){
+        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
         
         m_cCtx.fillStyle = cColor.toString();
         m_cCtx.beginPath();
-        m_cCtx.arc(cScreenPos.x + nRadius, cScreenPos.y + nRadius, nRadius, 0, Math.PI * 2);
+        m_cCtx.arc(cPos.x + nRadius, cPos.y + nRadius, nRadius, 0, Math.PI * 2);
         m_cCtx.closePath();
         m_cCtx.fill();
     };
     
-    this.DrawText = function(cPos, sText, sFont, sColor){
-        var cScreenPos = Cam.WorldPosToScreenPos(cPos);
+    this.DrawText = function(cDrawTransform, sText, sFont, sColor){
+        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
         
         m_cCtx.textBaseline = "top";
         m_cCtx.textAlign = "left";
         m_cCtx.font = sFont;
         m_cCtx.fillStyle = sColor;
-        m_cCtx.fillText(sText, cScreenPos.x, cScreenPos.y);
+        m_cCtx.fillText(sText, cPos.x, cPos.y);
     };
     
     this.MeasureText = function(sText, sFont){

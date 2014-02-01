@@ -107,11 +107,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cBasePattern, this.Pos, this.Offset, this.Width, this.Height);
+        cRenderer.DrawTiledImage(this.m_cBasePattern, this.GetDrawTransform(), this.Width, this.Height);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cBaseImage, this.GetAlignedCoords(), this.m_cOptions.visibleWidth || this.ImageWidth, this.m_cOptions.visibleHeight || this.ImageHeight, this.Offset.x, this.Offset.y, this.Scale);
+        cRenderer.DrawImage(this.m_cBaseImage, this.GetDrawTransform(), this.m_cOptions.visibleWidth || this.ImageWidth, this.m_cOptions.visibleHeight || this.ImageHeight, this.Offset.x, this.Offset.y);
     }
 };
 
