@@ -23,6 +23,19 @@ EN.Camera = new (function(){
         m_nViewportWidth = window.EN.device.width;
         m_nViewportHeight = window.EN.device.height; 
     };
+    
+    this.CheckBounds = function(cDrawable){
+        var cCameraPos = new Vec(0, 0);
+        var cDrawablePos = cDrawable.Pos;
+        
+        if (cDrawable.WorldSpace)
+        {
+            cCameraPos = this.Pos;
+            cDrawablePos = this.WorldPosToScreenPos(cDrawablePos);
+        }
+        
+        return !(cDrawablePos.x > cCameraPos.x + this.m_nViewportWidth || cDrawablePos.ycDrawablePos > cDrawablePos + this.m_nViewportHeight || cDrawablePos.x + cDrawable.width < cCameraPos.x || cDrawablePos.y + cDrawable.Height < cCameraPos.y) || cDrawable.IgnoreBounds;
+    };
       
     this.WorldPosToScreenPos = function(cWorldPos){
         return new Vec(cWorldPos.x - this.Pos.x, cWorldPos.y - this.Pos.y);

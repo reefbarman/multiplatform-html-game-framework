@@ -2,6 +2,8 @@ include("collision/collidable.js", true);
 
 function Drawable()
 {
+    //TODO - No longer really needs to be a collidable
+    //Maybe make a game object class then make collision a mix-in
     EN.Collidable.call(this);
     
     this.zIndex = 0;

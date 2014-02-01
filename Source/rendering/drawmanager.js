@@ -1,5 +1,7 @@
 include("rendering/camera.js", true);
 
+var Camera = EN.Camera;
+
 EN.DrawManager = (function(){
     
     var m_aDrawables = [];
@@ -20,24 +22,14 @@ EN.DrawManager = (function(){
             m_cRenderer.SetClearColor(sColor);
         },
         Draw: function(){
-            var cCameraPos = EN.Camera.Pos;
-            var cViewport = EN.Camera.Viewport;
-            var cCameraXMax = cCameraPos.x + cViewport.width;
-            var cCameraYMax = cCameraPos.y + cViewport.height;
-            
             m_aDrawables.sort(function(a, b){
                 return a.zIndex - b.zIndex;
             });
             
             m_aDrawables.forEach(function(cDrawable){
-                if (cDrawable.Active)
+                if (cDrawable.Active && (Camera.CheckBounds(cDrawable) || cDrawable.IgnoreBounds))
                 {
-                    var cAABB = cDrawable.GetBounds();
-
-                    if (!(cAABB.x1 > cCameraXMax || cAABB.y1 > cCameraYMax || cAABB.x2 < cCameraPos.x || cAABB.y2 < cCameraPos.y) || cDrawable.IgnoreBounds)
-                    {
-                        cDrawable.Draw(m_cRenderer);
-                    }
+                    cDrawable.Draw(m_cRenderer);
                 }
             });
         }
