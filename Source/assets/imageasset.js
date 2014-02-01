@@ -1,4 +1,5 @@
 include("assets/asset.js", true);
+include("assets/assetmanager.js", true);
 
 /**
  * @class
@@ -74,25 +75,27 @@ Object.defineProperty(ImageAsset.prototype, "Scale", {
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
-    this.m_cBaseImage = new Image();
-    this.m_cBaseImage.onload = function(){
-        fOnLoad.apply(self);
+    EN.AssetManager.LoadImage(EN.settings.resourcePath + "images/" + this.m_sFileName, function(cErr, cImage){
+        if (cErr)
+        {
+            fOnLoad(cErr);
+        }
+        else
+        {
+            self.m_cBaseImage = cImage;
+            
+            fOnLoad.apply(self);
         
-        self.ImageWidth = this.width;
-        self.ImageHeight = this.height;
-        
-        self.Width = self.m_cOptions.visibleWidth || this.width;
-        self.Height = self.m_cOptions.visibleHeight || this.height;
-        
-        self.BoundingBox.Width = self.Width;
-        self.BoundingBox.Height = self.Height;
-    };
+            self.ImageWidth = cImage.width;
+            self.ImageHeight = cImage.height;
 
-    this.m_cBaseImage.onerror = function(){
-        fOnLoad(new Error("Failed to load image: " + this.m_sFileName));
-    };
-    
-    this.m_cBaseImage.src = EN.settings.resourcePath + "images/" + this.m_sFileName;
+            self.Width = self.m_cOptions.visibleWidth || cImage.width;
+            self.Height = self.m_cOptions.visibleHeight || cImage.height;
+
+            self.BoundingBox.Width = self.Width;
+            self.BoundingBox.Height = self.Height;
+        }
+    });
 };
 
 ImageAsset.prototype.Draw = function(cRenderer){
