@@ -10,7 +10,7 @@ function Entity()
     this.zIndex = 0;
     
     this.m_bInited = false;
-    this.BoundBox = new EN.BoundingBox();
+    this.BoundingBox = new EN.BoundingBox();
 }
 
 inherits(Entity, EN.GameObject);
