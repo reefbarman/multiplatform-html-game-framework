@@ -1,10 +1,10 @@
-include("collision/collidable.js", true);
+include("base/gameobject.js", true);
 
 function Drawable()
 {
     //TODO - No longer really needs to be a collidable
     //Maybe make a game object class then make collision a mix-in
-    EN.Collidable.call(this);
+    EN.GameObject.call(this);
     
     this.zIndex = 0;
     this.Active = true;
@@ -13,7 +13,7 @@ function Drawable()
     this.Rotation = 0;
 }
 
-inherits(Drawable, EN.Collidable);
+inherits(Drawable, EN.GameObject);
 
 Drawable.prototype.GetDrawTransform = function(){
     return {

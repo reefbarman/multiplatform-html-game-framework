@@ -1,23 +1,16 @@
 include("rendering/vector.js", true);
-include("collision/boundingbox.js", true);
 
-var Vec = EN.Vector;
+var Vec = new EN.Vector;
 
-function Collidable()
+function GameObject()
 {
     this.CoordAlignment = "TopLeft";
-    this.Pos = new Vec(0, 0);
+    this.Pos = new EN.Vector(0, 0);
     this.Width = 0;
     this.Height = 0;
-    this.Rotation = 0;
-    this.BoundingBox = new EN.BoundingBox();
-};
+}
 
-Collidable.prototype.GetBounds = function(){
-    return this.BoundingBox.GetBounds(this.Pos, this.CoordAlignment);
-};
-
-Collidable.prototype.GetAlignedCoords = function(){
+GameObject.prototype.GetAlignedCoords = function(){
     var cCoords = null;
     
     switch (this.CoordAlignment)
@@ -39,6 +32,5 @@ Collidable.prototype.GetAlignedCoords = function(){
     return cCoords;
 };
 
-EN.Collidable = Collidable;
-
-//# sourceURL=engine/collision/collidable.js
+EN.GameObject = GameObject;
+//# sourceURL=engine/base/gameobject.js

@@ -213,6 +213,13 @@ exports = {
 
         child.prototype = new Inherited();
         child.prototype.constructor = child;
+    },
+            
+    mixin: function(cObj, cMixin){
+        for (var sKey in cMixin)
+        {
+            cObj.prototype[sKey] = cMixin[sKey];
+        }
     }
 };
 

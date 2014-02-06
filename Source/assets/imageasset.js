@@ -91,9 +91,6 @@ ImageAsset.prototype.Load = function(fOnLoad){
 
             self.Width = self.m_cOptions.visibleWidth || cImage.width;
             self.Height = self.m_cOptions.visibleHeight || cImage.height;
-
-            self.BoundingBox.Width = self.Width;
-            self.BoundingBox.Height = self.Height;
         }
     });
 };
