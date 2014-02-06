@@ -83,14 +83,14 @@ ImageAsset.prototype.Load = function(fOnLoad){
         else
         {
             self.m_cBaseImage = cImage;
-            
-            fOnLoad.apply(self);
         
             self.ImageWidth = cImage.width;
             self.ImageHeight = cImage.height;
 
             self.Width = self.m_cOptions.visibleWidth || cImage.width;
             self.Height = self.m_cOptions.visibleHeight || cImage.height;
+            
+            fOnLoad.apply(self);
         }
     });
 };
