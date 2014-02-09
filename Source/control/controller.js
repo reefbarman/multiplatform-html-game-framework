@@ -22,10 +22,10 @@ EN.Controller = (function(){
             var nX = 0;
             var nY = 0;
             
-            if (isset(e.touches))
+            if (isset(e.changedTouches))
             {
-                nX = e.touches[0].clientX;
-                nY = e.touches[0].clientY;
+                nX = e.changedTouches[0].clientX;
+                nY = e.changedTouches[0].clientY;
             }
             else
             {
@@ -62,10 +62,10 @@ EN.Controller = (function(){
                 var nX = 0;
                 var nY = 0;
 
-                if (isset(e.touches))
+                if (isset(e.changedTouches))
                 {
-                    nX = e.touches[0].clientX;
-                    nY = e.touches[0].clientY;
+                    nX = e.changedTouches[0].clientX;
+                    nY = e.changedTouches[0].clientY;
                 }
                 else
                 {
@@ -92,9 +92,24 @@ EN.Controller = (function(){
         
         try
         {
+            var nX = 0;
+            var nY = 0;
+
+
+            if (isset(e.changedTouches))
+            {
+                nX = e.changedTouches[0].clientX;
+                nY = e.changedTouches[0].clientY;
+            }
+            else
+            {
+                nX = e.clientX;
+                nY = e.clientY;
+            }
+
             for (var sKey in m_cBoundEvents.drag)
             {
-                m_cBoundEvents.drag[sKey].onDragEnd(e.clientX, e.clientY);
+                m_cBoundEvents.drag[sKey].onDragEnd(nX, nY);
             }
             
             for (var sKey in m_cBoundEvents.hold)
