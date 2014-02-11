@@ -73,16 +73,16 @@ EN.Collision = (function(){
                         {
                             if (CollisionUtils.TestEntityIntersect(cEntity1, cEntity2))
                             {
-                                var sEntity1Name = cEntity1.constructor.name;
-                                var sEntity2Name = cEntity2.constructor.name;
+                                var sCollision1Name = cEntity1.CollisionName || cEntity1.constructor.name;
+                                var sCollision2Name = cEntity2.CollisionName || cEntity2.constructor.name;
                                 
-                                if (m_cCollisionResponse[sEntity1Name] && m_cCollisionResponse[sEntity1Name][sEntity2Name])
+                                if (m_cCollisionResponse[sCollision1Name] && m_cCollisionResponse[sCollision1Name][sCollision2Name])
                                 {
                                     var cCollision = {};
-                                    cCollision[sEntity1Name] = cEntity1;
-                                    cCollision[sEntity2Name] = cEntity2;
+                                    cCollision[sCollision1Name] = cEntity1;
+                                    cCollision[sCollision2Name] = cEntity2;
                                     
-                                    m_cCollisionResponse[sEntity1Name][sEntity2Name](cCollision);
+                                    m_cCollisionResponse[sCollision1Name][sCollision2Name](cCollision);
                                 }
                             }
                             
