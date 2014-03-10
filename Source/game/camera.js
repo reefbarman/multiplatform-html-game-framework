@@ -1,4 +1,4 @@
-include("rendering/vector.js", true);
+include("math/vector.js", true);
 
 var Vec = EN.Vector;
 

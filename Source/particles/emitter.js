@@ -1,4 +1,4 @@
-include("rendering/drawable.js", true);
+include("game/gameobject.js", true);
 include("math/math.js", true);
 include("rendering/color.js", true);
 
@@ -9,7 +9,7 @@ var random = EN.Math.Random;
 
 function Emitter(cConfig)
 {
-    EN.Drawable.call(this);
+    EN.GameObject.call(this);
     
     this.Pos = new Vec(0, 0);
     
@@ -39,11 +39,9 @@ function Emitter(cConfig)
     this.m_nActiveParticles = 0;
     
     this.m_nEmitAccumulator = 0;
-    
-    this.IgnoreBounds = true;
 }
 
-inherits(Emitter, EN.Drawable);
+inherits(Emitter, EN.GameObject);
 
 Emitter.prototype.__Emit = function(){
     var nEmitted = 0;
@@ -51,6 +49,8 @@ Emitter.prototype.__Emit = function(){
     if (this.m_nActiveParticles < this.MaxParticles)
     {
         var cNewParticle = this.m_aParticles[this.m_nActiveParticles];
+        
+        var cPos = (new Vec()).MatrixMultiply(this.m_cTransformMatrix);
         
         cNewParticle.Active = true;
         cNewParticle.Life = this.Life + random(-1, 1) * this.LifeVariance;
@@ -61,8 +61,8 @@ Emitter.prototype.__Emit = function(){
         cNewParticle.StartColor = this.StartColor;
         cNewParticle.EndColor = this.EndColor;
 
-        cNewParticle.Pos.x = this.Pos.x + random(-1, 1) * this.PosVariance.x;
-        cNewParticle.Pos.y = this.Pos.y + random(-1, 1) * this.PosVariance.y;
+        cNewParticle.Pos.x = cPos.x + random(-1, 1) * this.PosVariance.x;
+        cNewParticle.Pos.y = cPos.y + random(-1, 1) * this.PosVariance.y;
         
         this.m_nActiveParticles++;
         
@@ -90,9 +90,13 @@ Emitter.prototype.Init = function(){
         
         this.m_aParticles.push(cParticle);
     }
+    
+    EN.ParticleSystem.RegisterEmitter(this);
 };
 
 Emitter.prototype.Update = function(nDt){
+    EN.GameObject.prototype.Update.call(this, nDt);
+    
     var nEmitRate = this.EmissionRate / 1000;
     
     var nParticles = 0;

@@ -76,8 +76,6 @@ Game.prototype.Run = function(){
     
     var nLastUpdate = now();
     var nLastDt = 0;
-    //var nAccumulated = 0;
-    //var nDt = 1000 / 60;
 
     var fUpdate = function(){
         try
@@ -94,14 +92,6 @@ Game.prototype.Run = function(){
             }
 
             nLastUpdate = nCurrentTime;
-            
-            //nAccumulated += nFrameTime;
-            
-            /*while (nAccumulated >= nDt)
-            {
-                self.Update(nDt);
-                nAccumulated -= nDt;
-            }*/
             
             self.Update(nFrameTime);
             self.Draw();

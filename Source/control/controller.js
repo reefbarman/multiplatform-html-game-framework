@@ -1,15 +1,15 @@
+var Vec = EN.Vector;
+
 EN.Controller = (function(){
     var m_eCanvas = null;
     
     var m_cBoundEvents = {
-        "tap": {},
-        "drag": {},
-        "hold": {}
+        "down": {},
+        "move": {},
+        "up": {}
     };
     
     var m_nEventId = 0;
-    
-    var m_nEventStart = 0;
     
     function InputStart(e)
     {
@@ -17,8 +17,6 @@ EN.Controller = (function(){
         
         try
         {
-            var nNow = Date.now();
-            
             var nX = 0;
             var nY = 0;
             
@@ -33,23 +31,18 @@ EN.Controller = (function(){
                 nY = e.clientY;
             }
             
-            for (var sKey in m_cBoundEvents.tap)
+            for (var sKey in m_cBoundEvents.down)
             {
-                m_cBoundEvents.tap[sKey].onTap(nX, nY);
+                m_cBoundEvents.down[sKey](new Vec(nX, nY));
             }
-
-            for (var sKey in m_cBoundEvents.drag)
-            {
-                m_cBoundEvents.drag[sKey].onDragStart(nX, nY);
-            }
-            
-            m_nEventStart = nNow;
         }
         catch (e)
         {
             console.error(e.stack);
             throw e;
         }
+        
+        return false;
     }
     
     function InputMove(e)
@@ -73,9 +66,9 @@ EN.Controller = (function(){
                     nY = e.clientY;
                 }
 
-                for (var sKey in m_cBoundEvents.drag)
+                for (var sKey in m_cBoundEvents.move)
                 {
-                    m_cBoundEvents.drag[sKey].onDrag(nX, nY);
+                    m_cBoundEvents.move[sKey](new Vec(nX, nY));
                 }
             }
             catch (e)
@@ -84,6 +77,8 @@ EN.Controller = (function(){
                 throw e;
             }
         }, 0);
+        
+        return false;
     }
     
     function InputEnd(e)
@@ -107,14 +102,9 @@ EN.Controller = (function(){
                 nY = e.clientY;
             }
 
-            for (var sKey in m_cBoundEvents.drag)
+            for (var sKey in m_cBoundEvents.up)
             {
-                m_cBoundEvents.drag[sKey].onDragEnd(nX, nY);
-            }
-            
-            for (var sKey in m_cBoundEvents.hold)
-            {
-                m_cBoundEvents.hold[sKey].onHold(Date.now() - m_nEventStart);
+                m_cBoundEvents.up[sKey](new Vec(nX, nY));
             }
         }
         catch (e)
@@ -122,6 +112,8 @@ EN.Controller = (function(){
             console.error(e.stack);
             throw e;
         }
+        
+        return false;
     }
     
     return {
@@ -135,10 +127,10 @@ EN.Controller = (function(){
             eCanvas.addEventListener("mousemove", InputMove);
             eCanvas.addEventListener("mouseup", InputEnd);
         },
-        Bind: function(sEventType, cOptions){
+        Bind: function(sEventType, fOnInput){
             var nId = m_nEventId++;
     
-            m_cBoundEvents[sEventType][nId] = cOptions;
+            m_cBoundEvents[sEventType][nId] = fOnInput;
             
             return nId;
         },

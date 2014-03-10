@@ -1,5 +1,5 @@
-include("rendering/vector.js", true);
-include("rendering/camera.js", true);
+include("math/vector.js", true);
+include("game/camera.js", true);
 
 var Cam = EN.Camera;
 
@@ -182,6 +182,13 @@ var StateManager = (function(){
             }
         },
         Draw: function(cRenderer){
+            var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
+    
+            if (m_cRegisteredStats[sCurrentState])
+            {
+                m_cRegisteredStats[sCurrentState].Draw(cRenderer);
+            }
+    
             if (m_cTransitionUpdate)
             {
                 m_cTransitionUpdate.Draw(cRenderer);

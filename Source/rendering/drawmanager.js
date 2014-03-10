@@ -1,4 +1,4 @@
-include("rendering/camera.js", true);
+include("game/camera.js", true);
 
 var Camera = EN.Camera;
 

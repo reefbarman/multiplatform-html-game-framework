@@ -1,4 +1,4 @@
-include("rendering/drawable.js", true);
+include("game/gameobject.js", true);
 
 /**
  * 
@@ -11,12 +11,12 @@ include("rendering/drawable.js", true);
 function Asset(sFileName)
 {
     //super constructor
-    EN.Drawable.call(this);
+    EN.GameObject.call(this);
     
     this.m_sFileName = sFileName;
 }
 
-inherits(Asset, EN.Drawable);
+inherits(Asset, EN.GameObject);
 
 Object.defineProperty(Asset.prototype, "FileName", {
     get: function(){
@@ -33,13 +33,6 @@ Object.defineProperty(Asset.prototype, "FileName", {
 Asset.prototype.Load = function(fOnLoad){
     fOnLoad();
 };
-
-/**
- * Update the asset
- * 
- * @param {number} nDt - The delta between this frame and last
- */
-Asset.prototype.Update = function(nDt){};
 
 /** 
  * @callback Asset~OnLoadCallback 

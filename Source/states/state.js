@@ -47,7 +47,7 @@ State.prototype.Update = function(nDt){};
 /**
  * Called once per frame to draw the state if it is the active state.
  */
-State.prototype.Draw = function(){};
+State.prototype.Draw = function(cRenderer){};
 
 EN.State = State;
 //# sourceURL=engine/states/state.js

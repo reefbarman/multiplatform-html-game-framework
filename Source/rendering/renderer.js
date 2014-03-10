@@ -1,4 +1,4 @@
-include("rendering/camera.js", true);
+include("game/camera.js", true);
 
 var Cam = EN.Camera;
 
@@ -8,12 +8,20 @@ EN.Renderer = function(eCanvas){
     
     var m_sClearColor = "rgb(0,0,0)";
     
+    var m_cTransforMatrix = null;
+    var m_cScaleInverseMatrix = null;
+    
     function Init()
     {
         m_cCtx = m_eCanvas.getContext("2d");
         
         m_eCanvas.width = window.innerWidth;
         m_eCanvas.height = window.innerHeight;
+        
+        m_cTransforMatrix = new EN.Matrix();
+        
+        m_cScaleInverseMatrix = new EN.Matrix();
+        m_cScaleInverseMatrix.SetScale(new EN.Vector(1, -1));
     }
     
     this.GetRawContext = function(){
@@ -29,12 +37,13 @@ EN.Renderer = function(eCanvas){
         m_sClearColor = sColor;
     };
     
-    this.DrawImage = function(cImg, cDrawTransform, nWidth, nHeight, nImageTop, nImageLeft){
-        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
-        
+    this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, nImageTop, nImageLeft){
         m_cCtx.save();
-        m_cCtx.scale(cDrawTransform.Scale, cDrawTransform.Scale);
-        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, cPos.x * (1 / cDrawTransform.Scale), cPos.y * (1 / cDrawTransform.Scale), nWidth, nHeight);
+        
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix);
+        
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.drawImage(cImg, nImageTop, nImageLeft, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
         m_cCtx.restore();
     };
     

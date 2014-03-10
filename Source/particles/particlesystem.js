@@ -2,9 +2,7 @@ include("particles/particle.js", true);
 include("particles/emitter.js", true);
 
 EN.ParticleSystem = (function(){
-    
-    var m_bInited = false;
-    
+
     var m_aEmitters = [];
     
     var m_nPlaygroundSelectedEmitter = 0;
@@ -51,30 +49,16 @@ EN.ParticleSystem = (function(){
     
     return {
         Init: function(){
-            if (!m_bInited)
+            //If we are within the playground environment allow it to request emitter details
+            if (EN.playgroundEnv)
             {
-                //If we are within the playground environment allow it to request emitter details
-                if (EN.playgroundEnv)
-                {
-                    window["playgroundGetParticleEmitters"] = SendEmitterState;
-                    window["playgroundModifyParticleEmitter"] = ModifyParticleEmitter;
-                }
-                
-                m_bInited = true;
+                window["playgroundGetParticleEmitters"] = SendEmitterState;
+                window["playgroundModifyParticleEmitter"] = ModifyParticleEmitter;
             }
         },
         RegisterEmitter: function(cEmitter){
             m_aEmitters.push(cEmitter);
-            cEmitter.Init();
-            
-            EN.DrawManager.RegisterDrawable(cEmitter);
-            
             SendEmitterState(m_nPlaygroundSelectedEmitter);
-        },
-        Update: function(nDt){
-            m_aEmitters.forEach(function(cEmitter){
-                cEmitter.Update(nDt);
-            });
         }
     };
 })();

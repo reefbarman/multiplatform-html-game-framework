@@ -31,46 +31,11 @@ function ImageAsset(sFileName, cOptions)
     
     this.Offset = new EN.Vector(0, 0);
     
-    this.m_nScale = 1;
-    this.m_nHeight = 0;
-    this.m_nWidth = 0;
     this.ImageHeight = 0;
     this.ImageWidth = 0;
 }
 
 inherits(ImageAsset, EN.Asset);
-
-Object.defineProperty(ImageAsset.prototype, "Width", {
-    enumerable: true,
-    get: function(){
-        return this.m_nWidth;
-    },
-    set: function(nWidth){
-        this.m_nWidth = nWidth * this.Scale;
-    }
-});
-
-Object.defineProperty(ImageAsset.prototype, "Height", {
-    enumerable: true,
-    get: function(){
-        return this.m_nHeight;
-    },
-    set: function(nHeight){
-        this.m_nHeight = nHeight * this.Scale;
-    }
-});
-
-Object.defineProperty(ImageAsset.prototype, "Scale", {
-    enumerable: true,
-    get: function(){
-        return this.m_nScale;
-    },
-    set: function(nScale){
-        this.m_nHeight = this.m_nHeight * (1 / this.m_nScale * nScale);
-        this.m_nWidth = this.m_nWidth * (1 / this.m_nScale * nScale);
-        this.m_nScale = nScale;
-    }
-});
 
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
@@ -83,19 +48,21 @@ ImageAsset.prototype.Load = function(fOnLoad){
         else
         {
             self.m_cBaseImage = cImage;
-        
+            
             self.ImageWidth = cImage.width;
             self.ImageHeight = cImage.height;
-
-            self.Width = self.m_cOptions.visibleWidth || cImage.width;
-            self.Height = self.m_cOptions.visibleHeight || cImage.height;
+        
+            self.Width = self.m_cOptions.visibleWidth || self.ImageWidth;
+            self.Height = self.m_cOptions.visibleHeight || self.ImageHeight;
             
             fOnLoad.apply(self);
         }
     });
 };
 
-ImageAsset.prototype.Draw = function(cRenderer){
+ImageAsset.prototype.Draw = function(cRenderer, cParentMatrix){
+    EN.Asset.prototype.Draw.call(this, cRenderer, cParentMatrix);
+    
     if (this.m_cOptions.tile)
     {
         //Lazy Load Required Pattern
@@ -104,11 +71,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cBasePattern, this.GetDrawTransform(), this.Width, this.Height);
+        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cBaseImage, this.GetDrawTransform(), this.m_cOptions.visibleWidth || this.ImageWidth, this.m_cOptions.visibleHeight || this.ImageHeight, this.Offset.x, this.Offset.y);
+        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset.x, this.Offset.y);
     }
 };
 
