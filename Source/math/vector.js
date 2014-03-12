@@ -109,6 +109,16 @@ Vector.ScalarMultiply = function(cVec, nScalar){
     return new Vector(cVec.x * nScalar, cVec.y * nScalar);
 };
 
+Vector.MatrixMultiply = function(cVec, cMat){
+    var x = cVec.x;
+    var y = cVec.y;
+    
+    return new Vector(
+        x * cMat.BaseMatrix[0][0] + y * cMat.BaseMatrix[1][0] + cMat.BaseMatrix[2][0],
+        x * cMat.BaseMatrix[0][1] + y * cMat.BaseMatrix[1][1] + cMat.BaseMatrix[2][1]
+    );
+};
+
 Vector.Lerp = function(cVec1, cVec2, nAlpha){
     return new Vector(cVec1.x + (cVec2.x - cVec1.x) * nAlpha, cVec1.y + (cVec2.y - cVec1.y) * nAlpha);
 };

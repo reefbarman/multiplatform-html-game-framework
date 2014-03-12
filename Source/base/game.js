@@ -1,13 +1,9 @@
 include("rendering/renderer.js", true);
-include("rendering/drawmanager.js", true);
-include("entities/entitymanager.js", true);
 include("control/controller.js", true);
 include("states/statemanager.js", true);
 include("states/state.js", true);
 
-var DM = EN.DrawManager;
 var SM = EN.StateManager;
-var EM = EN.EntityManager;
 
 var now = Date.now;
 
@@ -53,21 +49,18 @@ function Game()
     document.body.appendChild(eCanvas);
     
     this.m_cRenderer = new EN.Renderer(eCanvas);
-    DM.Init(this.m_cRenderer);
-    EN.Camera.Init();
-    
     EN.Controller.Init(eCanvas);
+    
+    EN.Camera.Init();
 }
 
 Game.prototype.Update = function(nDt){
     SM.Update(nDt);
-    EM.Update(nDt);
 };
 
 Game.prototype.Draw = function(){
     this.m_cRenderer.Clear();
     
-    DM.Draw();
     SM.Draw(this.m_cRenderer);
 };
     

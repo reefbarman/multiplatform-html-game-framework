@@ -8,6 +8,7 @@ var Mat = EN.Matrix;
 
 function GameObject()
 {
+    this.ID = GameObject.__IDCount++;
     this.Pos = new Vec(0, 0);
     this.Rotation = 0;
     this.Scale = new Vec(1, 1);
@@ -26,7 +27,11 @@ function GameObject()
     
     this.m_cChildren = {};
     this.m_nChildren = 0;
+    
+    //this.AddChild(this.Bounds);
 }
+
+GameObject.__IDCount = 0;
 
 GameObject.prototype.__CalculateTransform = function(cParentMatrix){
     this.m_cTransformMatrix.Reset()
@@ -64,6 +69,8 @@ GameObject.prototype.UpdateTransform = function(cParentMatrix){
 };
 
 GameObject.prototype.Draw = function(cRenderer){};
+
+GameObject.prototype.OnCollision = function(cOther){};
 
 EN.GameObject = GameObject;
 //# sourceURL=engine/base/gameobject.js

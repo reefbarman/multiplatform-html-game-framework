@@ -1,75 +1,40 @@
 include("math/vector.js", true);
+include("math/matrix.js", true);
 
 var Vec = EN.Vector;
+var Mat = EN.Matrix;
 
-EN.Camera = new (function(){
-    var m_nViewportWidth = 0;
-    var m_nViewportHeight = 0;
+function Camera()
+{
+    this.Pos = new Vec();
+    this.Scale = new Vec(1, 1);
+    this.Rotation = 0;
     
-    var m_aStates = [{
-        Pos: new Vec(0, 0),
-        ViewportWidth: 0,
-        ViewportHeight: 0
-    }];
+    this.m_cTransformMatrix = new Mat();
+    this.m_cScaleMatrix = new Mat();
+    this.m_cTranslationMatrix = new Mat();
+    this.m_cRotationMatrix = new Mat();
     
-    this.Pos = new Vec(0, 0);
-    
-    this.Init = function(){
-        this.Reset();
-    };
-    
-    this.Reset = function(){
-        this.Pos = new Vec(0, 0);
-        m_nViewportWidth = window.EN.device.width;
-        m_nViewportHeight = window.EN.device.height; 
-    };
-    
-    this.CheckBounds = function(cDrawable){
-        var cCameraPos = new Vec(0, 0);
-        var cDrawablePos = cDrawable.Pos;
-        
-        if (cDrawable.WorldSpace)
-        {
-            cCameraPos = this.Pos;
-            cDrawablePos = this.WorldPosToScreenPos(cDrawablePos);
-        }
-        
-        return !(cDrawablePos.x > cCameraPos.x + this.m_nViewportWidth || cDrawablePos.ycDrawablePos > cDrawablePos + this.m_nViewportHeight || cDrawablePos.x + cDrawable.width < cCameraPos.x || cDrawablePos.y + cDrawable.Height < cCameraPos.y) || cDrawable.IgnoreBounds;
-    };
-      
-    this.WorldPosToScreenPos = function(cWorldPos){
-        return new Vec(cWorldPos.x - this.Pos.x, cWorldPos.y - this.Pos.y);
-    };
-    
-    this.PushState = function(cState){
-        m_aStates[m_aStates.length - 1].Pos = this.Pos;
-        m_aStates[m_aStates.length - 1].ViewportWidth = m_nViewportWidth;
-        m_aStates[m_aStates.length - 1].ViewportHeight = m_nViewportHeight;
-        
-        m_aStates.push(cState);
-        
-        this.Pos = cState.Pos;
-        m_nViewportWidth = cState.ViewportWidth;
-        m_nViewportHeight = cState.ViewportHeight;
-    };
-    
-    this.PopState = function(){
-        m_aStates.pop();
-        
-        this.Pos = m_aStates[m_aStates.length - 1].Pos;
-        m_nViewportWidth = m_aStates[m_aStates.length - 1].ViewportWidth;
-        m_nViewportHeight = m_aStates[m_aStates.length - 1].ViewportHeight;
-    };
-    
-    Object.defineProperty(this, "Viewport", {
-        get: function(){
-            return {
-                width: m_nViewportWidth,
-                height: m_nViewportHeight
-            };
-        },
-        enumerable: true
-    });
-})();
+    //Below Matrix is used to flip the Y-Axis to use a cartesian coordinate system
+    this.m_cAxisFlipMatrix = new EN.Matrix();
+}
 
-//# sourceURL=engine/rendering/camera.js
+Camera.prototype.Init = function(){
+    //this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
+    //this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));
+};
+
+Camera.prototype.Update = function(nDt){
+    this.m_cTransformMatrix.Reset()
+        .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
+        .Multiply(this.m_cRotationMatrix.SetRotation(this.Rotation))
+        .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos))
+        .Multiply(this.m_cAxisFlipMatrix);
+};
+
+Camera.prototype.GetTransformMatrix = function(){
+    return this.m_cTransformMatrix;
+};
+
+EN.Camera = new Camera();
+//# sourceURL=engine/game/camera.js

@@ -102,6 +102,16 @@ Object.defineProperty(Particle.prototype, "Angle", {
     }
 });
 
+Particle.prototype.Update = function(nDt){
+    this.Life -= nDt;
+    this.m_nUsedLife += nDt;
+    
+    if (this.Life > 0)
+    {
+        this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt));
+    }
+};
+
 Particle.prototype.Draw = function(cRenderer){
     if (this.Life > 0)
     {
@@ -114,21 +124,9 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
-        //TODO: Draw transform needs to be smarter and be based of the emitter for scale rotation etc
+        this.m_cMatrix.SetTranslation(this.Pos);
         cRenderer.DrawCircle(this.m_cMatrix, this.Radius, cColor);
     }
-};
-
-Particle.prototype.Update = function(nDt){
-    this.Life -= nDt;
-    this.m_nUsedLife += nDt;
-    
-    if (this.Life > 0)
-    {
-        this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt));
-    }
-    
-    this.m_cMatrix.SetTranslation(this.Pos);
 };
 
 EN.Particle = Particle;

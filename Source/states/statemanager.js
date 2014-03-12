@@ -1,8 +1,6 @@
 include("math/vector.js", true);
 include("game/camera.js", true);
 
-var Cam = EN.Camera;
-
 var StateManager = (function(){
     var m_cRegisteredStats = {};
     var m_sNextState = null;
@@ -13,12 +11,6 @@ var StateManager = (function(){
     
     function Init()
     {
-        var cCameraState = {
-            Pos: new EN.Vector(0, 0),
-            ViewportWidth: EN.device.width,
-            ViewportHeight: EN.device.height
-        };
-        
         var cMatrix = new EN.Matrix();
         cMatrix.SetTranslation(new EN.Vector(EN.device.width / 2, EN.device.height / 2));
         
@@ -52,10 +44,8 @@ var StateManager = (function(){
                     }
                 },
                 Draw: function(cRenderer){
-                    Cam.PushState(cCameraState);
                     cColor.a = nAlpha;
                     cRenderer.DrawRectangle(cMatrix, EN.device.width, EN.device.height, cColor);
-                    Cam.PopState();
                 }
             };
         };

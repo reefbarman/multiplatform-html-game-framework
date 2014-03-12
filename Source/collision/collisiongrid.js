@@ -20,18 +20,18 @@ EN.CollisionGrid = (function(){
             
             m_bInited = true;
         },
-        UpdateGrid: function(aEntities){
+        UpdateGrid: function(aGameObjects){
             if (m_bInited)
             {
                 m_aGrid = Array(m_nGridColumns);
 
-                aEntities.forEach(function(cEntity){
-                    var cBounds = cEntity.GetBounds();
-
-                    var nMinColumn = max(0, floor(cBounds.x1 / m_nGridSize));
-                    var nMaxColumn = min(m_nGridColumns - 1, floor(cBounds.x2 / m_nGridSize));
-                    var nMinRow = max(0, floor(cBounds.y1 / m_nGridSize));
-                    var nMaxRow = min(m_nGridRows - 1, floor(cBounds.y2 / m_nGridSize));
+                aGameObjects.forEach(function(cGameObject){
+                    var cBounds = cGameObject.GetBounds();
+                    
+                    var nMinColumn = max(0, floor(cBounds.MinMax.x1 / m_nGridSize));
+                    var nMaxColumn = min(m_nGridColumns - 1, floor(cBounds.MinMax.x2 / m_nGridSize));
+                    var nMinRow = max(0, floor(cBounds.MinMax.y1 / m_nGridSize));
+                    var nMaxRow = min(m_nGridRows - 1, floor(cBounds.MinMax.y2 / m_nGridSize));
 
                     for (var i = nMinColumn; i <= nMaxColumn; i++)
                     {
@@ -47,14 +47,14 @@ EN.CollisionGrid = (function(){
                                 m_aGrid[i][j] = [];
                             }
                             
-                            m_aGrid[i][j].push(cEntity);
+                            m_aGrid[i][j].push(cGameObject);
                         }
                     }
                 });
             }
         },
         GetPointCollision: function(cPos){
-            var aEntities = [];
+            var aGameObjects = [];
             
             var nColumnPos = floor(cPos.x / m_nGridSize);
             var nRowPos = floor(cPos.y / m_nGridSize);
@@ -63,11 +63,11 @@ EN.CollisionGrid = (function(){
             {
                 if (m_aGrid[nColumnPos] && m_aGrid[nColumnPos][nRowPos])
                 {
-                    aEntities = m_aGrid[nColumnPos][nRowPos];
+                    aGameObjects = m_aGrid[nColumnPos][nRowPos];
                 }
             }
             
-            return aEntities;
+            return aGameObjects;
         },
         IterateGrid: function(fOnCollisionGroup){
             if (m_aGrid)

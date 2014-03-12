@@ -1,8 +1,6 @@
 include("game/gameobject.js", true);
 include("game/camera.js", true);
 
-var Cam = EN.Camera;
-
 function World()
 {
     EN.GameObject.call(this);
@@ -19,7 +17,6 @@ World.prototype.__CalculateTransform = function(){
     this.m_cTransformMatrix.Reset()
         .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
         .Multiply(this.m_cAxisFlipMatrix);
-        //.Multiply(Cam.GetTransformMatrix());
 };
 
 World.prototype.Draw = function(cRenderer){
