@@ -1,6 +1,7 @@
 include("math/vector.js", true);
 include("math/matrix.js", true);
 include("rendering/displaylist.js", true);
+include("collision/boundingbox.js", true);
 
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
@@ -14,7 +15,7 @@ function GameObject()
     this.Height = 0;
     this.zIndex = 0;
     
-    this.Bounds = null;
+    this.Bounds = new EN.BoundingBox();
     
     this.Active = true;
     
@@ -47,7 +48,7 @@ GameObject.prototype.RemoveChild = function(cChild){
 };
 
 GameObject.prototype.Update = function(nDt){
-    for (nId in this.m_cChildren)
+    for (var nId in this.m_cChildren)
     {
         this.m_cChildren[nId].Update(nDt);
     }
@@ -56,7 +57,7 @@ GameObject.prototype.Update = function(nDt){
 GameObject.prototype.UpdateTransform = function(cParentMatrix){
     this.__CalculateTransform(cParentMatrix);
     
-    for (nId in this.m_cChildren)
+    for (var nId in this.m_cChildren)
     {
         this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
     }

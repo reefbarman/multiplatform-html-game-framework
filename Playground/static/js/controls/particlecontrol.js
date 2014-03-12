@@ -16,7 +16,7 @@ function ParticleControl()
                     step: 1
                 },
                 MaxParticles: {
-                    minMax: [1, 1000],
+                    minMax: [1, 5000],
                     value: 100,
                     step: 1
                 },

@@ -1,3 +1,5 @@
+//TODO: Render particles to seperate buffer to avoid additive bleeding to background
+
 include("game/gameobject.js", true);
 include("math/math.js", true);
 include("rendering/color.js", true);

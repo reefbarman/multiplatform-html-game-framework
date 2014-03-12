@@ -24,10 +24,12 @@ function ImageAsset(sFileName, cOptions)
         tile: false
     };
     
-    this.m_cOptions = extend(cDefaults, cOptions);
+    this.m_cOptions = extend(cDefaults, isset(cOptions) ? cOptions : {});
     
     this.m_cBaseImage = null;
     this.m_cBasePattern = null;
+    
+    this.m_bLoaded = false;
     
     this.Offset = new EN.Vector(0, 0);
     
@@ -55,12 +57,19 @@ ImageAsset.prototype.Load = function(fOnLoad){
             self.Width = self.m_cOptions.visibleWidth || self.ImageWidth;
             self.Height = self.m_cOptions.visibleHeight || self.ImageHeight;
             
+            self.m_bLoaded = true;
+            
             fOnLoad.apply(self);
         }
     });
 };
 
 ImageAsset.prototype.Draw = function(cRenderer, cParentMatrix){
+    if (!this.m_bLoaded)
+    {
+        throw new Error("Image Asset NOT LOADED: " + this.m_sFileName);
+    }
+    
     EN.Asset.prototype.Draw.call(this, cRenderer, cParentMatrix);
     
     if (this.m_cOptions.tile)
@@ -71,11 +80,11 @@ ImageAsset.prototype.Draw = function(cRenderer, cParentMatrix){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height);
+        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height, this.Offset);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset.x, this.Offset.y);
+        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset);
     }
 };
 
