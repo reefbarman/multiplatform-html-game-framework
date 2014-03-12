@@ -6,7 +6,7 @@ EN.Renderer = function(eCanvas){
     var m_eCanvas = eCanvas;
     var m_cCtx = null;
     
-    var m_sClearColor = "rgb(0,0,0)";
+    var m_cClearColor = new EN.Color();
     
     var m_cTransforMatrix = null;
     var m_cScaleInverseMatrix = null;
@@ -29,12 +29,12 @@ EN.Renderer = function(eCanvas){
     };
     
     this.Clear = function(){
-        m_cCtx.fillStyle = m_sClearColor;
+        m_cCtx.fillStyle = m_cClearColor.toString();
         m_cCtx.fillRect(0, 0, m_eCanvas.width, m_eCanvas.height);
     };
     
-    this.SetClearColor = function(sColor){
-        m_sClearColor = sColor;
+    this.SetClearColor = function(cColor){
+        m_cClearColor = cColor;
     };
     
     this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset){
@@ -65,21 +65,34 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawRectangle = function(cDrawTransform, nWidth, nHeight, sColor){
-        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
+    this.DrawRectangle = function(cMatrix, nWidth, nHeight, cColor){
+        m_cCtx.save();
         
-        m_cCtx.fillStyle = sColor;
-        m_cCtx.fillRect(cPos.x, cPos.y, nWidth, nHeight);
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix);
+        
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.translate(-nWidth / 2, -nHeight / 2);
+        
+        m_cCtx.fillStyle = cColor.toString();
+        m_cCtx.fillRect(0, 0, nWidth, nHeight);
+        
+        m_cCtx.restore();
     };
     
-    this.DrawCircle = function(cDrawTransform, nRadius, cColor){
-        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
+    this.DrawCircle = function(cMatrix, nRadius, cColor){
+        m_cCtx.save();
+        
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix);
+        
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.fillStyle = cColor.toString();
         m_cCtx.beginPath();
-        m_cCtx.arc(cPos.x + nRadius, cPos.y + nRadius, nRadius, 0, Math.PI * 2);
+        m_cCtx.arc(0, 0, nRadius, 0, Math.PI * 2);
         m_cCtx.closePath();
         m_cCtx.fill();
+        
+        m_cCtx.restore();
     };
     
     this.DrawText = function(cDrawTransform, sText, sFont, sColor){

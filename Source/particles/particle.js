@@ -31,6 +31,8 @@ Particle.prototype.__Init = function(){
     this.m_cEndColor = new EN.Color(255, 0, 0, 0.2);
     this.m_cColorDelta = new EN.Color(0, 0, 0, 0);
     
+    this.m_cMatrix = new EN.Matrix();
+    
     this.__UpdateVelocity();
 };
 
@@ -113,12 +115,7 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
         //TODO: Draw transform needs to be smarter and be based of the emitter for scale rotation etc
-        cRenderer.DrawCircle({
-            Pos: this.Pos,
-            Scale: 1,
-            Rotation: 0,
-            WorldSpace: true
-        }, this.Radius, cColor);
+        cRenderer.DrawCircle(this.m_cMatrix, this.Radius, cColor);
     }
 };
 
@@ -130,6 +127,8 @@ Particle.prototype.Update = function(nDt){
     {
         this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt));
     }
+    
+    this.m_cMatrix.SetTranslation(this.Pos);
 };
 
 EN.Particle = Particle;

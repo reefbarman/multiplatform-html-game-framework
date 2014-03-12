@@ -19,12 +19,10 @@ var StateManager = (function(){
             ViewportHeight: EN.device.height
         };
         
-        var cDrawTransform = {
-            Pos: { x: 0, y: 0 },
-            Scale: 1,
-            Rotation: 0,
-            WorldSpace: false
-        };
+        var cMatrix = new EN.Matrix();
+        cMatrix.SetTranslation(new EN.Vector(EN.device.width / 2, EN.device.height / 2));
+        
+        var cColor = new EN.Color(0, 0, 0, 0);
         
         m_cTransitions[StateManager.TRANSITIONS.FADE] = function(fOnSwitch, fOnEnd){
             var nAlpha = 0;
@@ -55,7 +53,8 @@ var StateManager = (function(){
                 },
                 Draw: function(cRenderer){
                     Cam.PushState(cCameraState);
-                    cRenderer.DrawRectangle(cDrawTransform, EN.device.width, EN.device.height, "rgba(0, 0, 0, " + nAlpha + ")");
+                    cColor.a = nAlpha;
+                    cRenderer.DrawRectangle(cMatrix, EN.device.width, EN.device.height, cColor);
                     Cam.PopState();
                 }
             };
