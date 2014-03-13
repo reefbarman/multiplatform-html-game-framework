@@ -1,8 +1,8 @@
 include("rendering/color.js", true);
 
 var Vec = EN.Vector;
-var Cos = Math.cos;
-var Sin = Math.sin;
+var cos = Math.cos;
+var sin = Math.sin;
 
 var c_nRadianConversionVal = Math.PI / 180;
 
@@ -38,8 +38,8 @@ Particle.prototype.__Init = function(){
 
 Particle.prototype.__UpdateVelocity = function(){
     var nRadians = this.m_nAngle * c_nRadianConversionVal;
-    this.m_cVelocity.x = this.m_nSpeed * Cos(nRadians);
-    this.m_cVelocity.y = -this.m_nSpeed * Sin(nRadians);
+    this.m_cVelocity.x = this.m_nSpeed * cos(nRadians);
+    this.m_cVelocity.y = -this.m_nSpeed * sin(nRadians);
 };
 
 Object.defineProperty(Particle.prototype, "StartColor", {
@@ -108,7 +108,7 @@ Particle.prototype.Update = function(nDt){
     
     if (this.Life > 0)
     {
-        this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt));
+        this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt / 1000));
     }
 };
 

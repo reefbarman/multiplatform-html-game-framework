@@ -43,19 +43,21 @@ GameObject.prototype.__CalculateTransform = function(cParentMatrix){
 
 GameObject.prototype.AddChild = function(cChild){
     cChild.__ChildID = this.m_nChildren;
+    cChild.__Parent = this;
     this.m_cChildren[this.m_nChildren++] = cChild;
     EN.DisplayList.Add(cChild);
 };
 
 GameObject.prototype.RemoveChild = function(cChild){
     EN.DisplayList.Remove(cChild);
+    cChild.__Parent = null;
     delete this.m_cChildren[cChild.__ChildID];
 };
 
-GameObject.prototype.Update = function(nDt){
+GameObject.prototype.InitialUpdate = function(nDt){
     for (var nId in this.m_cChildren)
     {
-        this.m_cChildren[nId].Update(nDt);
+        this.m_cChildren[nId].InitialUpdate(nDt);
     }
 };
 
@@ -65,6 +67,13 @@ GameObject.prototype.UpdateTransform = function(cParentMatrix){
     for (var nId in this.m_cChildren)
     {
         this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
+    }
+};
+
+GameObject.prototype.FinalUpdate = function(nDt){
+    for (var nId in this.m_cChildren)
+    {
+        this.m_cChildren[nId].FinalUpdate(nDt);
     }
 };
 

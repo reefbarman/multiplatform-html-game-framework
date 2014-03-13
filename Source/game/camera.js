@@ -20,8 +20,8 @@ function Camera()
 }
 
 Camera.prototype.Init = function(){
-    //this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
-    //this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));
+    this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
+    this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));
 };
 
 Camera.prototype.Update = function(nDt){

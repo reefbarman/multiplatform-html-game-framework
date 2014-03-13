@@ -108,9 +108,11 @@ BoundingBox.prototype.GetBounds = function(){
     };
 };
 
-BoundingBox.prototype.Update = function(nDt){
+BoundingBox.prototype.InitialUpdate = function(nDt){
     this.__GenerateCorners();
 };
+
+BoundingBox.prototype.FinalUpdate = function(nDt){};
 
 BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
     this.m_cTransformMatrix.Reset()

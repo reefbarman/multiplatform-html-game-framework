@@ -96,8 +96,8 @@ Emitter.prototype.Init = function(){
     EN.ParticleSystem.RegisterEmitter(this);
 };
 
-Emitter.prototype.Update = function(nDt){
-    EN.GameObject.prototype.Update.call(this, nDt);
+Emitter.prototype.FinalUpdate = function(nDt){
+    EN.GameObject.prototype.FinalUpdate.call(this, nDt);
     
     var nEmitRate = this.EmissionRate / 1000;
     
