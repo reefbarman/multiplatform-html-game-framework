@@ -50,9 +50,16 @@ BoundingBox.prototype.__GenerateCorners = function(){
 };
 
 BoundingBox.prototype.__CalculateCornersAxes = function(){
+    var aCorners = [];
+    
+    for (var i = 0; i < this.m_aCorners.length; i++)
+    {
+        aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], this.m_cTransformMatrix));
+    }
+    
     this.m_aAxes = [
-        Vec.Subtract(this.m_aCorners[1], this.m_aCorners[0]),
-        Vec.Subtract(this.m_aCorners[3], this.m_aCorners[0])
+        Vec.Subtract(aCorners[1], aCorners[0]),
+        Vec.Subtract(aCorners[3], aCorners[0])
     ];
 
     this.m_aOrigins = [];
@@ -60,38 +67,41 @@ BoundingBox.prototype.__CalculateCornersAxes = function(){
     for (var i = 0; i < 2; i++)
     {
         this.m_aAxes[i].ScalarMultiply(1 / this.m_aAxes[i].Length);
-        this.m_aOrigins[0] = this.m_aCorners[0].Dot(this.m_aAxes[i]);
+        this.m_aOrigins[0] = aCorners[0].Dot(this.m_aAxes[i]);
     }
+    
+    return aCorners;
 };
 
-BoundingBox.prototype.GetBounds = function(){
-    this.__CalculateCornersAxes();
+BoundingBox.prototype.GetBounds = function(cParentMatrix){
+    this.__GenerateCorners();
+    var aCorners = this.__CalculateCornersAxes();
     
     var nMinX = null;
     var nMaxX = null;
     var nMinY = null;
     var nMaxY = null;
 
-    for (var i = 0; i < this.m_aCorners.length; i++)
+    for (var i = 0; i < aCorners.length; i++)
     {
-        if (nMinX === null || this.m_aCorners[i].x < nMinX)
+        if (nMinX === null || aCorners[i].x < nMinX)
         {
-            nMinX = this.m_aCorners[i].x;
+            nMinX = aCorners[i].x;
         }
 
-        if (nMaxX === null || this.m_aCorners[i].x > nMaxX)
+        if (nMaxX === null || aCorners[i].x > nMaxX)
         {
-            nMaxX = this.m_aCorners[i].x;
+            nMaxX = aCorners[i].x;
         }
 
-        if (nMinY === null || this.m_aCorners[i].y < nMinY)
+        if (nMinY === null || aCorners[i].y < nMinY)
         {
-            nMinY = this.m_aCorners[i].y;
+            nMinY = aCorners[i].y;
         }
 
-        if (nMaxY === null || this.m_aCorners[i].y > nMaxY)
+        if (nMaxY === null || aCorners[i].y > nMaxY)
         {
-            nMaxY = this.m_aCorners[i].y;
+            nMaxY = aCorners[i].y;
         }
     }
     
@@ -102,16 +112,13 @@ BoundingBox.prototype.GetBounds = function(){
             y1: nMinY,
             y2: nMaxY
         },
-        Corners: this.m_aCorners,
+        Corners: aCorners,
         Axes: this.m_aAxes,
         Origins: this.m_aOrigins
     };
 };
 
-BoundingBox.prototype.InitialUpdate = function(nDt){
-    this.__GenerateCorners();
-};
-
+BoundingBox.prototype.InitialUpdate = function(nDt){};
 BoundingBox.prototype.FinalUpdate = function(nDt){};
 
 BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
@@ -123,6 +130,7 @@ BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
 };
 
 BoundingBox.prototype.Draw = function(cRenderer){
+    this.__GenerateCorners();
     cRenderer.DrawShape(this.m_cTransformMatrix, this.m_aCorners, new EN.Color(255, 0, 0));
 };
 

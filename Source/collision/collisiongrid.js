@@ -26,7 +26,7 @@ EN.CollisionGrid = (function(){
                 m_aGrid = Array(m_nGridColumns);
 
                 aGameObjects.forEach(function(cGameObject){
-                    var cBounds = cGameObject.GetBounds();
+                    var cBounds = cGameObject.Bounds.GetBounds();
                     
                     var nMinColumn = max(0, floor(cBounds.MinMax.x1 / m_nGridSize));
                     var nMaxColumn = min(m_nGridColumns - 1, floor(cBounds.MinMax.x2 / m_nGridSize));
