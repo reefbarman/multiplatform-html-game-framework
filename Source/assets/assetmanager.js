@@ -1,3 +1,5 @@
+//TODO reference counting and deleting images when all reference are given up
+
 EN.AssetManager = (function(){
     var m_cImages = {};
     

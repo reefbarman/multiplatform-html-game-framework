@@ -137,6 +137,7 @@ BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
 };
 
 BoundingBox.prototype.Draw = function(cRenderer){
+    //TODO enable debug rendering checkbox in tools
     if (false)
     {
         this.__GenerateCorners();
