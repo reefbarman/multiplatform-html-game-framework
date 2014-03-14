@@ -4,13 +4,14 @@
  * 
  * @constructor
  */
-function State()
+function State(sName)
 {
+    this.Name = sName;
     this.m_cChildren = {};
     this.m_nChildren = 0;
     
     this.m_cDisplayList = new EN.DisplayList();
-    this.m_cCamera = new EN.Camera();
+    this.m_cCamera = new EN.Camera(this.Name);
 }
 
 State.prototype.AddChild = function(cChild){

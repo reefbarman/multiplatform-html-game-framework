@@ -35,6 +35,8 @@ function ImageAsset(sFileName, cOptions)
     
     this.ImageHeight = 0;
     this.ImageWidth = 0;
+    
+    this.Alpha = 1;
 }
 
 inherits(ImageAsset, EN.Asset);
@@ -64,13 +66,13 @@ ImageAsset.prototype.Load = function(fOnLoad){
     });
 };
 
-ImageAsset.prototype.Draw = function(cRenderer, cParentMatrix){
+ImageAsset.prototype.Draw = function(cRenderer){
     if (!this.m_bLoaded)
     {
         throw new Error("Image Asset NOT LOADED: " + this.m_sFileName);
     }
     
-    EN.Asset.prototype.Draw.call(this, cRenderer, cParentMatrix);
+    EN.Asset.prototype.Draw.call(this, cRenderer);
     
     if (this.m_cOptions.tile)
     {
@@ -80,11 +82,11 @@ ImageAsset.prototype.Draw = function(cRenderer, cParentMatrix){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height, this.Offset);
+        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height, this.Offset, this.Alpha);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset);
+        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset, this.Alpha);
     }
 };
 

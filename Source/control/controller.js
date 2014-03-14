@@ -1,3 +1,5 @@
+include("math/vector.js", true);
+
 var Vec = EN.Vector;
 
 EN.Controller = (function(){

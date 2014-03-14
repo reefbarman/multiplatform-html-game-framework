@@ -4,11 +4,12 @@ include("math/matrix.js", true);
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
 
-function Camera()
+function Camera(sName)
 {
     this.Pos = new Vec();
     this.Scale = new Vec(1, 1);
     this.Rotation = 0;
+    this.Name = sName;
 }
 
 Camera.prototype.Init = function(){

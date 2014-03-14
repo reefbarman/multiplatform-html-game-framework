@@ -92,5 +92,9 @@ GameObject.prototype.Draw = function(cRenderer){};
 
 GameObject.prototype.OnCollision = function(cOther){};
 
+GameObject.prototype.CleanUp = function(){
+    this.RemoveChild(this.Bounds);
+};
+
 EN.GameObject = GameObject;
 //# sourceURL=engine/base/gameobject.js

@@ -37,12 +37,13 @@ EN.Renderer = function(eCanvas){
         m_cClearColor = cColor;
     };
     
-    this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset){
+    this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
         m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.globalAlpha = nAlpha;
         m_cCtx.drawImage(cImg, cOffset.x, cOffset.y, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
         m_cCtx.restore();
     };
@@ -51,7 +52,7 @@ EN.Renderer = function(eCanvas){
         return m_cCtx.createPattern(cImg, "repeat");
     };
     
-    this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset){
+    this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
         m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
@@ -60,6 +61,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
         
         m_cCtx.fillStyle = cPattern;
+        m_cCtx.globalAlpha = nAlpha;
         m_cCtx.fillRect(cOffset.x, cOffset.y, nWidth, nHeight);
         
         m_cCtx.restore();

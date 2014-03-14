@@ -49,12 +49,19 @@ BoundingBox.prototype.__GenerateCorners = function(){
     ];
 };
 
-BoundingBox.prototype.__CalculateCornersAxes = function(){
+BoundingBox.prototype.__CalculateCornersAxes = function(cParentMatrix){
     var aCorners = [];
     
     for (var i = 0; i < this.m_aCorners.length; i++)
     {
-        aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], this.m_cTransformMatrix));
+        var cTransformMatrix = this.m_cTransformMatrix;
+        
+        if (cParentMatrix)
+        {
+            cTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, cParentMatrix);
+        }
+        
+        aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], cTransformMatrix));
     }
     
     this.m_aAxes = [
@@ -66,7 +73,7 @@ BoundingBox.prototype.__CalculateCornersAxes = function(){
 
     for (var i = 0; i < 2; i++)
     {
-        this.m_aAxes[i].ScalarMultiply(1 / this.m_aAxes[i].Length);
+        this.m_aAxes[i].ScalarMultiply(1 / this.m_aAxes[i].Length());
         this.m_aOrigins[0] = aCorners[0].Dot(this.m_aAxes[i]);
     }
     
@@ -75,7 +82,7 @@ BoundingBox.prototype.__CalculateCornersAxes = function(){
 
 BoundingBox.prototype.GetBounds = function(cParentMatrix){
     this.__GenerateCorners();
-    var aCorners = this.__CalculateCornersAxes();
+    var aCorners = this.__CalculateCornersAxes(cParentMatrix);
     
     var nMinX = null;
     var nMaxX = null;

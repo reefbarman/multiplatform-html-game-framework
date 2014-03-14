@@ -1,8 +1,6 @@
-include("collision/collisionutils.js", true);
 include("collision/collisiongrid.js", true);
 
 var CollisionGrid = EN.CollisionGrid;
-var CollisionUtils = EN.CollisionUtils;
 
 EN.CollisionSystem = (function(){
     var m_nCollisionGridSize = 100;
@@ -53,24 +51,6 @@ EN.CollisionSystem = (function(){
         },
         Remove: function(cGameObject){
             m_aGameObjects.splice(m_aGameObjects.indexOf(cGameObject), 1);
-        },
-        GetPointCollision: function(cPos){
-            /*var cCollidingObject = null;
-            
-            var aEntities = CollisionGrid.GetPointCollision(cPos);
-            
-            aEntities.sort(function(a, b){
-                return a.zIndex - b.zIndex;
-            });
-            
-            aEntities.forEach(function(cEntity){
-                if (CollisionUtils.TestPointIntersect(cPos, cEntity))
-                {
-                    cCollidingObject = cEntity;
-                }
-            });
-            
-            return cCollidingObject;*/
         }
     };
 })();

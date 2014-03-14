@@ -15,27 +15,7 @@ function Emitter(cConfig)
     
     this.Pos = new Vec(0, 0);
     
-    var cDefaults = {
-        MaxParticles: 100,
-        EmissionRate: 10,
-        Life: 1000,
-        LifeVariance: 500,
-        ParticleSpeed: 0.1,
-        ParticleRadius: 10,
-        Angle: 90,
-        AngleVariance: 10,
-        StartColor: new EN.Color(255, 0, 0, 0.2),
-        EndColor: new EN.Color(255, 0, 0, 0.2),
-        AdditiveColor: false,
-        PosVariance: new Vec(0, 0)
-    };
-    
-    cConfig = extend(cDefaults, cConfig || {});
-    
-    for (var sKey in cConfig)
-    {
-        this[sKey] = cConfig[sKey];
-    }
+    this.Reset(cConfig);
     
     this.m_aParticles = [];
     this.m_nActiveParticles = 0;
@@ -94,6 +74,30 @@ Emitter.prototype.Init = function(){
     }
     
     EN.ParticleSystem.RegisterEmitter(this);
+};
+
+Emitter.prototype.Reset = function(cConfig){
+    var cDefaults = {
+        MaxParticles: 100,
+        EmissionRate: 10,
+        Life: 1000,
+        LifeVariance: 500,
+        ParticleSpeed: 0.1,
+        ParticleRadius: 10,
+        Angle: 90,
+        AngleVariance: 10,
+        StartColor: new EN.Color(255, 0, 0, 0.2),
+        EndColor: new EN.Color(255, 0, 0, 0.2),
+        AdditiveColor: false,
+        PosVariance: new Vec(0, 0)
+    };
+    
+    cConfig = extend(cDefaults, cConfig || {});
+    
+    for (var sKey in cConfig)
+    {
+        this[sKey] = cConfig[sKey];
+    }
 };
 
 Emitter.prototype.FinalUpdate = function(nDt){

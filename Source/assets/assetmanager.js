@@ -20,7 +20,7 @@ EN.AssetManager = (function(){
                 }
                 else
                 {
-                    fOnLoad();
+                    fOnLoad(null, cImage);
                 }
             }
             else
