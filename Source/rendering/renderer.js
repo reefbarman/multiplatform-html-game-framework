@@ -1,6 +1,6 @@
-include("game/camera.js", true);
+include("game/cameramanager.js", true);
 
-var Cam = EN.Camera;
+var CM = EN.CameraManager;
 
 EN.Renderer = function(eCanvas){
     var m_eCanvas = eCanvas;
@@ -40,7 +40,7 @@ EN.Renderer = function(eCanvas){
     this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(Cam.GetTransformMatrix());
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.drawImage(cImg, cOffset.x, cOffset.y, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
@@ -54,7 +54,7 @@ EN.Renderer = function(eCanvas){
     this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(Cam.GetTransformMatrix());
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
@@ -68,7 +68,7 @@ EN.Renderer = function(eCanvas){
     this.DrawRectangle = function(cMatrix, nWidth, nHeight, cColor){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(Cam.GetTransformMatrix());
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate(-nWidth / 2, -nHeight / 2);
@@ -82,7 +82,7 @@ EN.Renderer = function(eCanvas){
     this.DrawCircle = function(cMatrix, nRadius, cColor){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(Cam.GetTransformMatrix());
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.fillStyle = cColor.toString();
@@ -97,7 +97,7 @@ EN.Renderer = function(eCanvas){
     this.DrawShape = function(cMatrix, aPoints, cColor){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(Cam.GetTransformMatrix());
+        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();

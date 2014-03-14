@@ -9,6 +9,12 @@ function Camera()
     this.Pos = new Vec();
     this.Scale = new Vec(1, 1);
     this.Rotation = 0;
+}
+
+Camera.prototype.Init = function(){
+    this.Pos = new Vec();
+    this.Scale = new Vec(1, 1);
+    this.Rotation = 0;
     
     this.m_cTransformMatrix = new Mat();
     this.m_cScaleMatrix = new Mat();
@@ -17,9 +23,6 @@ function Camera()
     
     //Below Matrix is used to flip the Y-Axis to use a cartesian coordinate system
     this.m_cAxisFlipMatrix = new EN.Matrix();
-}
-
-Camera.prototype.Init = function(){
     this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
     this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));
 };
@@ -36,5 +39,5 @@ Camera.prototype.GetTransformMatrix = function(){
     return this.m_cTransformMatrix;
 };
 
-EN.Camera = new Camera();
+EN.Camera = Camera;
 //# sourceURL=engine/game/camera.js

@@ -50,8 +50,6 @@ function Game()
     
     this.m_cRenderer = new EN.Renderer(eCanvas);
     EN.Controller.Init(eCanvas);
-    
-    EN.Camera.Init();
 }
 
 Game.prototype.Update = function(nDt){

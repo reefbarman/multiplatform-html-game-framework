@@ -1,5 +1,4 @@
 include("math/vector.js", true);
-include("game/camera.js", true);
 
 var StateManager = (function(){
     var m_cRegisteredStats = {};
@@ -11,6 +10,9 @@ var StateManager = (function(){
     
     function Init()
     {
+        var cCamera = new EN.Camera();
+        cCamera.Init();
+        
         var cMatrix = new EN.Matrix();
         cMatrix.SetTranslation(new EN.Vector(EN.device.width / 2, EN.device.height / 2));
         
@@ -44,8 +46,10 @@ var StateManager = (function(){
                     }
                 },
                 Draw: function(cRenderer){
+                    EN.CameraManager.Push(cCamera);
                     cColor.a = nAlpha;
                     cRenderer.DrawRectangle(cMatrix, EN.device.width, EN.device.height, cColor);
+                    EN.CameraManager.Pop();
                 }
             };
         };
@@ -158,12 +162,9 @@ var StateManager = (function(){
             ChangeStates(m_aStateStack[m_aStateStack.length - 2], ReplaceStates);
         },
         Update: function(nDt){
-            var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
-            
-            if (m_cRegisteredStats[sCurrentState])
-            {
-                m_cRegisteredStats[sCurrentState].Update(nDt);
-            }
+            m_aStateStack.forEach(function(sState){
+                m_cRegisteredStats[sState].Update(nDt);
+            });
             
             if (m_cTransitionUpdate)
             {
@@ -171,12 +172,9 @@ var StateManager = (function(){
             }
         },
         Draw: function(cRenderer){
-            var sCurrentState = m_aStateStack[m_aStateStack.length - 1];
-    
-            if (m_cRegisteredStats[sCurrentState])
-            {
-                m_cRegisteredStats[sCurrentState].Draw(cRenderer);
-            }
+            m_aStateStack.forEach(function(sState){
+                m_cRegisteredStats[sState].Draw(cRenderer);
+            });
     
             if (m_cTransitionUpdate)
             {

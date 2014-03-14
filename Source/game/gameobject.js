@@ -27,8 +27,6 @@ function GameObject()
     
     this.m_cChildren = {};
     this.m_nChildren = 0;
-    
-    //this.AddChild(this.Bounds);
 }
 
 GameObject.__IDCount = 0;
@@ -37,19 +35,32 @@ GameObject.prototype.__CalculateTransform = function(cParentMatrix){
     this.m_cTransformMatrix.Reset()
         .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
         .Multiply(this.m_cRotationMatrix.SetRotation(this.Rotation))
-        .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos))
-        .Multiply(cParentMatrix);
+        .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
+
+    if (cParentMatrix)
+    {
+        this.m_cTransformMatrix.Multiply(cParentMatrix);
+    }
+};
+
+GameObject.prototype.Init = function(){
+    this.AddChild(this.Bounds);
+};
+
+GameObject.prototype.GetDisplayList = function(){
+    return this.__Parent.GetDisplayList();
 };
 
 GameObject.prototype.AddChild = function(cChild){
     cChild.__ChildID = this.m_nChildren;
     cChild.__Parent = this;
     this.m_cChildren[this.m_nChildren++] = cChild;
-    EN.DisplayList.Add(cChild);
+    
+    this.__Parent.GetDisplayList().Add(cChild);
 };
 
 GameObject.prototype.RemoveChild = function(cChild){
-    EN.DisplayList.Remove(cChild);
+    this.__Parent.GetDisplayList().Remove(cChild);
     cChild.__Parent = null;
     delete this.m_cChildren[cChild.__ChildID];
 };

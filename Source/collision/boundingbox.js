@@ -130,8 +130,11 @@ BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
 };
 
 BoundingBox.prototype.Draw = function(cRenderer){
-    this.__GenerateCorners();
-    cRenderer.DrawShape(this.m_cTransformMatrix, this.m_aCorners, new EN.Color(255, 0, 0));
+    if (false)
+    {
+        this.__GenerateCorners();
+        cRenderer.DrawShape(this.m_cTransformMatrix, this.m_aCorners, new EN.Color(255, 0, 0));
+    }
 };
 
 EN.BoundingBox = BoundingBox;
