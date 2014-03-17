@@ -24,6 +24,16 @@ EN.Renderer = function(eCanvas){
         m_cScaleInverseMatrix.SetScale(new EN.Vector(1, -1));
     }
     
+    function GetColor(color)
+    {
+        if (color instanceof EN.Color)
+        {
+            color = color.toString();
+        }
+        
+        return color;
+    }
+    
     this.GetRawContext = function(){
         return m_cCtx;
     };
@@ -52,6 +62,17 @@ EN.Renderer = function(eCanvas){
         return m_cCtx.createPattern(cImg, "repeat");
     };
     
+    this.CreateLinearGradient = function(cStart, cEnd, cColorStops){
+        var cGradient = m_cCtx.createLinearGradient(cStart.x, cStart.y, cEnd.x, cEnd.y);
+        
+        for (var nStopPos in cColorStops)
+        {
+            cGradient.addColorStop(nStopPos, GetColor(cColorStops[nStopPos]));
+        }
+        
+        return cGradient;
+    };
+    
     this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
@@ -67,7 +88,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawRectangle = function(cMatrix, nWidth, nHeight, cColor){
+    this.DrawRectangle = function(cMatrix, nWidth, nHeight, color){
         m_cCtx.save();
         
         m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
@@ -75,19 +96,19 @@ EN.Renderer = function(eCanvas){
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate(-nWidth / 2, -nHeight / 2);
         
-        m_cCtx.fillStyle = cColor.toString();
+        m_cCtx.fillStyle = GetColor(color);
         m_cCtx.fillRect(0, 0, nWidth, nHeight);
         
         m_cCtx.restore();
     };
     
-    this.DrawCircle = function(cMatrix, nRadius, cColor){
+    this.DrawCircle = function(cMatrix, nRadius, color){
         m_cCtx.save();
         
         m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
-        m_cCtx.fillStyle = cColor.toString();
+        m_cCtx.fillStyle = GetColor(color);
         m_cCtx.beginPath();
         m_cCtx.arc(0, 0, nRadius, 0, Math.PI * 2);
         m_cCtx.closePath();
@@ -96,7 +117,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawShape = function(cMatrix, aPoints, cColor){
+    this.DrawShape = function(cMatrix, aPoints, color){
         m_cCtx.save();
         
         m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
@@ -112,7 +133,7 @@ EN.Renderer = function(eCanvas){
         }
         
         m_cCtx.lineWidth = 0.01;
-        m_cCtx.strokeStyle = cColor.toString();
+        m_cCtx.strokeStyle = GetColor(color);
         m_cCtx.stroke();
         
         m_cCtx.restore();

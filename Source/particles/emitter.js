@@ -15,12 +15,12 @@ function Emitter(cConfig)
     
     this.Pos = new Vec(0, 0);
     
-    this.Reset(cConfig);
-    
     this.m_aParticles = [];
     this.m_nActiveParticles = 0;
     
     this.m_nEmitAccumulator = 0;
+    
+    this.Reset(cConfig);
 }
 
 inherits(Emitter, EN.GameObject);
@@ -56,13 +56,17 @@ Emitter.prototype.__Emit = function(){
 
 Emitter.prototype.__Recycle = function(nParticle){
     var cDeadParticle = this.m_aParticles[nParticle];
-    cDeadParticle.__Init();
     
-    var cReplacement = this.m_aParticles[this.m_nActiveParticles - 1];
-    this.m_aParticles[nParticle] = cReplacement;
-    this.m_aParticles[this.m_nActiveParticles - 1] = cDeadParticle;
-    
-    this.m_nActiveParticles--;
+    if (cDeadParticle)
+    {
+        cDeadParticle.__Init();
+
+        var cReplacement = this.m_aParticles[this.m_nActiveParticles - 1];
+        this.m_aParticles[nParticle] = cReplacement;
+        this.m_aParticles[this.m_nActiveParticles - 1] = cDeadParticle;
+
+        this.m_nActiveParticles--;
+    }
 };
 
 Emitter.prototype.Init = function(){
@@ -89,7 +93,8 @@ Emitter.prototype.Reset = function(cConfig){
         StartColor: new EN.Color(255, 0, 0, 0.2),
         EndColor: new EN.Color(255, 0, 0, 0.2),
         AdditiveColor: false,
-        PosVariance: new Vec(0, 0)
+        PosVariance: new Vec(0, 0),
+        Continuous: true
     };
     
     cConfig = extend(cDefaults, cConfig || {});
@@ -98,6 +103,12 @@ Emitter.prototype.Reset = function(cConfig){
     {
         this[sKey] = cConfig[sKey];
     }
+    
+    this.m_nActiveParticles = 0;
+    
+    this.m_aParticles.forEach(function(cParticle){
+        cParticle.__Init();
+    });
 };
 
 Emitter.prototype.FinalUpdate = function(nDt){
@@ -125,7 +136,7 @@ Emitter.prototype.FinalUpdate = function(nDt){
         {
             cParticle.Update(nDt);
         }
-        else
+        else if (this.Continuous)
         {
             this.__Recycle(i);
         }

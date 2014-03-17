@@ -31,7 +31,8 @@ function ParticleControl()
                 PosX: 0,
                 PosY: 0,
                 PosVarianceX: 0,
-                PosVarianceY: 0
+                PosVarianceY: 0,
+                Continuous: true
             }
         },
         Particles: {

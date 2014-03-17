@@ -8,9 +8,6 @@ EN.CameraManager = (function(){
         Pop: function(){
             m_aCameraStack.pop();
         },
-        Update: function(nDt){
-            m_aCameraStack[m_aCameraStack.length - 1].Update(nDt);
-        },
         GetCamera: function(){
             return m_aCameraStack[m_aCameraStack.length - 1];
         }
