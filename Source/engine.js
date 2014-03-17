@@ -54,8 +54,6 @@ if (typeof EN.settings.enginePath == "undefined" || typeof EN.settings.gamePath 
     };
 })();
 
-include("lib/hammer/hammer-1.0.6dev.min.js", true);
-
 include("base/base.js", true);
 include("base/logging.js", true);
 include("base/game.js", true);
@@ -84,7 +82,7 @@ EN.Init = function(fOnInit){
         window.addEventListener("message", (function(){
             var cParentWindow = null;
 
-            var aValidInstruments = ["FPS", "Console", "Particles"];
+            var aValidInstruments = ["FPS", "Console", "Particles", "BoundingBoxes"];
 
             return function(cEvent){
                 switch (cEvent.data.message)
@@ -107,24 +105,35 @@ EN.Init = function(fOnInit){
                         break;
                     case "InstrumentUpdate":
                         aValidInstruments.forEach(function(sInstrument){
-                            if (isset(cEvent.data.data[sInstrument]) && cEvent.data.data[sInstrument])
+                            switch (sInstrument)
                             {
-                                window["playground" + sInstrument] = (function(sInstrument){
-                                    return function(data){
-                                        try
-                                        {
-                                            cParentWindow.postMessage({
-                                                message: sInstrument,
-                                                data: data
-                                            }, "*");
-                                        }
-                                        catch (e){}
-                                    };
-                                })(sInstrument);
-                            }
-                            else
-                            {
-                                delete window["playground" + sInstrument];
+                                case "BoundingBoxes":
+                                    if (isset(window["playgroundToggleBoundingBoxes"]))
+                                    {
+                                        window["playgroundToggleBoundingBoxes"](cEvent.data.data[sInstrument]);
+                                    }
+                                    break;
+                                default:
+                                    if (isset(cEvent.data.data[sInstrument]) && cEvent.data.data[sInstrument])
+                                    {
+                                        window["playground" + sInstrument] = (function(sInstrument){
+                                            return function(data){
+                                                try
+                                                {
+                                                    cParentWindow.postMessage({
+                                                        message: sInstrument,
+                                                        data: data
+                                                    }, "*");
+                                                }
+                                                catch (e){}
+                                            };
+                                        })(sInstrument);
+                                    }
+                                    else
+                                    {
+                                        delete window["playground" + sInstrument];
+                                    }
+                                    break;
                             }
                         });
                         
@@ -143,3 +152,5 @@ EN.Init = function(fOnInit){
         fInit();
     }
 };
+
+//# sourceURL=engine/engine.js

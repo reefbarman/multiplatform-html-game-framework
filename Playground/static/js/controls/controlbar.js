@@ -17,6 +17,10 @@ function ControlBar()
         Particles:  {
             enabled: false,
             instance: null
+        },
+        BoundingBoxes: {
+            enabled: false,
+            instance: null
         }
     };
     
@@ -64,7 +68,7 @@ function ControlBar()
                     break;
             }
             
-            if (bEnabled)
+            if (bEnabled && m_cInstruments[sKey].instance)
             {
                 m_cInstruments[sKey].instance.Show();
             }
@@ -81,13 +85,16 @@ function ControlBar()
                             
                             InstrumentUpdate();
                             
-                            if (bEnabled)
+                            if (m_cInstruments[sKey].instance)
                             {
-                                m_cInstruments[sKey].instance.Show();
-                            }
-                            else
-                            {
-                                m_cInstruments[sKey].instance.Hide();
+                                if (bEnabled)
+                                {
+                                    m_cInstruments[sKey].instance.Show();
+                                }
+                                else
+                                {
+                                    m_cInstruments[sKey].instance.Hide();
+                                }
                             }
                         };
                     })(sKey))

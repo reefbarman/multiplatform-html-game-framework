@@ -18,7 +18,7 @@ function BoundingBox(cPos, nWidth, nHeight)
     this.Width = nWidth || 0;
     this.Height = nHeight || 0;
     this.Scale = new Vec(1, 1);
-    this.zIndex = 0;
+    this.zIndex = 99;
     
     this.m_cTransformMatrix = new Mat();
     this.m_cScaleMatrix = new Mat();
@@ -31,6 +31,8 @@ function BoundingBox(cPos, nWidth, nHeight)
     
     this.__GenerateCorners();
 }
+
+BoundingBox.DrawDebugBoundingBoxes = false;
 
 BoundingBox.prototype.__GenerateCorners = function(){
     var nRadians = this.Rotation * c_nDegToRadian;
@@ -74,10 +76,44 @@ BoundingBox.prototype.__CalculateCornersAxes = function(cParentMatrix){
     for (var i = 0; i < 2; i++)
     {
         this.m_aAxes[i].ScalarMultiply(1 / this.m_aAxes[i].Length());
-        this.m_aOrigins[0] = aCorners[0].Dot(this.m_aAxes[i]);
+        this.m_aOrigins[i] = aCorners[0].Dot(this.m_aAxes[i]);
     }
     
     return aCorners;
+};
+
+BoundingBox.prototype.__Overlaps = function(cBounds1, cBounds2){
+    var bOverlap = true;
+    
+    for (var i = 0; i < 2; i++)
+    {
+        var t = cBounds2.Corners[0].Dot(cBounds1.Axes[i]);
+        
+        var tMin = t;
+        var tMax = t;
+        
+        for (var j = 1; j < 4; j++)
+        {
+            t = cBounds2.Corners[j].Dot(cBounds1.Axes[i]);
+            
+            if (t < tMin)
+            {
+                tMin = t;
+            }
+            else  if (t > tMax)
+            {
+                tMax = t;
+            }
+        }
+        
+        if (tMin > (1 + cBounds1.Origins[i]) || tMax < cBounds1.Origins[i])
+        {
+            bOverlap = false;
+            break;
+        }
+    }
+    
+    return bOverlap;
 };
 
 BoundingBox.prototype.GetBounds = function(cParentMatrix){
@@ -125,6 +161,13 @@ BoundingBox.prototype.GetBounds = function(cParentMatrix){
     };
 };
 
+BoundingBox.prototype.CheckCollision = function(cOtherBox){
+    var cThisBounds = this.GetBounds();
+    var cOtherBounds = cOtherBox.GetBounds();
+    
+    return this.__Overlaps(cThisBounds, cOtherBounds) && this.__Overlaps(cOtherBounds, cThisBounds);
+};
+
 BoundingBox.prototype.InitialUpdate = function(nDt){};
 BoundingBox.prototype.FinalUpdate = function(nDt){};
 
@@ -137,12 +180,15 @@ BoundingBox.prototype.UpdateTransform = function(cParentMatrix){
 };
 
 BoundingBox.prototype.Draw = function(cRenderer){
-    //TODO enable debug rendering checkbox in tools
-    if (false)
+    if (BoundingBox.DrawDebugBoundingBoxes)
     {
         this.__GenerateCorners();
         cRenderer.DrawShape(this.m_cTransformMatrix, this.m_aCorners, new EN.Color(255, 0, 0));
     }
+};
+
+window.playgroundToggleBoundingBoxes = function(bEnabled){
+    BoundingBox.DrawDebugBoundingBoxes = bEnabled;
 };
 
 EN.BoundingBox = BoundingBox;

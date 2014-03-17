@@ -14,11 +14,15 @@ function Console()
     {
         m_$Console = $("<div>").addClass("cPG_Console");
         
+        var bTailEnabled = $.cookie("TailLog") === "true";
+        
         m_$ControlBar = $("<div>").addClass("cPG_ConsoleControlBar cPG_ControlBar").append(
             $("<div>").append(
                 $("<label>").text("Tail Log: "),
-                $("<input>").attr({"type": "checkbox"}).change(function(){
+                $("<input>").attr({"type": "checkbox", "checked": bTailEnabled}).change(function(){
                     m_bTail = $(this).is(":checked");
+                    
+                    $.cookie("TailLog", m_bTail);
                 })
             )
         );
