@@ -1,4 +1,5 @@
 include("game/camera.js", true);
+include("collision/collisionsystem.js", true);
 /**
  * @class
  * @classdesc Represents a game state used within the StateManager state machine. Handles the loading/unloading and updating/drawing of a state
