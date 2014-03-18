@@ -44,7 +44,7 @@ inherits(ImageAsset, EN.Asset);
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
-    EN.AssetManager.LoadImage(EN.settings.resourcePath + "images/" + this.m_sFileName, function(cErr, cImage){
+    EN.AssetManager.LoadImage(this.m_sFileName, function(cErr, cImage){
         if (cErr)
         {
             fOnLoad(cErr);

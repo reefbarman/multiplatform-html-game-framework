@@ -50,7 +50,16 @@ EN.Renderer = function(eCanvas){
     this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
@@ -76,7 +85,16 @@ EN.Renderer = function(eCanvas){
     this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
@@ -91,7 +109,16 @@ EN.Renderer = function(eCanvas){
     this.DrawRectangle = function(cMatrix, nWidth, nHeight, color){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate(-nWidth / 2, -nHeight / 2);
@@ -105,7 +132,17 @@ EN.Renderer = function(eCanvas){
     this.DrawCircle = function(cMatrix, nRadius, color){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.fillStyle = GetColor(color);
@@ -120,7 +157,17 @@ EN.Renderer = function(eCanvas){
     this.DrawShape = function(cMatrix, aPoints, color){
         m_cCtx.save();
         
-        m_cTransforMatrix.Reset().Multiply(m_cScaleInverseMatrix).Multiply(cMatrix).Multiply(CM.GetCamera().GetTransformMatrix());
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();
@@ -139,14 +186,30 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawText = function(cDrawTransform, sText, sFont, sColor){
-        var cPos = cDrawTransform.WorldSpace ? Cam.WorldPosToScreenPos(cDrawTransform.Pos) : cDrawTransform.Pos;
+    this.DrawText = function(cMatrix, sText, sFont, color){
+        m_cCtx.save();
         
-        m_cCtx.textBaseline = "top";
-        m_cCtx.textAlign = "left";
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        
+        m_cCtx.textBaseline = "middle";
+        m_cCtx.textAlign = "middle";
         m_cCtx.font = sFont;
-        m_cCtx.fillStyle = sColor;
-        m_cCtx.fillText(sText, cPos.x, cPos.y);
+        
+        m_cCtx.fillStyle = GetColor(color);
+        m_cCtx.fillText(sText, 0, 0);
+        
+        m_cCtx.restore();
     };
     
     this.MeasureText = function(sText, sFont){

@@ -10,6 +10,7 @@ function Camera(sName)
     this.Scale = new Vec(1, 1);
     this.Rotation = 0;
     this.Name = sName;
+    this.Cartesian = true;
 }
 
 Camera.prototype.Init = function(bCartesian){
@@ -25,9 +26,12 @@ Camera.prototype.Init = function(bCartesian){
     //Below Matrix is used to flip the Y-Axis to use a cartesian coordinate system
     this.m_cAxisFlipMatrix = new EN.Matrix();
     
-    bCartesian = isset(bCartesian) ? bCartesian : true;
+    if (isset(bCartesian))
+    {
+        this.Cartesian = bCartesian;
+    }
     
-    if (bCartesian)
+    if (this.Cartesian)
     {
         this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
         this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));

@@ -1,4 +1,5 @@
 include("assets/asset.js", true);
+include("assets/assetmanager.js", true);
 
 var floor = Math.floor;
 var Vec = EN.Vector;
@@ -23,76 +24,53 @@ inherits(SpriteAsset, EN.Asset);
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
-    ajaxLoad({
-        src: EN.settings.resourcePath + "sprites/" + self.m_sFileName + ".json",
-        onComplete: function(cErr, cSprite){
-            if (!cErr)
+    EN.AssetManager.LoadJSON("sprites/" + this.m_sFileName + ".json", function(cErr, cSprite){
+        if (!cErr)
+        {
+            self.m_cBaseSprite = cSprite;
+
+            var aDependencies = [];
+
+            if (isset(cSprite.dependencies))
             {
-                self.m_cBaseSprite = cSprite;
-
-                var fLoadDependencies = function(){};
-
-                if (isset(cSprite.dependencies))
+                for (var sKey in cSprite.dependencies)
                 {
-                    var nDependencies = 0;
-                    var nLoadedDependencies = 0;
-
-                    var fOnDependenciesLoaded = function(){
-                        nLoadedDependencies++;
-
-                        if (nLoadedDependencies >= nDependencies)
-                        {
-                            fOnLoad();
-                        }
-                    };
-
-                    for (var sKey in cSprite.dependencies)
+                    switch (sKey)
                     {
-                        switch (sKey)
-                        {
-                            case "images":
-                                
-                                var aImages = [];
-                                
-                                for (var sImageKey in cSprite.dependencies[sKey])
-                                {
-                                    var cAnimation = cSprite.animations[sImageKey];
-                                    
-                                    var cImage = new EN.ImageAsset(cSprite.dependencies[sKey][sImageKey], {
-                                        visibleWidth: cAnimation.width,
-                                        visibleHeight: cAnimation.height
-                                    });
-                                    
-                                    self.m_cImages[sImageKey] = cImage;
-                                    aImages.push(cImage);
-                                }
-                                
-                                fLoadDependencies = (function(fLoadDependencies){
-                                    return function(){
-                                        EN.Loader.Load(aImages, fOnDependenciesLoaded);
-                                        fLoadDependencies();
-                                    };
-                                }(fLoadDependencies));
+                        case "images":
 
-                                nDependencies++;
-                                break;
-                        }
+                            for (var sImageKey in cSprite.dependencies[sKey])
+                            {
+                                var cAnimation = cSprite.animations[sImageKey];
+
+                                var cImage = new EN.ImageAsset(cSprite.dependencies[sKey][sImageKey], {
+                                    visibleWidth: cAnimation.width,
+                                    visibleHeight: cAnimation.height
+                                });
+
+                                self.m_cImages[sImageKey] = cImage;
+                                aDependencies.push(cImage);
+                            }
+
+                            break;
                     }
                 }
-                
-                self.ChangeAnimation(cSprite.default);
-                
-                fLoadDependencies();
             }
-            else
-            {
-                fOnLoad(cErr);
-            }
+
+            self.ChangeAnimation(cSprite.default);
+
+            EN.Loader.Load(aDependencies, fOnLoad);
+        }
+        else
+        {
+            fOnLoad(cErr);
         }
     });
 };
     
-SpriteAsset.prototype.Update = function(nDt){
+SpriteAsset.prototype.InitialUpdate = function(nDt){
+    EN.Asset.prototype.InitialUpdate.call(this, nDt);
+    
     if (this.m_bAnimationRunning)
     {
         this.m_nPreviousFramesElapsed += nDt / this.m_cCurrentAnimation.frameDelta;
@@ -110,6 +88,8 @@ SpriteAsset.prototype.Update = function(nDt){
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){
+    EN.Asset.prototype.Draw.call(this, cRenderer);
+    
     this.m_cImages[this.m_sAnimation].Draw(cRenderer);
 };
 
@@ -128,8 +108,6 @@ SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
     
     this.Width = this.m_cCurrentAnimation.width;
     this.Height = this.m_cCurrentAnimation.height;
-    this.BoundingBox.Width = this.Width;
-    this.BoundingBox.Height = this.Height;
 };
 
 SpriteAsset.prototype.PauseAnimation = function(bPaused){
