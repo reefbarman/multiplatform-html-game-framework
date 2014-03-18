@@ -1,4 +1,5 @@
 include("game/cameramanager.js", true);
+include("rendering/color.js", true);
 
 var CM = EN.CameraManager;
 
