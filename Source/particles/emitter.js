@@ -2,24 +2,45 @@
 
 include("game/gameobject.js", true);
 include("math/math.js", true);
+include("math/vector.js", true);
 include("rendering/color.js", true);
 
 var Vec = EN.Vector;
 
 var floor = Math.floor;
 var random = EN.Math.Random;
+var max = Math.max;
+
+var c_cDefaults = {
+    MaxParticles: 100,
+    EmissionRate: 10,
+    Life: 1000,
+    LifeVariance: 500,
+    ParticleSpeed: 0.1,
+    ParticleSpeedVariance: 0,
+    ParticleRadius: 10,
+    Angle: 90,
+    AngleVariance: 10,
+    StartColor: new EN.Color(255, 0, 0, 0.2),
+    EndColor: new EN.Color(255, 0, 0, 0.2),
+    AdditiveColor: false,
+    PosVariance: new Vec(0, 0),
+    Continuous: true
+};
 
 function Emitter(cConfig)
 {
     EN.GameObject.call(this);
     
     this.Pos = new Vec(0, 0);
+    this.Enabled = true;
     
     this.m_aParticles = [];
     this.m_nActiveParticles = 0;
     
     this.m_nEmitAccumulator = 0;
     
+    this.m_cOrigConfig = cConfig;
     this.Reset(cConfig);
 }
 
@@ -36,7 +57,7 @@ Emitter.prototype.__Emit = function(){
         
         cNewParticle.Active = true;
         cNewParticle.Life = this.Life + random(-1, 1) * this.LifeVariance;
-        cNewParticle.Speed = this.ParticleSpeed;
+        cNewParticle.Speed = max(0, this.ParticleSpeed + random(-1, 1) * this.ParticleSpeedVariance);
         cNewParticle.Radius = this.ParticleRadius;
         cNewParticle.Angle = this.Angle + random(-1, 1) * this.AngleVariance;
         
@@ -81,29 +102,17 @@ Emitter.prototype.Init = function(){
 };
 
 Emitter.prototype.Reset = function(cConfig){
-    var cDefaults = {
-        MaxParticles: 100,
-        EmissionRate: 10,
-        Life: 1000,
-        LifeVariance: 500,
-        ParticleSpeed: 0.1,
-        ParticleRadius: 10,
-        Angle: 90,
-        AngleVariance: 10,
-        StartColor: new EN.Color(255, 0, 0, 0.2),
-        EndColor: new EN.Color(255, 0, 0, 0.2),
-        AdditiveColor: false,
-        PosVariance: new Vec(0, 0),
-        Continuous: true
-    };
-    
-    cConfig = extend(cDefaults, cConfig || {});
+    cConfig = extend(c_cDefaults, cConfig || this.m_cOrigConfig);
     
     for (var sKey in cConfig)
     {
         this[sKey] = cConfig[sKey];
     }
     
+    this.Restart();
+};
+
+Emitter.prototype.Restart = function(){
     this.m_nActiveParticles = 0;
     
     this.m_aParticles.forEach(function(cParticle){
@@ -112,33 +121,36 @@ Emitter.prototype.Reset = function(cConfig){
 };
 
 Emitter.prototype.FinalUpdate = function(nDt){
-    EN.GameObject.prototype.FinalUpdate.call(this, nDt);
-    
-    var nEmitRate = this.EmissionRate / 1000;
-    
-    var nParticles = 0;
-    var nParticlesToEmit = this.m_nEmitAccumulator + nEmitRate * nDt;
-    var nCount = floor(nParticlesToEmit);
-    var nParticlesEmitted = 0;
-    
-    for (; nParticles < nCount; nParticles++)
+    if (this.Enabled)
     {
-        nParticlesEmitted += this.__Emit();
-    }
-    
-    this.m_nEmitAccumulator = nParticlesToEmit - nParticlesEmitted;
-    
-    for (var i = 0; i < this.m_nActiveParticles; i++)
-    {
-        var cParticle = this.m_aParticles[i];
-        
-        if (cParticle.Life > 0)
+        EN.GameObject.prototype.FinalUpdate.call(this, nDt);
+
+        var nEmitRate = this.EmissionRate / 1000;
+
+        var nParticles = 0;
+        var nParticlesToEmit = this.m_nEmitAccumulator + nEmitRate * nDt;
+        var nCount = floor(nParticlesToEmit);
+        var nParticlesEmitted = 0;
+
+        for (; nParticles < nCount; nParticles++)
         {
-            cParticle.Update(nDt);
+            nParticlesEmitted += this.__Emit();
         }
-        else if (this.Continuous)
+
+        this.m_nEmitAccumulator = nParticlesToEmit - nParticlesEmitted;
+
+        for (var i = 0; i < this.m_nActiveParticles; i++)
         {
-            this.__Recycle(i);
+            var cParticle = this.m_aParticles[i];
+
+            if (cParticle.Life > 0)
+            {
+                cParticle.Update(nDt);
+            }
+            else if (this.Continuous)
+            {
+                this.__Recycle(i);
+            }
         }
     }
 };
@@ -172,6 +184,7 @@ Emitter.prototype.GetValues = function(){
     cValues.Life = this.Life;
     cValues.LifeVariance = this.LifeVariance;
     cValues.ParticleSpeed = this.ParticleSpeed;
+    cValues.PSpeedVariance = this.ParticleSpeedVariance;
     cValues.ParticleRadius = this.ParticleRadius;
     cValues.Angle = this.Angle;
     cValues.AngleVariance = this.AngleVariance;
@@ -249,6 +262,9 @@ Emitter.prototype.UpdateValue = function(sValue, value){
             }
             
             fUpdateValue();
+            break;
+        case "PSpeedVariance":
+            this.ParticleSpeedVariance = value;
             break;
         default:
             fUpdateValue();

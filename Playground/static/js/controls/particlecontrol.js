@@ -11,7 +11,7 @@ function ParticleControl()
             folder: true,
             children: {
                 EmissionRate: {
-                    minMax: [1, 1000],
+                    minMax: [1, 5000],
                     value: 10,
                     step: 1
                 },
@@ -44,6 +44,7 @@ function ParticleControl()
                     minMax: [0, 2],
                     value: 0.1
                 },
+                PSpeedVariance: 0,
                 ParticleRadius: 10,
                 StartColor: {
                     color: true,
@@ -190,6 +191,20 @@ function ParticleControl()
         };
 
         fBuildGUI(m_cDatGui, m_cValueDefinitions);
+        
+        m_cDatGui.add({Reset: function(){
+            EventDispatcher.Trigger("SendMessage", {
+                message: "ResetParticleEmitter", 
+                data: m_cEmitter.Emitter
+            });
+        }}, "Reset");
+    
+        m_cDatGui.add({Restart: function(){
+            EventDispatcher.Trigger("SendMessage", {
+                message: "RestartParticleEmitter", 
+                data: m_cEmitter.Emitter
+            });
+        }}, "Restart");
         
         m_$ParticleControls.append(m_cDatGui.domElement);
     }

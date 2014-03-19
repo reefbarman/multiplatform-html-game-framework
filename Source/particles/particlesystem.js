@@ -7,6 +7,22 @@ EN.ParticleSystem = (function(){
     
     var m_nPlaygroundSelectedEmitter = 0;
     
+    function ResetParticleEmitter(nEmitter)
+    {
+        if (isset(m_aEmitters[nEmitter]))
+        {
+            m_aEmitters[nEmitter].Reset();
+        }
+    }
+    
+    function RestartParticleEmitter(nEmitter)
+    {
+        if (isset(m_aEmitters[nEmitter]))
+        {
+            m_aEmitters[nEmitter].Restart();
+        }
+    }
+    
     function SendEmitterState(nEmitter)
     {
         m_nPlaygroundSelectedEmitter = nEmitter;
@@ -52,6 +68,8 @@ EN.ParticleSystem = (function(){
             //If we are within the playground environment allow it to request emitter details
             if (EN.playgroundEnv)
             {
+                window["playgroundResetParticleEmitter"] = ResetParticleEmitter;
+                window["playgroundRestartParticleEmitter"] = RestartParticleEmitter;
                 window["playgroundGetParticleEmitters"] = SendEmitterState;
                 window["playgroundModifyParticleEmitter"] = ModifyParticleEmitter;
             }

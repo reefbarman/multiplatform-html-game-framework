@@ -91,6 +91,18 @@ EN.Init = function(fOnInit){
                         cParentWindow = cEvent.source;
                         cParentWindow.postMessage({ message: "PGConnectionSuccessful" }, "*");
                         break;
+                    case "ResetParticleEmitter":
+                        if (isset(window["playgroundResetParticleEmitter"]))
+                        {
+                            playgroundResetParticleEmitter(cEvent.data.data);
+                        }
+                        break;
+                    case "RestartParticleEmitter":
+                        if (isset(window["playgroundRestartParticleEmitter"]))
+                        {
+                            playgroundRestartParticleEmitter(cEvent.data.data);
+                        }
+                        break;
                     case "RequestParticleEmitterUpdate":
                         if (isset(window["playgroundGetParticleEmitters"]))
                         {
