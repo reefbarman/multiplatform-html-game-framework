@@ -93,7 +93,7 @@ EN.Renderer = function(eCanvas){
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
+        }
         
         m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
         
@@ -187,7 +187,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawText = function(cMatrix, sText, sFont, color){
+    this.DrawText = function(cMatrix, sText, sFont, color, aAlignment){
         m_cCtx.save();
         
         var cCamera = CM.GetCamera();
@@ -203,8 +203,10 @@ EN.Renderer = function(eCanvas){
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
-        m_cCtx.textBaseline = "middle";
-        m_cCtx.textAlign = "middle";
+        aAlignment = aAlignment || ["middle", "middle"];
+        
+        m_cCtx.textBaseline = aAlignment[0];
+        m_cCtx.textAlign = aAlignment[1];
         m_cCtx.font = sFont;
         
         m_cCtx.fillStyle = GetColor(color);

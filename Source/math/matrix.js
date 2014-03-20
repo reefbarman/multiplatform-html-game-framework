@@ -99,5 +99,32 @@ Matrix.Multiply = function(cMatrix1, cMatrix2){
     return cNewMatrix;
 };
 
+// REF: http://stackoverflow.com/questions/983999/simple-3x3-matrix-inverse-code-c
+
+Matrix.Inverse = function(cMatrix){
+    var cBM = cMatrix.BaseMatrix;
+    
+    var nDeterminate = 
+        cBM[0][0] * (cBM[1][1] * cBM[2][2] - cBM[2][1] * cBM[1][2]) -
+        cBM[0][1] * (cBM[1][0] * cBM[2][2] - cBM[1][2] * cBM[2][0]) +
+        cBM[0][2] * (cBM[1][0] * cBM[2][1] - cBM[1][1] * cBM[2][0]);
+
+    var nInvDet = 1 / nDeterminate;
+    
+    var cInverseMatrix = new Matrix();
+    
+    cInverseMatrix.BaseMatrix[0][0] = (cBM[1][1] * cBM[2][2] - cBM[2][1] * cBM[1][2]) * nInvDet;
+    cInverseMatrix.BaseMatrix[0][1] = (cBM[0][2] * cBM[2][1] - cBM[0][1] * cBM[2][2]) * nInvDet;
+    cInverseMatrix.BaseMatrix[0][2] = (cBM[0][1] * cBM[1][2] - cBM[0][2] * cBM[1][1]) * nInvDet;
+    cInverseMatrix.BaseMatrix[1][0] = (cBM[1][2] * cBM[2][0] - cBM[1][0] * cBM[2][2]) * nInvDet;
+    cInverseMatrix.BaseMatrix[1][1] = (cBM[0][0] * cBM[2][2] - cBM[0][2] * cBM[2][0]) * nInvDet;
+    cInverseMatrix.BaseMatrix[1][2] = (cBM[1][0] * cBM[0][2] - cBM[0][0] * cBM[1][2]) * nInvDet;
+    cInverseMatrix.BaseMatrix[2][0] = (cBM[1][0] * cBM[2][1] - cBM[2][0] * cBM[1][1]) * nInvDet;
+    cInverseMatrix.BaseMatrix[2][1] = (cBM[2][0] * cBM[0][1] - cBM[0][0] * cBM[2][1]) * nInvDet;
+    cInverseMatrix.BaseMatrix[2][2] = (cBM[0][0] * cBM[1][1] - cBM[1][0] * cBM[0][1]) * nInvDet;
+    
+    return cInverseMatrix;                    
+};
+
 EN.Matrix = Matrix;
 //# sourceURL=engine/math/matrix.js

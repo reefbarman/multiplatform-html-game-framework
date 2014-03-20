@@ -103,7 +103,7 @@ Emitter.prototype.Init = function(){
 };
 
 Emitter.prototype.Reset = function(cConfig){
-    cConfig = extend(c_cDefaults, cConfig || this.m_cOrigConfig);
+    cConfig = extend({}, c_cDefaults, cConfig || this.m_cOrigConfig);
     
     for (var sKey in cConfig)
     {
@@ -129,6 +129,7 @@ Emitter.prototype.Reset = function(cConfig){
 
 Emitter.prototype.Restart = function(){
     this.m_nActiveParticles = 0;
+    this.m_nEmitAccumulator = 0;
     
     this.m_aParticles.forEach(function(cParticle){
         cParticle.__Init();
@@ -153,7 +154,9 @@ Emitter.prototype.FinalUpdate = function(nDt){
         }
 
         this.m_nEmitAccumulator = nParticlesToEmit - nParticlesEmitted;
-
+        
+        var bActive = false;
+        
         for (var i = 0; i < this.m_nActiveParticles; i++)
         {
             var cParticle = this.m_aParticles[i];
@@ -161,11 +164,17 @@ Emitter.prototype.FinalUpdate = function(nDt){
             if (cParticle.Life > 0)
             {
                 cParticle.Update(nDt);
+                bActive = true;
             }
             else if (this.Continuous)
             {
                 this.__Recycle(i);
             }
+        }
+        
+        if (!this.Continuous && !bActive)
+        {
+            this.Enabled = false;
         }
     }
 };

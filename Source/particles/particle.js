@@ -10,21 +10,7 @@ var floor = Math.floor;
 
 function Particle()
 {
-    this.__Init();
-}
-
-Particle.prototype.__Init = function(){
-    this.Active = false;
-    
     this.Pos = new Vec(0, 0);
-    
-    this.Life = 0;
-    this.Radius = 10;
-    
-    this.m_nUsedLife = 0;
-    
-    this.m_nSpeed = 0;
-    this.m_nAngle = 0;
     this.m_cVelocity = new Vec(0, 0);
     
     this.m_cStartColor = new EN.Color(255, 0, 0, 0.2);
@@ -33,6 +19,25 @@ Particle.prototype.__Init = function(){
     
     this.m_cTransformMatrix = new EN.Matrix();
     this.m_cTranslationMatrix = new EN.Matrix();
+    
+    this.__Init();
+}
+
+Particle.prototype.__Init = function(){
+    this.Active = false;
+    
+    this.Pos.x = 0;
+    this.Pos.y = 0;
+    
+    this.Life = 0;
+    this.Radius = 10;
+    
+    this.m_nUsedLife = 0;
+    
+    this.m_nSpeed = 0;
+    this.m_nAngle = 0;
+    this.m_cVelocity.x = 0;
+    this.m_cVelocity.y = 0;
     
     this.__UpdateVelocity();
 };
