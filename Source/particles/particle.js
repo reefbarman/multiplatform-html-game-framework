@@ -16,7 +16,7 @@ function Particle()
 Particle.prototype.__Init = function(){
     this.Active = false;
     
-    this.Pos = new EN.Vector(0, 0);
+    this.Pos = new Vec(0, 0);
     
     this.Life = 0;
     this.Radius = 10;
@@ -31,7 +31,8 @@ Particle.prototype.__Init = function(){
     this.m_cEndColor = new EN.Color(255, 0, 0, 0.2);
     this.m_cColorDelta = new EN.Color(0, 0, 0, 0);
     
-    this.m_cMatrix = new EN.Matrix();
+    this.m_cTransformMatrix = new EN.Matrix();
+    this.m_cTranslationMatrix = new EN.Matrix();
     
     this.__UpdateVelocity();
 };
@@ -112,6 +113,15 @@ Particle.prototype.Update = function(nDt){
     }
 };
 
+Particle.prototype.UpdateTransform = function(cParentMatrix){
+    this.m_cTransformMatrix.Reset().Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
+
+    if (cParentMatrix)
+    {
+        this.m_cTransformMatrix.Multiply(cParentMatrix);
+    }
+};
+
 Particle.prototype.Draw = function(cRenderer){
     if (this.Life > 0)
     {
@@ -124,8 +134,7 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
-        this.m_cMatrix.SetTranslation(this.Pos);
-        cRenderer.DrawCircle(this.m_cMatrix, this.Radius, cColor);
+        cRenderer.DrawCircle(this.m_cTransformMatrix, this.Radius, cColor);
     }
 };
 

@@ -82,7 +82,6 @@ var StateManager = (function(){
         }
         else
         {
-            m_cRegisteredStats[m_sNextState].Enter();
             m_aStateStack.push(m_sNextState);
         }
         
@@ -98,7 +97,6 @@ var StateManager = (function(){
             m_cRegisteredStats[sCurrentState].Pause();
         }
         
-        m_cRegisteredStats[m_sNextState].Enter();
         m_aStateStack.push(m_sNextState);
         
         m_sNextState = null;
@@ -136,6 +134,7 @@ var StateManager = (function(){
             {
                 m_cRegisteredStats[sState].Load(function(){
                     m_sNextState = sState;
+                    m_cRegisteredStats[m_sNextState].Enter();
                     m_cTransitionUpdate = fTransition(fOnStateChange, TransitionEnd);
                 });
             }

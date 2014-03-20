@@ -25,7 +25,8 @@ var c_cDefaults = {
     EndColor: new EN.Color(255, 0, 0, 0.2),
     AdditiveColor: false,
     PosVariance: new Vec(0, 0),
-    Continuous: true
+    Continuous: true,
+    Relative: false
 };
 
 function Emitter(cConfig)
@@ -53,7 +54,7 @@ Emitter.prototype.__Emit = function(){
     {
         var cNewParticle = this.m_aParticles[this.m_nActiveParticles];
         
-        var cPos = (new Vec()).MatrixMultiply(this.m_cTransformMatrix);
+        var cPos = this.Relative ? new Vec() : (new Vec()).MatrixMultiply(this.m_cTransformMatrix);
         
         cNewParticle.Active = true;
         cNewParticle.Life = this.Life + random(-1, 1) * this.LifeVariance;
@@ -107,6 +108,20 @@ Emitter.prototype.Reset = function(cConfig){
     for (var sKey in cConfig)
     {
         this[sKey] = cConfig[sKey];
+    }
+    
+    if (this.MaxParticles > this.m_aParticles.length)
+    {
+        for (var i = this.m_aParticles.length; i < this.MaxParticles; i++)
+        {
+            var cParticle = new EN.Particle();
+            this.m_aParticles.push(cParticle);
+        }
+    }
+    else if (this.MaxParticles < this.m_aParticles.length)
+    {
+        this.m_nActiveParticles = Math.min(this.MaxParticles, this.m_nActiveParticles);
+        this.m_aParticles = this.m_aParticles.slice(0, this.MaxParticles);
     }
     
     this.Restart();
@@ -169,6 +184,7 @@ Emitter.prototype.Draw = function(cRenderer){
         
         if (cParticle.Life > 0)
         {
+            cParticle.UpdateTransform(this.Relative ? this.m_cTransformMatrix : null);
             cParticle.Draw(cRenderer);
         }
     }
