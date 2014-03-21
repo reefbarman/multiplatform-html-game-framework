@@ -47,19 +47,22 @@ Matrix.prototype.SetScale = function(cScaleVec){
 };
 
 Matrix.prototype.Multiply = function(cMatrix){
-    var a = this.BaseMatrix[0][0] * cMatrix.BaseMatrix[0][0] + this.BaseMatrix[0][1] * cMatrix.BaseMatrix[1][0];
-    var b = this.BaseMatrix[0][0] * cMatrix.BaseMatrix[0][1] + this.BaseMatrix[0][1] * cMatrix.BaseMatrix[1][1];
-    var c = this.BaseMatrix[1][0] * cMatrix.BaseMatrix[0][0] + this.BaseMatrix[1][1] * cMatrix.BaseMatrix[1][0];
-    var d = this.BaseMatrix[1][0] * cMatrix.BaseMatrix[0][1] + this.BaseMatrix[1][1] * cMatrix.BaseMatrix[1][1];
-    var e = this.BaseMatrix[2][0] * cMatrix.BaseMatrix[0][0] + this.BaseMatrix[2][1] * cMatrix.BaseMatrix[1][0] + cMatrix.BaseMatrix[2][0];
-    var f = this.BaseMatrix[2][0] * cMatrix.BaseMatrix[0][1] + this.BaseMatrix[2][1] * cMatrix.BaseMatrix[1][1] + cMatrix.BaseMatrix[2][1];
+    var cLBM = this.BaseMatrix;
+    var cRBM = cMatrix.BaseMatrix;
     
-    this.BaseMatrix[0][0] = a;
-    this.BaseMatrix[0][1] = b;
-    this.BaseMatrix[1][0] = c;
-    this.BaseMatrix[1][1] = d;
-    this.BaseMatrix[2][0] = e;
-    this.BaseMatrix[2][1] = f;
+    var a = cLBM[0][0] * cRBM[0][0] + cLBM[0][1] * cRBM[1][0];
+    var b = cLBM[0][0] * cRBM[0][1] + cLBM[0][1] * cRBM[1][1];
+    var c = cLBM[1][0] * cRBM[0][0] + cLBM[1][1] * cRBM[1][0];
+    var d = cLBM[1][0] * cRBM[0][1] + cLBM[1][1] * cRBM[1][1];
+    var e = cLBM[2][0] * cRBM[0][0] + cLBM[2][1] * cRBM[1][0] + cRBM[2][0];
+    var f = cLBM[2][0] * cRBM[0][1] + cLBM[2][1] * cRBM[1][1] + cRBM[2][1];
+    
+    cLBM[0][0] = a;
+    cLBM[0][1] = b;
+    cLBM[1][0] = c;
+    cLBM[1][1] = d;
+    cLBM[2][0] = e;
+    cLBM[2][1] = f;
     
     return this;
 };

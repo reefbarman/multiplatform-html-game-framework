@@ -5,11 +5,14 @@ include("math/math.js", true);
 include("math/vector.js", true);
 include("rendering/color.js", true);
 
+var CM = EN.CameraManager;
 var Vec = EN.Vector;
 
 var floor = Math.floor;
 var random = EN.Math.Random;
 var max = Math.max;
+
+var PI2 = Math.PI * 2;
 
 var c_cDefaults = {
     MaxParticles: 100,
@@ -41,6 +44,11 @@ function Emitter(cConfig)
     this.m_nActiveParticles = 0;
     
     this.m_nEmitAccumulator = 0;
+    
+    this.m_cParticleTransformMatrix = new EN.Matrix();
+    this.m_cDrawTransforMatrix = new EN.Matrix();
+    this.m_cScaleInverseMatrix = new EN.Matrix();
+    this.m_cScaleInverseMatrix.SetScale(new EN.Vector(1, -1));
     
     this.m_cOrigConfig = cConfig;
     this.Reset(cConfig);
@@ -184,6 +192,10 @@ Emitter.prototype.FinalUpdate = function(nDt){
 Emitter.prototype.Draw = function(cRenderer){
     var cCtx = cRenderer.GetRawContext();
     
+    cCtx.save();
+        
+    var cCamera = CM.GetCamera();
+
     if (this.AdditiveColor)
     {
         cCtx.globalCompositeOperation = "lighter";
@@ -195,12 +207,35 @@ Emitter.prototype.Draw = function(cRenderer){
         
         if (cParticle.Life > 0)
         {
-            cParticle.UpdateTransform(this.Relative ? this.m_cTransformMatrix : null);
-            cParticle.Draw(cRenderer);
+            this.m_cDrawTransforMatrix.Reset();
+
+            if (cCamera.Cartesian)
+            {
+                this.m_cDrawTransforMatrix.Multiply(this.m_cScaleInverseMatrix);
+            }
+            
+            this.m_cParticleTransformMatrix.Reset().SetTranslation(cParticle.Pos);
+            
+            if (this.Relative)
+            {
+                this.m_cParticleTransformMatrix.Multiply(this.m_cTransformMatrix);
+            }
+            
+            this.m_cDrawTransforMatrix.Multiply(this.m_cParticleTransformMatrix).Multiply(cCamera.GetTransformMatrix());
+
+            cCtx.setTransform.apply(cCtx, this.m_cDrawTransforMatrix.GetCanvasTransform());
+    
+            cCtx.fillStyle = cParticle.m_cColor.toString();
+            cCtx.beginPath();
+            cCtx.arc(0, 0, cParticle.m_nRadius, 0, PI2);
+            cCtx.closePath();
+            cCtx.fill();
         }
     }
     
     cCtx.globalCompositeOperation = "source-over";
+
+    cCtx.restore();
 };
 
 Emitter.prototype.GetValues = function(){

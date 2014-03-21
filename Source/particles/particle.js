@@ -17,8 +17,7 @@ function Particle()
     this.m_cEndColor = new EN.Color(255, 0, 0, 0.2);
     this.m_cColorDelta = new EN.Color(0, 0, 0, 0);
     
-    this.m_cTransformMatrix = new EN.Matrix();
-    this.m_cTranslationMatrix = new EN.Matrix();
+    this.m_cColor = new EN.Color(0, 0, 0, 0);
     
     this.__Init();
 }
@@ -119,31 +118,11 @@ Particle.prototype.Update = function(nDt){
         var nLifeDelta = this.m_nUsedLife / (this.m_nUsedLife + this.Life);
         
         this.m_nRadius = this.StartRadius + ((this.EndRadius - this.StartRadius) * nLifeDelta);
-    }
-};
-
-Particle.prototype.UpdateTransform = function(cParentMatrix){
-    this.m_cTransformMatrix.Reset().Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
-
-    if (cParentMatrix)
-    {
-        this.m_cTransformMatrix.Multiply(cParentMatrix);
-    }
-};
-
-Particle.prototype.Draw = function(cRenderer){
-    if (this.Life > 0)
-    {
-        var nLifeDelta = this.m_nUsedLife / (this.m_nUsedLife + this.Life);
-        
-        var cColor = new EN.Color(0, 0, 0, 0);
                 
-        cColor.r += floor(this.m_cStartColor.r + (this.m_cColorDelta.r * nLifeDelta));
-        cColor.g += floor(this.m_cStartColor.g + (this.m_cColorDelta.g * nLifeDelta));
-        cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
-        cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
-        
-        cRenderer.DrawCircle(this.m_cTransformMatrix, this.m_nRadius, cColor);
+        this.m_cColor.r = floor(this.m_cStartColor.r + (this.m_cColorDelta.r * nLifeDelta));
+        this.m_cColor.g = floor(this.m_cStartColor.g + (this.m_cColorDelta.g * nLifeDelta));
+        this.m_cColor.b = floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
+        this.m_cColor.a = this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
     }
 };
 
