@@ -115,6 +115,10 @@ Particle.prototype.Update = function(nDt){
     if (this.Life > 0)
     {
         this.Pos.Add(Vec.ScalarMultiply(this.m_cVelocity, nDt / 1000));
+        
+        var nLifeDelta = this.m_nUsedLife / (this.m_nUsedLife + this.Life);
+        
+        this.m_nRadius = this.StartRadius + ((this.EndRadius - this.StartRadius) * nLifeDelta);
     }
 };
 
@@ -139,7 +143,7 @@ Particle.prototype.Draw = function(cRenderer){
         cColor.b += floor(this.m_cStartColor.b + (this.m_cColorDelta.b * nLifeDelta));
         cColor.a += this.m_cStartColor.a + (this.m_cColorDelta.a * nLifeDelta);
         
-        cRenderer.DrawCircle(this.m_cTransformMatrix, this.Radius, cColor);
+        cRenderer.DrawCircle(this.m_cTransformMatrix, this.m_nRadius, cColor);
     }
 };
 

@@ -18,7 +18,8 @@ var c_cDefaults = {
     LifeVariance: 500,
     ParticleSpeed: 0.1,
     ParticleSpeedVariance: 0,
-    ParticleRadius: 10,
+    StartParticleRadius: 10,
+    EndParticleRadius: 10,
     Angle: 90,
     AngleVariance: 10,
     StartColor: new EN.Color(255, 0, 0, 0.2),
@@ -59,7 +60,8 @@ Emitter.prototype.__Emit = function(){
         cNewParticle.Active = true;
         cNewParticle.Life = this.Life + random(-1, 1) * this.LifeVariance;
         cNewParticle.Speed = max(0, this.ParticleSpeed + random(-1, 1) * this.ParticleSpeedVariance);
-        cNewParticle.Radius = this.ParticleRadius;
+        cNewParticle.StartRadius = this.StartParticleRadius;
+        cNewParticle.EndRadius = this.EndParticleRadius;
         cNewParticle.Angle = this.Angle + random(-1, 1) * this.AngleVariance;
         
         cNewParticle.StartColor = this.StartColor;
@@ -210,7 +212,8 @@ Emitter.prototype.GetValues = function(){
     cValues.LifeVariance = this.LifeVariance;
     cValues.ParticleSpeed = this.ParticleSpeed;
     cValues.PSpeedVariance = this.ParticleSpeedVariance;
-    cValues.ParticleRadius = this.ParticleRadius;
+    cValues.StartParticleRadius = this.StartParticleRadius;
+    cValues.EndParticleRadius = this.EndParticleRadius;
     cValues.Angle = this.Angle;
     cValues.AngleVariance = this.AngleVariance;
     

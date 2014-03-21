@@ -45,7 +45,8 @@ function ParticleControl()
                     value: 0.1
                 },
                 PSpeedVariance: 0,
-                ParticleRadius: 10,
+                StartParticleRadius: 10,
+                EndParticleRadius: 10,
                 StartColor: {
                     color: true,
                     value: "rgb(255, 0, 0)"
