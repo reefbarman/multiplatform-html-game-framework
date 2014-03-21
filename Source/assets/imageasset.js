@@ -1,5 +1,3 @@
-//TODO Release image asset on cleanup
-
 include("assets/asset.js", true);
 include("assets/assetmanager.js", true);
 
@@ -90,6 +88,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
     {
         cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset, this.Alpha);
     }
+};
+
+ImageAsset.prototype.CleanUp = function(){
+    EN.Asset.prototype.CleanUp.call(this);
+    EN.AssetManager.ReleaseImage(this.m_sFileName);
 };
 
 EN.ImageAsset = ImageAsset;

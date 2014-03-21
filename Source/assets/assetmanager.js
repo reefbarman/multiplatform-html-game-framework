@@ -1,5 +1,3 @@
-//TODO reference counting and deleting images when all reference are given up
-
 EN.AssetManager = (function(){
     var m_cImages = {};
     var m_cJSONFiles = {};
@@ -14,39 +12,61 @@ EN.AssetManager = (function(){
                 
                 if (!cImage.loaded)
                 {
-                    cImage.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad){
-                        return function(cErr, cImage){
-                            fCurrentOnLoad(cErr, cImage);
-                            fPreviousOnLoad(cErr, cImage);
+                    cImage.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad, cImage){
+                        return function(cErr, cBaseImage){
+                            if (!cErr)
+                            {
+                                cImage.refCount++;
+                            }
+                            
+                            fCurrentOnLoad(cErr, cBaseImage);
+                            fPreviousOnLoad(cErr, cBaseImage);
                         };
-                    })(cImage.onLoadCallback, fOnLoad);
+                    })(cImage.onLoadCallback, fOnLoad, cImage);
                 }
                 else
                 {
-                    fOnLoad(null, cImage);
+                    cImage.refCount++;
+                    fOnLoad(null, cImage.image);
                 }
             }
             else
             {
-                cImage = new Image();
-                cImage.onLoadCallback = fOnLoad;
+                cImage = {
+                    image: new Image(),
+                    onLoadCallback: fOnLoad,
+                    loaded: false,
+                    refCount: 0
+                };
                 
-                cImage.onload = (function(cImage){
+                cImage.image.onload = (function(cImage){
                     return function(){
                         cImage.loaded = true;
-                        cImage.onLoadCallback(null, cImage);
+                        cImage.refCount++;
+                        cImage.onLoadCallback(null, cImage.image);
                     };
                 })(cImage);
 
-                cImage.onerror = (function(cImage){
+                cImage.image.onerror = (function(cImage){
                     return function(){
                         cImage.onLoadCallback(new Error("Failed to load image: " + sUrl));
                     };
                 })(cImage);
 
-                cImage.src = EN.settings.resourcePath + "images/" + sUrl;
+                cImage.image.src = EN.settings.resourcePath + "images/" + sUrl;
                 
                 m_cImages[sUrl] = cImage;
+            }
+        },
+        ReleaseImage: function(sUrl){
+            if (isset(m_cImages[sUrl]))
+            {
+                m_cImages[sUrl].refCount--;
+                
+                if (m_cImages[sUrl].refCount <= 0)
+                {
+                    delete m_cImages[sUrl];
+                }
             }
         },
         LoadJSON: function(sUrl, fOnLoad){
@@ -58,15 +78,21 @@ EN.AssetManager = (function(){
                 
                 if (!cJSONFile.loaded)
                 {
-                    cJSONFile.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad){
+                    cJSONFile.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad, cJSONFile){
                         return function(cErr, cJSON){
+                            if (!cErr)
+                            {
+                                cJSONFile.refCount++;
+                            }
+                            
                             fCurrentOnLoad(cErr, cJSON);
                             fPreviousOnLoad(cErr, cJSON);
                         };
-                    })(cJSONFile.onLoadCallback, fOnLoad);
+                    })(cJSONFile.onLoadCallback, fOnLoad, cJSONFile);
                 }
                 else
                 {
+                    cJSONFile.refCount++;
                     fOnLoad(null, cJSONFile.json);
                 }
             }
@@ -75,7 +101,8 @@ EN.AssetManager = (function(){
                 cJSONFile = {
                     json: null,
                     onLoadCallback: fOnLoad,
-                    loaded: false
+                    loaded: false,
+                    refCount: 0
                 };
                 
                 ajaxLoad({
@@ -86,6 +113,7 @@ EN.AssetManager = (function(){
                             {
                                 cJSONFile.loaded = true;
                                 cJSONFile.json = cJSON;
+                                cJSONFile.refCount++;
                                 cJSONFile.onLoadCallback(null, cJSON);
                             }
                             else
@@ -97,6 +125,17 @@ EN.AssetManager = (function(){
                 });
                 
                 m_cJSONFiles[sUrl] = cJSONFile;
+            }
+        },
+        ReleaseJSON: function(sUrl){
+            if (isset(m_cJSONFiles[sUrl]))
+            {
+                m_cJSONFiles[sUrl].refCount--;
+                
+                if (m_cJSONFiles[sUrl].refCount <= 0)
+                {
+                    delete m_cJSONFiles[sUrl];
+                }
             }
         }
     };

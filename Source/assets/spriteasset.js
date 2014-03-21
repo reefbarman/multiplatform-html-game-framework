@@ -1,3 +1,5 @@
+//TODO deal with update image assets without making children
+
 include("assets/asset.js", true);
 include("assets/assetmanager.js", true);
 
@@ -112,6 +114,11 @@ SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
 
 SpriteAsset.prototype.PauseAnimation = function(bPaused){
     this.m_bAnimationRunning = !bPaused;
+};
+
+SpriteAsset.prototype.CleanUp = function(){
+    EN.Asset.prototype.CleanUp.call(this);
+    EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
 };
 
 EN.SpriteAsset = SpriteAsset;
