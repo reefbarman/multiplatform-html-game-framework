@@ -192,6 +192,9 @@ Emitter.prototype.FinalUpdate = function(nDt){
 Emitter.prototype.Draw = function(cRenderer){
     var cCtx = cRenderer.GetRawContext();
     
+    var cTransform = this.m_cDrawTransforMatrix;
+    var cParticleTransform = this.m_cParticleTransformMatrix;
+    
     cCtx.save();
         
     var cCamera = CM.GetCamera();
@@ -207,23 +210,23 @@ Emitter.prototype.Draw = function(cRenderer){
         
         if (cParticle.Life > 0)
         {
-            this.m_cDrawTransforMatrix.Reset();
+            cTransform.Reset();
 
             if (cCamera.Cartesian)
             {
-                this.m_cDrawTransforMatrix.Multiply(this.m_cScaleInverseMatrix);
+                cTransform.Multiply(this.m_cScaleInverseMatrix);
             }
             
-            this.m_cParticleTransformMatrix.Reset().SetTranslation(cParticle.Pos);
+            cParticleTransform.Reset().SetTranslation(cParticle.Pos);
             
             if (this.Relative)
             {
-                this.m_cParticleTransformMatrix.Multiply(this.m_cTransformMatrix);
+                cParticleTransform.Multiply(this.m_cTransformMatrix);
             }
             
-            this.m_cDrawTransforMatrix.Multiply(this.m_cParticleTransformMatrix).Multiply(cCamera.GetTransformMatrix());
+            cTransform.Multiply(cParticleTransform).Multiply(cCamera.GetTransformMatrix());
 
-            cCtx.setTransform.apply(cCtx, this.m_cDrawTransforMatrix.GetCanvasTransform());
+            cCtx.setTransform.apply(cCtx, cTransform.GetCanvasTransform());
     
             cCtx.fillStyle = cParticle.m_cColor.toString();
             cCtx.beginPath();
