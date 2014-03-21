@@ -203,7 +203,7 @@ EN.Renderer = function(eCanvas){
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
-        aAlignment = aAlignment || ["middle", "middle"];
+        aAlignment = aAlignment || ["middle", "center"];
         
         m_cCtx.textBaseline = aAlignment[0];
         m_cCtx.textAlign = aAlignment[1];

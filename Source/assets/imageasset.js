@@ -1,3 +1,5 @@
+//TODO Release image asset on cleanup
+
 include("assets/asset.js", true);
 include("assets/assetmanager.js", true);
 

@@ -8,6 +8,8 @@ var StateManager = (function(){
     var m_cTransitions = {};
     var m_cTransitionUpdate = null;
     
+    var m_cNextArgs = {};
+    
     function Init()
     {
         var cCamera = new EN.Camera();
@@ -78,7 +80,7 @@ var StateManager = (function(){
         
         if (sPreviousState == m_sNextState)
         {
-            m_cRegisteredStats[m_sNextState].Resume();
+            m_cRegisteredStats[m_sNextState].Resume(m_cNextArgs);
         }
         else
         {
@@ -107,8 +109,10 @@ var StateManager = (function(){
         m_cTransitionUpdate = null;
     }
     
-    function ChangeStates(sState, fOnStateChange, transition)
+    function ChangeStates(sState, fOnStateChange, transition, cArgs)
     {
+        m_cNextArgs = cArgs;
+        
         var sTransitionType = typeof transition;
             
         var fTransition = m_cTransitions[StateManager.TRANSITIONS.FADE];
@@ -134,7 +138,7 @@ var StateManager = (function(){
             {
                 m_cRegisteredStats[sState].Load(function(){
                     m_sNextState = sState;
-                    m_cRegisteredStats[m_sNextState].Enter();
+                    m_cRegisteredStats[m_sNextState].Enter(m_cNextArgs);
                     m_cTransitionUpdate = fTransition(fOnStateChange, TransitionEnd);
                 });
             }
@@ -151,11 +155,15 @@ var StateManager = (function(){
             m_cRegisteredStats = cRegisteredStates;
             Init();
         },
-        ChangeState: function(sState, transition){
-            ChangeStates(sState, ReplaceStates, transition);
+        ChangeState: function(sState, transition, cArgs){
+            cArgs = cArgs || {};
+            
+            ChangeStates(sState, ReplaceStates, transition, cArgs);
         },
-        PushState: function(sState, transition){
-            ChangeStates(sState, SwitchStates, transition);
+        PushState: function(sState, transition, cArgs){
+            cArgs = cArgs || {};
+            
+            ChangeStates(sState, SwitchStates, transition, cArgs);
         },
         PopState: function(){
             ChangeStates(m_aStateStack[m_aStateStack.length - 2], ReplaceStates);
