@@ -1,22 +1,14 @@
-function DeviceUI(cOptions, fOnDeviceReady)
+function DeviceUI(fOnDeviceReady)
 {
     var m_$DeviceFrame = null;
     var m_$DeviceSandbox = null;
     
-    var m_sDeviceUrl = null;
-    
-    function Init()
-    {
-        //DEFAULTS
-        var cDefaults = {
-            os: "iOS",
-            device: "iPhone5",
-            width: 1136,
-            height: 640,
-            pixelRatio: 2
-        };
-        
-        cOptions = $.extend({}, cDefaults, cOptions);
+    this.ChangeDevice = function(cOptions){
+        if (m_$DeviceFrame && m_$DeviceSandbox)
+        {
+            m_$DeviceFrame.remove();
+            m_$DeviceSandbox.remove();
+        }
         
         m_$DeviceSandbox = $("<iframe>").addClass("cPG_DeviceSandbox").css({
             width: cOptions.width,
@@ -30,16 +22,29 @@ function DeviceUI(cOptions, fOnDeviceReady)
             m_$DeviceSandbox
         );
 
-        m_sDeviceUrl = "/Game?Playground=true&OS=" + cOptions.os + "&Device=" + cOptions.device;
-    }
-    
-    this.Show = function(){
+        var sDeviceUrl = "/Game?Playground=true&OS=" + cOptions.os + "&Device=" + cOptions.device;
+        
         $("body").append(m_$DeviceFrame);
         
         m_$DeviceSandbox.load(function(){
             fOnDeviceReady($(this).get(0).contentWindow);
-        }).attr("src", m_sDeviceUrl);
+        }).attr("src", sDeviceUrl);
     };
-    
-    Init();
 }
+
+DeviceUI.DEVICES = {
+    IPHONE_5: {
+        os: "iOS",
+        device: "iPhone5",
+        width: 1136,
+        height: 640,
+        pixelRatio: 2
+    },
+    IPHONE_4: {
+        os: "iOS",
+        device: "iPhone4",
+        width: 960,
+        height: 640,
+        pixelRatio: 2
+    }
+};

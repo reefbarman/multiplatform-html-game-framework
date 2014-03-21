@@ -4,6 +4,7 @@ function ControlBar()
     
     var m_cDeviceUI = null;
     var m_cDeviceWindow = null;
+    var m_sSelectedDevice = "IPHONE_5";
     
     var m_cInstruments = {
         FPS: {
@@ -27,9 +28,11 @@ function ControlBar()
     function Init()
     {
         m_$ControlBar = $("<div>").addClass("cPG_MainControlBar cPG_ControlBar");
-
-        //TODO: Get loaded device config and pass in
-        m_cDeviceUI = new DeviceUI({}, InitCommunication);
+        
+        var sLastSelectedDevice = $.cookie("SelectedDevice");
+        m_sSelectedDevice = sLastSelectedDevice ? sLastSelectedDevice : m_sSelectedDevice;
+        
+        m_cDeviceUI = new DeviceUI(InitCommunication);
         
         $(window).bind("message", function(cEvent){
             HandleCommunication(cEvent.originalEvent.data);
@@ -101,6 +104,22 @@ function ControlBar()
                 )
             );
         }
+        
+        m_$ControlBar.append(
+            $("<div>").addClass("cPG_DeviceTypeControl").append(
+                $("<label>").text("Device: "),
+                $("<select>").append(
+                    $("<option>").text("iPhone5").val("IPHONE_5"),
+                    $("<option>").text("iPhone4").val("IPHONE_4")
+                ).change(function(){
+                    var sValue = $(this).val();
+                    
+                    m_cDeviceUI.ChangeDevice(DeviceUI.DEVICES[sValue]);
+                    
+                    $.cookie("SelectedDevice", sValue);
+                }).val(m_sSelectedDevice)
+            )
+        );
     }
     
     function InitCommunication(cDeviceWindow)
@@ -136,7 +155,8 @@ function ControlBar()
     
     this.Show = function(){
         $("body").append(m_$ControlBar);
-        m_cDeviceUI.Show();
+        
+        m_cDeviceUI.ChangeDevice(DeviceUI.DEVICES[m_sSelectedDevice]);
         
         EventDispatcher.Trigger("WindowResize", m_$ControlBar.outerHeight());
     };
