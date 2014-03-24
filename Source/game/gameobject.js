@@ -27,15 +27,22 @@ function GameObject()
     
     this.m_cChildren = {};
     this.m_nChildren = 0;
+    
+    this.m_nPreviousRotation = 0;
 }
 
 GameObject.__IDCount = 0;
 
 GameObject.prototype.__CalculateTransform = function(cParentMatrix){
-    this.m_cTransformMatrix.Reset()
-        .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
-        .Multiply(this.m_cRotationMatrix.SetRotation(this.Rotation))
-        .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
+    this.m_cTransformMatrix.Reset().Multiply(this.m_cScaleMatrix.SetScale(this.Scale));
+    
+    if (this.Rotation != this.m_nPreviousRotation)
+    {
+        this.m_cRotationMatrix.SetRotation(this.Rotation);
+        this.m_nPreviousRotation = this.Rotation;
+    }
+    
+    this.m_cTransformMatrix.Multiply(this.m_cRotationMatrix).Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
 
     if (cParentMatrix)
     {
