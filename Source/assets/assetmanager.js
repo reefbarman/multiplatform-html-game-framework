@@ -1,6 +1,7 @@
 EN.AssetManager = (function(){
     var m_cImages = {};
     var m_cJSONFiles = {};
+    var m_cAudioFiles = {};
     
     return {
         LoadImage: function(sUrl, fOnLoad){
@@ -47,11 +48,11 @@ EN.AssetManager = (function(){
                     };
                 })(cImage);
 
-                cImage.image.onerror = (function(cImage){
+                cImage.image.onerror = (function(cImage, sUrl){
                     return function(){
                         cImage.onLoadCallback(new Error("Failed to load image: " + sUrl));
                     };
-                })(cImage);
+                })(cImage, sUrl);
 
                 cImage.image.src = EN.settings.resourcePath + "images/" + sUrl;
                 
@@ -135,6 +136,80 @@ EN.AssetManager = (function(){
                 if (m_cJSONFiles[sUrl].refCount <= 0)
                 {
                     delete m_cJSONFiles[sUrl];
+                }
+            }
+        },
+        LoadAudio: function(sUrl, fOnLoad){
+            var cAudio = null;
+            
+            if (isset(m_cAudioFiles[sUrl]))
+            {
+                cAudio = m_cAudioFiles[sUrl];
+                
+                if (!cAudio.loaded)
+                {
+                    cAudio.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad, cAudio){
+                        return function(cErr, cBaseAudio){
+                            if (!cErr)
+                            {
+                                cAudio.refCount++;
+                            }
+                            
+                            fCurrentOnLoad(cErr, cBaseAudio);
+                            fPreviousOnLoad(cErr, cBaseAudio);
+                        };
+                    })(cAudio.onLoadCallback, fOnLoad, cAudio);
+                }
+                else
+                {
+                    cAudio.refCount++;
+                    fOnLoad(null, cAudio.audio);
+                }
+            }
+            else
+            {
+                cAudio = {
+                    audio: new Audio(EN.settings.resourcePath + "sounds/" + sUrl),
+                    onLoadCallback: fOnLoad,
+                    loaded: false,
+                    error: false,
+                    refCount: 0
+                };
+                
+                cAudio.audio.addEventListener('canplaythrough', (function(cAudio){
+                    return function(){
+                        if (!cAudio.loaded)
+                        {
+                            cAudio.loaded = true;
+                            cAudio.refCount++;
+                            cAudio.onLoadCallback(null, cAudio.audio);
+                        }
+                    };
+                })(cAudio), false);
+                
+                cAudio.audio.addEventListener('error', (function(cAudio, sUrl){
+                    return function(){
+                        if (!cAudio.error)
+                        {
+                            cAudio.error = true;
+                            cAudio.onLoadCallback(new Error("Failed to load audio: " + sUrl));
+                        }
+                    };
+                })(cAudio, sUrl));
+
+                cAudio.audio.load();
+                
+                m_cAudioFiles[sUrl] = cAudio;
+            }
+        },
+        ReleaseAudio: function(sUrl){
+            if (isset(m_cAudioFiles[sUrl]))
+            {
+                m_cAudioFiles[sUrl].refCount--;
+                
+                if (m_cAudioFiles[sUrl].refCount <= 0)
+                {
+                    delete m_cAudioFiles[sUrl];
                 }
             }
         }
