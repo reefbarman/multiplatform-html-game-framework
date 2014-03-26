@@ -11,8 +11,12 @@ function SpriteAsset(sFileName)
     //Super constructor
     EN.Asset.call(this, sFileName);
     
+    this.Alpha = 1;
+    
     this.m_cBaseSprite = null;
     this.m_cImages = {};
+    this.m_cBaseImages = {};
+    this.m_cCurrentImage = null;
     
     this.m_sAnimation = "";
     this.m_cCurrentAnimation = null;
@@ -43,15 +47,31 @@ SpriteAsset.prototype.Load = function(fOnLoad){
 
                             for (var sImageKey in cSprite.dependencies[sKey])
                             {
-                                var cAnimation = cSprite.animations[sImageKey];
+                                self.m_cImages[sImageKey] = {
+                                    Offset: new Vec(0, 0)
+                                };
+                                
+                                var fLoadImage = (function(sImageKey, sFileName){
+                                    return {
+                                        Load: function(fOnLoad){
+                                            EN.AssetManager.LoadImage(sFileName, function(cErr, cImage){
+                                                if (!cErr)
+                                                {
+                                                    self.m_cImages[sImageKey].ImageWidth = cImage.width;
+                                                    self.m_cImages[sImageKey].ImageHeight = cImage.height;
+                                                    self.m_cBaseImages[sImageKey] = cImage;
+                                                    fOnLoad();
+                                                }
+                                                else
+                                                {
+                                                    fOnload(cErr);
+                                                }
+                                            });
+                                        }
+                                    };
+                                })(sImageKey, cSprite.dependencies[sKey][sImageKey]);
 
-                                var cImage = new EN.ImageAsset(cSprite.dependencies[sKey][sImageKey], {
-                                    visibleWidth: cAnimation.width,
-                                    visibleHeight: cAnimation.height
-                                });
-
-                                self.m_cImages[sImageKey] = cImage;
-                                aDependencies.push(cImage);
+                                aDependencies.push(fLoadImage);
                             }
 
                             break;
@@ -59,9 +79,14 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                 }
             }
 
-            self.ChangeAnimation(cSprite.default);
-
-            EN.Loader.Load(aDependencies, fOnLoad);
+            EN.Loader.Load(aDependencies, function(cErr){
+                if (!cErr)
+                {
+                    self.ChangeAnimation(cSprite.default);
+                }
+                
+                fOnLoad(cErr);
+            });
         }
         else
         {
@@ -82,8 +107,11 @@ SpriteAsset.prototype.InitialUpdate = function(nDt){
             this.CurrentFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
             this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
         }
+        
+        var nOffsetX = (this.CurrentFrame * this.Width) % this.m_cImages[this.m_sAnimation].ImageWidth;
+        var nOffsetY = floor((this.CurrentFrame * this.Width) / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height;
 
-        this.m_cImages[this.m_sAnimation].Offset = new Vec(this.CurrentFrame * this.Width % this.m_cImages[this.m_sAnimation].ImageWidth, floor(this.CurrentFrame * this.Width / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height);
+        this.m_cImages[this.m_sAnimation].Offset = new Vec(nOffsetX, nOffsetY);
     }
     
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
@@ -92,7 +120,7 @@ SpriteAsset.prototype.InitialUpdate = function(nDt){
 SpriteAsset.prototype.Draw = function(cRenderer){
     EN.Asset.prototype.Draw.call(this, cRenderer);
     
-    this.m_cImages[this.m_sAnimation].Draw(cRenderer);
+    cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cCurrentImage, this.Width, this.Height, this.m_cImages[this.m_sAnimation].Offset, this.Alpha);
 };
 
 SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
@@ -106,7 +134,7 @@ SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
     cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
     this.m_cCurrentAnimation = cCurrentAnimation;
     
-    this.m_cImages[this.m_sAnimation].CoordAlignment = this.CoordAlignment;
+    this.m_cCurrentImage = this.m_cBaseImages[this.m_sAnimation];
     
     this.Width = this.m_cCurrentAnimation.width;
     this.Height = this.m_cCurrentAnimation.height;
@@ -119,6 +147,11 @@ SpriteAsset.prototype.PauseAnimation = function(bPaused){
 SpriteAsset.prototype.CleanUp = function(){
     EN.Asset.prototype.CleanUp.call(this);
     EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
+    
+    for (var sKey in this.m_cImages)
+    {
+        EN.AssetManager.ReleaseImage(cSprite.dependencies["images"][sKey]);
+    }
 };
 
 EN.SpriteAsset = SpriteAsset;
