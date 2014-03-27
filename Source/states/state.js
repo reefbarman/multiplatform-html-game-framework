@@ -36,6 +36,7 @@ State.prototype.__FinalUpdate = function(nDt){
 State.prototype.AddChild = function(cChild){
     cChild.__ChildID = this.m_nChildren;
     cChild.__Parent = this;
+    cChild.__DisplayList = this.m_cDisplayList;
     this.m_cChildren[this.m_nChildren++] = cChild;
     this.m_cDisplayList.Add(cChild);
 };
@@ -43,12 +44,15 @@ State.prototype.AddChild = function(cChild){
 State.prototype.RemoveChild = function(cChild){
     this.m_cDisplayList.Remove(cChild);
     cChild.__Parent = null;
+    cChild.__DisplayList = null;
     delete this.m_cChildren[cChild.__ChildID];
 };
 
 State.prototype.AddUI = function(cUIElement){
     cUIElement.__ChildID = this.m_nChildren;
     cUIElement.__Parent = this;
+    cUIElement.__DisplayList = this.m_cUIDisplayList;
+
     this.m_cChildren[this.m_nChildren++] = cUIElement;
     this.m_cUIDisplayList.Add(cUIElement);
 };
@@ -56,12 +60,10 @@ State.prototype.AddUI = function(cUIElement){
 State.prototype.RemoveUI = function(cUIElement){
     this.m_cUIDisplayList.Remove(cUIElement);
     cUIElement.__Parent = null;
+    cUIElement.__DisplayList = null;
     delete this.m_cChildren[cUIElement.__ChildID];
 };
 
-State.prototype.GetDisplayList = function(){
-    return this.m_cDisplayList;
-};
 
 /**
  * Loads the state and all its dependencies

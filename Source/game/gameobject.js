@@ -29,6 +29,8 @@ function GameObject()
     this.m_nChildren = 0;
     
     this.m_nPreviousRotation = 0;
+
+    this.__DisplayList = null;
 }
 
 GameObject.__IDCount = 0;
@@ -55,20 +57,22 @@ GameObject.prototype.Init = function(){
 };
 
 GameObject.prototype.GetDisplayList = function(){
-    return this.__Parent.GetDisplayList();
+    return this.__DisplayList;
 };
 
 GameObject.prototype.AddChild = function(cChild){
     cChild.__ChildID = this.m_nChildren;
     cChild.__Parent = this;
+    cChild.__DisplayList = this.__DisplayList;
     this.m_cChildren[this.m_nChildren++] = cChild;
     
-    this.__Parent.GetDisplayList().Add(cChild);
+    this.__DisplayList.Add(cChild);
 };
 
 GameObject.prototype.RemoveChild = function(cChild){
-    this.__Parent.GetDisplayList().Remove(cChild);
+    this.__DisplayList.Remove(cChild);
     cChild.__Parent = null;
+    cChild.__DisplayList = null;
     delete this.m_cChildren[cChild.__ChildID];
 };
 
