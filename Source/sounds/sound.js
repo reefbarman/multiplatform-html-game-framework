@@ -10,6 +10,7 @@ function Sound(sFileName, cOptions)
     this.m_cOptions = extend(cDefaults, cOptions);
     
     this.m_cBaseAudio = null;
+    this.Playing = false;
 }
 
 Object.defineProperty(Sound.prototype, "Volume", {
@@ -42,6 +43,9 @@ Sound.prototype.Load = function(fOnLoad){
         else
         {
             self.m_cBaseAudio = cAudio;
+            self.m_cBaseAudio.addEventListener("ended", function(){
+                self.Playing = false;
+            });
             
             self.m_cBaseAudio.loop = self.m_cOptions.loop;
             self.m_cBaseAudio.volume = self.m_cOptions.volume;
@@ -59,6 +63,7 @@ Sound.prototype.Play = function(){
     
     this.m_cBaseAudio.currentTime = 0;
     this.m_cBaseAudio.play();
+    this.Playing = true;
 };
 
 Sound.prototype.Pause = function(){
@@ -68,6 +73,7 @@ Sound.prototype.Pause = function(){
     }
     
     this.m_cBaseAudio.pause();
+    this.Playing = false;
 };
 
 Sound.prototype.CleanUp = function(){
