@@ -39,8 +39,8 @@ EN.CollisionSystem = (function(){
     }
     
     return {
-        Init: function(nWorldWidth, nWorldHeight){
-            CollisionGrid.Init(m_nCollisionGridSize, nWorldWidth, nWorldHeight);
+        Init: function(nWorldWidth, nWorldHeight, nPrecision){
+            CollisionGrid.Init(m_nCollisionGridSize, nWorldWidth, nWorldHeight, nPrecision);
         },
         Update: function(nDt){
             CollisionGrid.UpdateGrid(m_aGameObjects);

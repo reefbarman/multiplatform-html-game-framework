@@ -187,6 +187,35 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
+    this.DrawLine = function(cMatrix, cStart, cEnd, color){
+        m_cCtx.save();
+        
+        var cCamera = CM.GetCamera();
+        
+        m_cTransforMatrix.Reset();
+        
+        if (cCamera.Cartesian)
+        {
+            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+        } 
+        
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        
+        m_cCtx.beginPath();
+        
+        m_cCtx.moveTo(cStart.x, cStart.y);
+        
+        m_cCtx.lineTo(cEnd.x, cEnd.y);
+        
+        m_cCtx.lineWidth = 0.01;
+        m_cCtx.strokeStyle = GetColor(color);
+        m_cCtx.stroke();
+        
+        m_cCtx.restore();
+    };
+    
     this.DrawText = function(cMatrix, sText, sFont, color, aAlignment){
         m_cCtx.save();
         

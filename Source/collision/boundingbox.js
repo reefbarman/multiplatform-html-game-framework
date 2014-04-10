@@ -1,5 +1,6 @@
 // http://www.flipcode.com/archives/2D_OBB_Intersection.shtml
 // http://www.codezealot.org/archives/55
+// http://gamedev.stackexchange.com/questions/25397/obb-vs-obb-collision-detection
 
 include("math/vector.js", true);
 
@@ -27,7 +28,6 @@ function BoundingBox(cPos, nWidth, nHeight)
     
     this.m_aCorners = [];
     this.m_aAxes = [];
-    this.m_aOrigins = [];
     
     this.__GenerateCorners();
 }
@@ -70,43 +70,54 @@ BoundingBox.prototype.__CalculateCornersAxes = function(cParentMatrix){
         Vec.Subtract(aCorners[1], aCorners[0]),
         Vec.Subtract(aCorners[3], aCorners[0])
     ];
-
-    this.m_aOrigins = [];
-
-    for (var i = 0; i < 2; i++)
-    {
-        this.m_aAxes[i].ScalarMultiply(1 / this.m_aAxes[i].Length());
-        this.m_aOrigins[i] = aCorners[0].Dot(this.m_aAxes[i]);
-    }
     
     return aCorners;
 };
 
+function SATTest(cAxis, aCorners)
+{
+    var cMinMax = {
+        min: null,
+        max: null
+    };
+    
+    for(var i = 0 ; i < aCorners.length ; i++)
+    {
+        var nDot = aCorners[i].Dot(cAxis);
+        
+        if (cMinMax.min === null || nDot < cMinMax.min)
+        {
+            cMinMax.min = nDot;
+        }
+        
+        if (cMinMax.max === null || nDot > cMinMax.max)
+        {
+            cMinMax.max = nDot;
+        }
+    }
+    
+    return cMinMax;
+}
+
+function IsBetweenOrdered(nVal, nLowerBound, nUpperBound) 
+{
+    return nLowerBound <= nVal && nVal <= nUpperBound;
+}
+
+function MinMaxOverlap(cMinMax1, cMinMax2)
+{
+    return IsBetweenOrdered(cMinMax2.min, cMinMax1.min, cMinMax1.max) || IsBetweenOrdered(cMinMax1.min, cMinMax2.min, cMinMax2.max);
+}
+
 BoundingBox.prototype.__Overlaps = function(cBounds1, cBounds2){
     var bOverlap = true;
     
-    for (var i = 0; i < 2; i++)
+    for( var i = 0 ; i < cBounds1.Axes.length ; i++ )
     {
-        var t = cBounds2.Corners[0].Dot(cBounds1.Axes[i]);
+        var cBounds1MinMax = SATTest(cBounds1.Axes[i], cBounds1.Corners);
+        var cBounds2MinMax = SATTest(cBounds1.Axes[i], cBounds2.Corners);
         
-        var tMin = t;
-        var tMax = t;
-        
-        for (var j = 1; j < 4; j++)
-        {
-            t = cBounds2.Corners[j].Dot(cBounds1.Axes[i]);
-            
-            if (t < tMin)
-            {
-                tMin = t;
-            }
-            else  if (t > tMax)
-            {
-                tMax = t;
-            }
-        }
-        
-        if (tMin > (1 + cBounds1.Origins[i]) || tMax < cBounds1.Origins[i])
+        if(!MinMaxOverlap(cBounds1MinMax, cBounds2MinMax))
         {
             bOverlap = false;
             break;
@@ -156,8 +167,7 @@ BoundingBox.prototype.GetBounds = function(cParentMatrix){
             y2: nMaxY
         },
         Corners: aCorners,
-        Axes: this.m_aAxes,
-        Origins: this.m_aOrigins
+        Axes: this.m_aAxes
     };
 };
 

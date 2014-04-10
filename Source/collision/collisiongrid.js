@@ -10,13 +10,17 @@ EN.CollisionGrid = (function(){
     var m_nGridSize = 0;
     var m_nGridColumns = 0;
     var m_nGridRows = 0;
+    var m_nMagnitude = 1;
     
     return {
-        Init: function(nGridSize, nGridWidth, nGridHeight){
+        Init: function(nGridSize, nGridWidth, nGridHeight, nGridPrecision){
+            nGridPrecision = isset(nGridPrecision) ? nGridPrecision : 0;
+            m_nMagnitude = Math.pow(10, nGridPrecision);
+            
             m_nGridSize = nGridSize;
             
-            m_nGridColumns = ceil(nGridWidth / m_nGridSize);
-            m_nGridRows = ceil(nGridHeight / m_nGridSize);
+            m_nGridColumns = ceil(nGridWidth * m_nMagnitude / m_nGridSize);
+            m_nGridRows = ceil(nGridHeight * m_nMagnitude / m_nGridSize);
             
             m_bInited = true;
         },
@@ -28,10 +32,15 @@ EN.CollisionGrid = (function(){
                 aGameObjects.forEach(function(cGameObject){
                     var cBounds = cGameObject.Bounds.GetBounds();
                     
-                    var nMinColumn = max(0, floor(cBounds.MinMax.x1 / m_nGridSize));
-                    var nMaxColumn = min(m_nGridColumns - 1, floor(cBounds.MinMax.x2 / m_nGridSize));
-                    var nMinRow = max(0, floor(cBounds.MinMax.y1 / m_nGridSize));
-                    var nMaxRow = min(m_nGridRows - 1, floor(cBounds.MinMax.y2 / m_nGridSize));
+                    var x1 = cBounds.MinMax.x1 * m_nMagnitude;
+                    var x2 = cBounds.MinMax.x2 * m_nMagnitude;
+                    var y1 = cBounds.MinMax.y1 * m_nMagnitude;
+                    var y2 = cBounds.MinMax.y2 * m_nMagnitude;
+                    
+                    var nMinColumn = max(0, floor(x1 / m_nGridSize));
+                    var nMaxColumn = min(m_nGridColumns - 1, floor(x2 / m_nGridSize));
+                    var nMinRow = max(0, floor(y1 / m_nGridSize));
+                    var nMaxRow = min(m_nGridRows - 1, floor(y2 / m_nGridSize));
 
                     for (var i = nMinColumn; i <= nMaxColumn; i++)
                     {
@@ -70,7 +79,7 @@ EN.CollisionGrid = (function(){
             return aGameObjects;
         },
         IterateGrid: function(fOnCollisionGroup){
-            if (m_aGrid)
+            if (m_aGrid && m_bInited)
             {
                 for (var i = 0; i < m_aGrid.length; i++)
                 {
@@ -78,7 +87,7 @@ EN.CollisionGrid = (function(){
                     {
                         for (var j = 0; j < m_aGrid[i].length; j++)
                         {
-                            if (m_aGrid[i][j])
+                            if (m_aGrid[i][j] && m_aGrid[i][j].length > 1)
                             {
                                 fOnCollisionGroup(m_aGrid[i][j]);
                             }
