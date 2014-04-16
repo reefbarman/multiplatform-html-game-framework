@@ -110,7 +110,9 @@ function ControlBar()
                 $("<label>").text("Device: "),
                 $("<select>").append(
                     $("<option>").text("iPhone5").val("IPHONE_5"),
-                    $("<option>").text("iPhone4").val("IPHONE_4")
+                    $("<option>").text("iPhone4").val("IPHONE_4"),
+                    $("<option>").text("iPhone3GS").val("IPHONE_3GS"),
+                    $("<option>").text("Nexus4").val("NEXUS_4")
                 ).change(function(){
                     var sValue = $(this).val();
                     

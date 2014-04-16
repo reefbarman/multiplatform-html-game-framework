@@ -14,8 +14,8 @@ function DeviceUI(fOnDeviceReady)
             width: cOptions.width,
             height: cOptions.height,
             transform: "scale(" + 1 / cOptions.pixelRatio + ")",
-            "margin-left": -(cOptions.width / cOptions.pixelRatio),
-            "margin-top": -(cOptions.height / cOptions.pixelRatio)
+            "margin-left": -(cOptions.width / 2),
+            "margin-top": -(cOptions.height / 2)
         });
         
         m_$DeviceFrame = $("<div>").addClass("cPG_DeviceFrame cPG_Device_" + cOptions.os + "_" + cOptions.device).append(
@@ -45,6 +45,20 @@ DeviceUI.DEVICES = {
         device: "iPhone4",
         width: 960,
         height: 640,
+        pixelRatio: 2
+    },
+    IPHONE_3GS: {
+        os: "iOS",
+        device: "iPhone3GS",
+        width: 480,
+        height: 320,
+        pixelRatio: 1
+    },
+    NEXUS_4: {
+        os: "Android",
+        device: "Nexus4",
+        width: 1280,
+        height: 768,
         pixelRatio: 2
     }
 };

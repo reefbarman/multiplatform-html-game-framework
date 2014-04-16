@@ -1,29 +1,46 @@
+include("lib/cocoonjs/CocoonJS_Ad.js", true);
+
 EN.Advertisement = (function(){
-    var m_cEjectaIAdInstance = null;
+    
+    var m_bBannerHidden = true;
+    var m_sLastLocation = CocoonJS.Ad.BannerLayout.TOP_CENTER;
     
     return {
         Init: function(){
-            if (typeof Ejecta != "undefined" && isset(Ejecta.AdBanner))
-            {
-                m_cEjectaIAdInstance = new Ejecta.AdBanner();
-            }
+            CocoonJS.Ad.onBannerShown.addEventListener(function(){
+                console.log("onBannerShown");
+                m_bBannerHidden = false;
+            });
+
+            CocoonJS.Ad.onBannerHidden.addEventListener(function(){
+                console.log("onBannerHidden");
+                m_bBannerHidden = true;
+            });
+
+            CocoonJS.Ad.onBannerReady.addEventListener(function(width,height){
+                console.log("onBannerReady " + width, height);
+                CocoonJS.Ad.setBannerLayout(m_sLastLocation);
+            });
+            
+            CocoonJS.Ad.preloadBanner();
         },
         Show: function(sLocation){
-            if (m_cEjectaIAdInstance)
+            if (m_bBannerHidden)
             {
-                m_cEjectaIAdInstance.isAtBottom = sLocation == EN.Advertisement.LOCATION.BOTTOM ? true : false;
-                m_cEjectaIAdInstance.show();
+                m_sLastLocation = sLocation;
+                CocoonJS.Ad.setBannerLayout(sLocation);
+                CocoonJS.Ad.showBanner();
             }
         },
         Hide: function(){
-            if (m_cEjectaIAdInstance)
+            if (!m_bBannerHidden)
             {
-                m_cEjectaIAdInstance.hide();
+                CocoonJS.Ad.hideBanner();
             }
         },
         LOCATION: {
-            TOP: "top",
-            BOTTOM: "bottom"
+            TOP: CocoonJS.Ad.BannerLayout.TOP_CENTER,
+            BOTTOM: CocoonJS.Ad.BannerLayout.BOTTOM_CENTER
         }
     };
 })();

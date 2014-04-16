@@ -41,7 +41,8 @@ function Game()
     
     EnvironmentDetection();
     
-    var eCanvas = document.createElement("canvas");
+    var eCanvas = document.createElement(navigator.isCocoonJS ? "screencanvas" : "canvas");
+    eCanvas.screencanvas = true;
 
     eCanvas.width = window.EN.device.width;
     eCanvas.height = window.EN.device.height;

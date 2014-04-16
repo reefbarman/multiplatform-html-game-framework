@@ -45,7 +45,7 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
             };
 
             aPaths.forEach(function(sPath){
-                if (sPath[0] !== "." && sPath !== "Playground")
+                if (sPath[0] !== "." && sPath !== "Playground" && sPath !== "releases")
                 {
                     var sFullPath = path.join(sDir, sPath);
 

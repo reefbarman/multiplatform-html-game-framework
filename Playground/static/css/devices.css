@@ -26,3 +26,19 @@
     margin-left: -371px;
     margin-top: -190px;
 }
+
+.cPG_Device_iOS_iPhone3GS{
+    background: url(/img/devices/Device_iOS_iPhone3GS.png);
+    width: 714px;
+    height: 374px;
+    margin-left: -357px;
+    margin-top: -187px;
+}
+
+.cPG_Device_Android_Nexus4{
+    background: url(/img/devices/Device_Android_Nexus4.png);
+    width: 836px;
+    height: 428px;
+    margin-left: -418px;
+    margin-top: -214px;
+}

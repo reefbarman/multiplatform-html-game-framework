@@ -58,6 +58,8 @@ include("base/base.js", true);
 include("base/logging.js", true);
 include("base/game.js", true);
 
+include("lib/cocoonjs/CocoonJS.js", true);
+
 EN.Init = function(fOnInit){
     var fInit = function(){
         try
