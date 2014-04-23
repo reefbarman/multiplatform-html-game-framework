@@ -224,7 +224,7 @@ Emitter.prototype.Draw = function(cRenderer){
                 cParticleTransform.Multiply(this.m_cTransformMatrix);
             }
             
-            cTransform.Multiply(cParticleTransform).Multiply(cCamera.GetTransformMatrix());
+            cTransform.Multiply(cParticleTransform).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
 
             cCtx.setTransform.apply(cCtx, cTransform.GetCanvasTransform());
     

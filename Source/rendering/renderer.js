@@ -16,9 +16,6 @@ EN.Renderer = function(eCanvas){
     {
         m_cCtx = m_eCanvas.getContext("2d");
         
-        m_eCanvas.width = window.innerWidth;
-        m_eCanvas.height = window.innerHeight;
-        
         m_cTransforMatrix = new EN.Matrix();
         
         m_cScaleInverseMatrix = new EN.Matrix();
@@ -60,7 +57,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
@@ -95,7 +92,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         }
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
@@ -119,7 +116,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate(-nWidth / 2, -nHeight / 2);
@@ -142,7 +139,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -167,7 +164,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -199,7 +196,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -228,7 +225,7 @@ EN.Renderer = function(eCanvas){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         

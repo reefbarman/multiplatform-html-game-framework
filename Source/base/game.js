@@ -1,3 +1,4 @@
+include("rendering/viewport.js", true);
 include("rendering/renderer.js", true);
 include("control/controller.js", true);
 include("states/statemanager.js", true);
@@ -25,12 +26,12 @@ function Game()
 
         if (isset(cParams.Playground))
         {
-            cDevice.os = cParams.OS || "Unknown";
-            cDevice.type = cParams.Device || "Generic";
+            cDevice.os = cParams.OS || "unknown";
+            cDevice.model = cParams.Model || "generic";
         }
-        else
+        else if (isset(window.CocoonJS) && isset(CocoonJS.App))
         {
-            //TODO TC: Do device detection
+            cDevice = CocoonJS.App.getDeviceInfo();
         }
         
         cDevice.width = window.innerWidth;
@@ -41,11 +42,13 @@ function Game()
     
     EnvironmentDetection();
     
+    Game.Viewport = new EN.Viewport();
+    
     var eCanvas = document.createElement(navigator.isCocoonJS ? "screencanvas" : "canvas");
     eCanvas.screencanvas = true;
 
-    eCanvas.width = window.EN.device.width;
-    eCanvas.height = window.EN.device.height;
+    eCanvas.width = EN.device.width;
+    eCanvas.height = EN.device.height;
 
     document.body.appendChild(eCanvas);
     

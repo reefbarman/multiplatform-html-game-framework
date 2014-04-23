@@ -122,6 +122,24 @@
     };
 
     /**
+     * @ignore
+     * Forward service might not be available if only one JS service is included
+     */
+    function isNativeBridgeServiceAvailable(){
+        if (CocoonJS.App.forward.nativeAvailable === 'boolean') {
+            //cached value
+            return CocoonJS.App.forward.nativeAvailable;
+        }
+        else {
+            var available = CocoonJS.makeNativeExtensionObjectFunctionCall("IDTK_APP", "forwardAvailable", arguments);
+            available = !!available;
+            CocoonJS.App.forward.nativeAvailable = available;
+            return available;
+        }
+
+    }
+
+    /**
      * Makes a forward call of some javascript code to be executed in a different environment (i.e. from CocoonJS to the WebView and viceversa).
      * It waits until the code is executed and the result of it is returned === synchronous.
      * @function
@@ -129,10 +147,10 @@
      * @return {string} The result of the execution of the passed JavaScript code in the different JavaScript environment.
      */
     CocoonJS.App.forward = function (javaScriptCode) {
-        if (CocoonJS.App.nativeExtensionObjectAvailable) {
+        if (CocoonJS.App.nativeExtensionObjectAvailable && isNativeBridgeServiceAvailable()) {
             return CocoonJS.makeNativeExtensionObjectFunctionCall("IDTK_APP", "forward", arguments);
         }
-        else if (!navigator.isCocoonJS) {
+        else {
             if (window.name == 'CocoonJS_App_ForCocoonJS_WebViewIFrame') {
                 return window.parent.eval(javaScriptCode);
             }
@@ -151,7 +169,7 @@
      * @param {function} [returnCallback] A function callback that will be called when the passed JavaScript code is executed in a different thread to pass the result of the execution in the different JavaScript environment.
      */
     CocoonJS.App.forwardAsync = function (javaScriptCode, returnCallback) {
-        if (CocoonJS.App.nativeExtensionObjectAvailable) {
+        if (CocoonJS.App.nativeExtensionObjectAvailable && isNativeBridgeServiceAvailable()) {
             if (typeof returnCallback !== 'undefined') {
                 return ext.IDTK_APP.makeCallAsync("forward", javaScriptCode, returnCallback);
             }
@@ -159,7 +177,7 @@
                 return ext.IDTK_APP.makeCallAsync("forward", javaScriptCode);
             }
         }
-        else if (!navigator.isCocoonJS) {
+        else {
             if (window.name == 'CocoonJS_App_ForCocoonJS_WebViewIFrame') {
                 return window.parent.eval(javaScriptCode);
             }

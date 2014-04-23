@@ -105,21 +105,22 @@ function ControlBar()
             );
         }
         
+        var $DeviceSelect = $("<select>").change(function(){
+            var sValue = $(this).val();
+
+            m_cDeviceUI.ChangeDevice(sValue);
+            $.cookie("SelectedDevice", sValue);
+        });
+        
+        for (var sDevice in DeviceUI.DEVICES)
+        {
+            $DeviceSelect.append($("<option>").text(DeviceUI.DEVICES[sDevice].name).val(sDevice));
+        }
+        
         m_$ControlBar.append(
             $("<div>").addClass("cPG_DeviceTypeControl").append(
                 $("<label>").text("Device: "),
-                $("<select>").append(
-                    $("<option>").text("iPhone5").val("IPHONE_5"),
-                    $("<option>").text("iPhone4").val("IPHONE_4"),
-                    $("<option>").text("iPhone3GS").val("IPHONE_3GS"),
-                    $("<option>").text("Nexus4").val("NEXUS_4")
-                ).change(function(){
-                    var sValue = $(this).val();
-                    
-                    m_cDeviceUI.ChangeDevice(DeviceUI.DEVICES[sValue]);
-                    
-                    $.cookie("SelectedDevice", sValue);
-                }).val(m_sSelectedDevice)
+                $DeviceSelect.val(m_sSelectedDevice)
             )
         );
     }
@@ -158,7 +159,7 @@ function ControlBar()
     this.Show = function(){
         $("body").append(m_$ControlBar);
         
-        m_cDeviceUI.ChangeDevice(DeviceUI.DEVICES[m_sSelectedDevice]);
+        m_cDeviceUI.ChangeDevice(m_sSelectedDevice);
         
         EventDispatcher.Trigger("WindowResize", m_$ControlBar.outerHeight());
     };

@@ -8,17 +8,14 @@ EN.Advertisement = (function(){
     return {
         Init: function(){
             CocoonJS.Ad.onBannerShown.addEventListener(function(){
-                console.log("onBannerShown");
                 m_bBannerHidden = false;
             });
 
             CocoonJS.Ad.onBannerHidden.addEventListener(function(){
-                console.log("onBannerHidden");
                 m_bBannerHidden = true;
             });
 
             CocoonJS.Ad.onBannerReady.addEventListener(function(width,height){
-                console.log("onBannerReady " + width, height);
                 CocoonJS.Ad.setBannerLayout(m_sLastLocation);
             });
             

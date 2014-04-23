@@ -16,7 +16,7 @@ var StateManager = (function(){
         cCamera.Init();
         
         var cMatrix = new EN.Matrix();
-        cMatrix.SetTranslation(new EN.Vector(EN.device.width / 2, EN.device.height / 2));
+        cMatrix.SetTranslation(new EN.Vector(EN.Game.Viewport.Width / 2, EN.Game.Viewport.Height / 2));
         
         var cColor = new EN.Color(0, 0, 0, 0);
         
@@ -50,7 +50,7 @@ var StateManager = (function(){
                 Draw: function(cRenderer){
                     EN.CameraManager.Push(cCamera);
                     cColor.a = nAlpha;
-                    cRenderer.DrawRectangle(cMatrix, EN.device.width, EN.device.height, cColor);
+                    cRenderer.DrawRectangle(cMatrix, EN.Game.Viewport.Width, EN.Game.Viewport.Height, cColor);
                     EN.CameraManager.Pop();
                 }
             };

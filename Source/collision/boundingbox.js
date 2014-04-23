@@ -54,15 +54,15 @@ BoundingBox.prototype.__GenerateCorners = function(){
 BoundingBox.prototype.__CalculateCornersAxes = function(cParentMatrix){
     var aCorners = [];
     
+    var cTransformMatrix = this.m_cTransformMatrix;
+
+    if (cParentMatrix)
+    {
+        cTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, cParentMatrix);
+    }
+    
     for (var i = 0; i < this.m_aCorners.length; i++)
     {
-        var cTransformMatrix = this.m_cTransformMatrix;
-        
-        if (cParentMatrix)
-        {
-            cTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, cParentMatrix);
-        }
-        
         aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], cTransformMatrix));
     }
     

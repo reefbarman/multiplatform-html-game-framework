@@ -9,30 +9,73 @@
     */
     CocoonJS.App = CocoonJS.App ? CocoonJS.App : {};
 
-    if (!CocoonJS.App.nativeExtensionObjectAvailable)
-    {
-        (function createWebView() { 
-            CocoonJS.App.EmulatedWebView = document.createElement('div'); 
-            CocoonJS.App.EmulatedWebView.setAttribute('id', 'CocoonJS_App_ForCocoonJS_WebViewDiv'); 
-            CocoonJS.App.EmulatedWebView.style.width = 0; 
-            CocoonJS.App.EmulatedWebView.style.height = 0; 
-            CocoonJS.App.EmulatedWebView.style.position = "absolute"; 
-            CocoonJS.App.EmulatedWebView.style.left = 0; 
-            CocoonJS.App.EmulatedWebView.style.top = 0;
-            CocoonJS.App.EmulatedWebView.style.backgroundColor = 'transparent';
-            CocoonJS.App.EmulatedWebView.style.border = "0px solid #000"; 
-            CocoonJS.App.EmulatedWebViewIFrame = document.createElement("IFRAME"); 
-            CocoonJS.App.EmulatedWebViewIFrame.setAttribute('id', 'CocoonJS_App_ForCocoonJS_WebViewIFrame');
-            CocoonJS.App.EmulatedWebViewIFrame.setAttribute('name', 'CocoonJS_App_ForCocoonJS_WebViewIFrame');
-            CocoonJS.App.EmulatedWebViewIFrame.style.width = 0; 
-            CocoonJS.App.EmulatedWebViewIFrame.style.height = 0; 
-            CocoonJS.App.EmulatedWebViewIFrame.frameBorder = 0;
-            CocoonJS.App.EmulatedWebViewIFrame.allowtransparency = true;
-            CocoonJS.App.EmulatedWebView.appendChild(CocoonJS.App.EmulatedWebViewIFrame);
-            if(!document.body)
+    /**
+     * FOR DOCUMENTATION PURPOSE ONLY! The documentation of the function callback for the {@link CocoonJS.App.onLoadInTheWebViewSucceed} event calls.
+     * @name OnLoadInTheWebViewSucceedListener
+     * @function
+     * @static
+     * @memberOf CocoonJS.App
+     * @param {string} pageURL The URL of the page that had been loaded in the webview.
+     */
+    /**
+    * This {@link CocoonJS.EventHandler} object allows listening to events called when the WebView load has completed successfully.
+    * The callback function's documentation is represented by {@link CocoonJS.App.OnLoadInTheWebViewSucceedListener}
+    * @event
+    * @static
+    * @memberOf CocoonJS.App
+    * @param {string} pageURL A string that represents the page URL loaded.
+    */
+    CocoonJS.App.onLoadInTheWebViewSucceed = new CocoonJS.EventHandler("IDTK_APP", "App", "forwardpageload");
+
+    /**
+     * FOR DOCUMENTATION PURPOSE ONLY! The documentation of the function callback for the {@link CocoonJS.App.onLoadInTheWebViewFailed} event calls.
+     * @name OnLoadInTheWebViewFailedListener
+     * @function
+     * @static
+     * @memberOf CocoonJS.App
+     * @param {string} pageURL The URL of the page that had been loaded in the webview.
+     */
+    /**
+    * This {@link CocoonJS.EventHandler} object allows listening to events called when the WebView load fails.
+    * The callback function's documentation is represented by {@link CocoonJS.App.OnLoadInTheWebViewFailedListener}
+    * @event
+    * @static
+    * @memberOf CocoonJS.App
+    */
+    CocoonJS.App.onLoadInTheWebViewFailed = new CocoonJS.EventHandler("IDTK_APP", "App", "forwardpagefail");
+
+    function checkEmulatedWebViewReady() {
+        var emulatedWB = CocoonJS.App.EmulatedWebView;
+        if (emulatedWB) {
+            return; //ready
+        }
+
+        emulatedWB = document.createElement('div'); 
+        emulatedWB.setAttribute('id', 'CocoonJS_App_ForCocoonJS_WebViewDiv'); 
+        emulatedWB.style.width = 0; 
+        emulatedWB.style.height = 0; 
+        emulatedWB.style.position = "absolute"; 
+        emulatedWB.style.left = 0; 
+        emulatedWB.style.top = 0;
+        emulatedWB.style.backgroundColor = 'transparent';
+        emulatedWB.style.border = "0px solid #000"; 
+
+        var frame = document.createElement("IFRAME");
+        frame.setAttribute('id', 'CocoonJS_App_ForCocoonJS_WebViewIFrame');
+        frame.setAttribute('name', 'CocoonJS_App_ForCocoonJS_WebViewIFrame');
+        frame.style.width = 0; 
+        frame.style.height = 0; 
+        frame.frameBorder = 0;
+        frame.allowtransparency = true;
+
+        emulatedWB.appendChild(frame);
+        CocoonJS.App.EmulatedWebView = emulatedWB;
+        CocoonJS.App.EmulatedWebViewIFrame = frame;
+
+        if(!document.body) {
             document.body = document.createElement("body");
-            document.body.appendChild(CocoonJS.App.EmulatedWebView);
-        })(); 
+        }
+        document.body.appendChild(CocoonJS.App.EmulatedWebView);
     }
 
     /**
@@ -72,23 +115,11 @@
     */
     CocoonJS.App.loadInTheWebView = function(path, storageType)
     {
-        if (CocoonJS.App.nativeExtensionObjectAvailable)
+        if (navigator.isCocoonJS && CocoonJS.App.nativeExtensionObjectAvailable)
         {
-            // TODO: All this code should be changed to a simple call makeNativeExtensionObjectFunctionCall when the native argument control is improved.
-            var javaScriptCodeToForward = "ext.IDTK_APP.makeCall('loadPath'";
-            if (typeof path !== 'undefined')
-            {
-                javaScriptCodeToForward += ", '" + path + "'";
-                if (typeof storageType !== 'undefined')
-                {
-                    javaScriptCodeToForward += ", '" + storageType + "'";
-                }
-            }
-            javaScriptCodeToForward += ");";
-
-            return CocoonJS.App.forwardAsync(javaScriptCodeToForward);
+            CocoonJS.makeNativeExtensionObjectFunctionCall("IDTK_APP", "loadInTheWebView", arguments)
         }
-        else if (!navigator.isCocoonJS)
+        else
         {
             var xhr = new XMLHttpRequest();
 
@@ -97,6 +128,8 @@
                 {
                     if (xhr.status === 200)
                     {
+
+                        checkEmulatedWebViewReady();
                         var callback= function(event){
                             CocoonJS.App.onLoadInTheWebViewSucceed.notifyEventListeners(path);
                             CocoonJS.App.EmulatedWebViewIFrame.removeEventListener("load", callback);
@@ -126,12 +159,13 @@
      */
     CocoonJS.App.reloadWebView = function()
     {
-        if (CocoonJS.App.nativeExtensionObjectAvailable)
+        if (CocoonJS.App.nativeExtensionObjectAvailable && navigator.isCocoonJS)
         {
-            return CocoonJS.App.forwardAsync("ext.IDTK_APP.makeCall('reload');");
+            CocoonJS.makeNativeExtensionObjectFunctionCall("IDTK_APP", "reloadWebView", arguments);
         }
-        else if (!navigator.isCocoonJS)
+        else
         {
+            checkEmulatedWebViewReady();
             CocoonJS.App.EmulatedWebViewIFrame.contentWindow.location.reload();
         }
     };
@@ -146,26 +180,22 @@
     */
     CocoonJS.App.showTheWebView = function(x, y, width, height)
     {
-        if (CocoonJS.App.nativeExtensionObjectAvailable)
+        if (CocoonJS.App.nativeExtensionObjectAvailable && navigator.isCocoonJS)
         {
-            var javaScriptCodeToForward = "ext.IDTK_APP.makeCall('show'";
-            if (typeof x !== 'undefined' && typeof y !== 'undefined' && typeof width !== 'undefined' && typeof height !== 'undefined')
-            {
-                javaScriptCodeToForward += ", " + x + ", " + y + ", " + width + ", " + height;
-            }
-            javaScriptCodeToForward += ");";
-
-            return CocoonJS.App.forwardAsync(javaScriptCodeToForward);
+            CocoonJS.makeNativeExtensionObjectFunctionCall("IDTK_APP", "showTheWebView", arguments)
         }
-        else if (!navigator.isCocoonJS)
+        else
         {
-            CocoonJS.App.EmulatedWebViewIFrame.style.width = (width ? width : window.innerWidth)+'px';
-            CocoonJS.App.EmulatedWebViewIFrame.style.height = (height ? height : window.innerHeight)+'px';
+            checkEmulatedWebViewReady();
+            CocoonJS.App.EmulatedWebViewIFrame.style.width = (width ? width/window.devicePixelRatio : window.innerWidth)+'px';
+            CocoonJS.App.EmulatedWebViewIFrame.style.height = (height ? height/window.devicePixelRatio : window.innerHeight)+'px';
             CocoonJS.App.EmulatedWebView.style.left = (x ? x : 0)+'px';
             CocoonJS.App.EmulatedWebView.style.top = (y ? y : 0)+'px';
-            CocoonJS.App.EmulatedWebView.style.width = (width ? width : window.innerWidth)+'px';
-            CocoonJS.App.EmulatedWebView.style.height = (height ? height : window.innerHeight)+'px';
+            CocoonJS.App.EmulatedWebView.style.width = (width ? width/window.devicePixelRatio : window.innerWidth)+'px';
+            CocoonJS.App.EmulatedWebView.style.height = (height ? height/window.devicePixelRatio : window.innerHeight)+'px';
             CocoonJS.App.EmulatedWebView.style.display = "block";
+
+            console.log(CocoonJS.App.EmulatedWebViewIFrame.style.cssText);
         }
     };
 
@@ -182,6 +212,7 @@
         }
         else if (!navigator.isCocoonJS)
         {
+            checkEmulatedWebViewReady();
             CocoonJS.App.EmulatedWebView.style.display = "none";
         }
     };
@@ -326,39 +357,5 @@
         // TODO: Implement this function.
     };
 
-    /**
-     * FOR DOCUMENTATION PURPOSE ONLY! The documentation of the function callback for the {@link CocoonJS.App.onLoadInTheWebViewSucceed} event calls.
-     * @name OnLoadInTheWebViewSucceedListener
-     * @function
-     * @static
-     * @memberOf CocoonJS.App
-     * @param {string} pageURL The URL of the page that had been loaded in the webview.
-     */
-    /**
-    * This {@link CocoonJS.EventHandler} object allows listening to events called when the WebView load has completed successfully.
-    * The callback function's documentation is represented by {@link CocoonJS.App.OnLoadInTheWebViewSucceedListener}
-    * @event
-    * @static
-    * @memberOf CocoonJS.App
-    * @param {string} pageURL A string that represents the page URL loaded.
-    */
-    CocoonJS.App.onLoadInTheWebViewSucceed = new CocoonJS.EventHandler("IDTK_APP", "App", "forwardpageload");
-
-    /**
-     * FOR DOCUMENTATION PURPOSE ONLY! The documentation of the function callback for the {@link CocoonJS.App.onLoadInTheWebViewFailed} event calls.
-     * @name OnLoadInTheWebViewFailedListener
-     * @function
-     * @static
-     * @memberOf CocoonJS.App
-     * @param {string} pageURL The URL of the page that had been loaded in the webview.
-     */
-    /**
-    * This {@link CocoonJS.EventHandler} object allows listening to events called when the WebView load fails.
-    * The callback function's documentation is represented by {@link CocoonJS.App.OnLoadInTheWebViewFailedListener}
-    * @event
-    * @static
-    * @memberOf CocoonJS.App
-    */
-    CocoonJS.App.onLoadInTheWebViewFailed = new CocoonJS.EventHandler("IDTK_APP", "App", "forwardpagefail");
     
 })();

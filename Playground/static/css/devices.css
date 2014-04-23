@@ -1,3 +1,9 @@
+.cPG_DeviceScale{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
 .cPG_DeviceFrame{
     position: absolute;
     top: 50%;
@@ -11,34 +17,50 @@
     border: none;
 }
 
-.cPG_Device_iOS_iPhone5{
-    background: url(/img/devices/Device_iOS_iPhone5.png);
+.cPG_Device_ios_IPHONE_5{
+    background: url(/img/devices/Device_ios_IPHONE_5.png);
     width: 804px;
     height: 380px;
     margin-left: -402px;
     margin-top: -190px;
 }
 
-.cPG_Device_iOS_iPhone4{
-    background: url(/img/devices/Device_iOS_iPhone4.png);
+.cPG_Device_ios_IPHONE_4{
+    background: url(/img/devices/Device_ios_IPHONE_4.png);
     width: 742px;
     height: 379px;
     margin-left: -371px;
     margin-top: -190px;
 }
 
-.cPG_Device_iOS_iPhone3GS{
-    background: url(/img/devices/Device_iOS_iPhone3GS.png);
+.cPG_Device_ios_IPHONE_3GS{
+    background: url(/img/devices/Device_ios_IPHONE_3GS.png);
     width: 714px;
     height: 374px;
     margin-left: -357px;
     margin-top: -187px;
 }
 
-.cPG_Device_Android_Nexus4{
-    background: url(/img/devices/Device_Android_Nexus4.png);
+.cPG_Device_android_NEXUS_4{
+    background: url(/img/devices/Device_android_NEXUS_4.png);
     width: 836px;
     height: 428px;
     margin-left: -418px;
     margin-top: -214px;
+}
+
+.cPG_Device_ios_IPAD{
+    background: url(/img/devices/Device_ios_IPAD.png);
+    width: 1250px;
+    height: 884px;
+    margin-left: -625px;
+    margin-top: -442px;
+}
+
+.cPG_Device_android_NEXUS_7{
+    background: url(/img/devices/Device_android_NEXUS_7.png);
+    width: 1650px;
+    height: 1010px;
+    margin-left: -825px;
+    margin-top: -505px;
 }
