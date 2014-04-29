@@ -17,11 +17,11 @@ EN.GameCenter = (function(){
                         m_cSocialService = CocoonJS.Social.GameCenter.getSocialInterface();
                         break;
                     case "android":
-                        /*CocoonJS.Social.GooglePlayGames.init({
+                        CocoonJS.Social.GooglePlayGames.init({
                             clientId: EN.settings.android.applicationID
                         });
                         
-                        m_cSocialService = CocoonJS.Social.GooglePlayGames.getSocialInterface();*/
+                        m_cSocialService = CocoonJS.Social.GooglePlayGames.getSocialInterface();
                         break;
                 }
                 

@@ -5,43 +5,48 @@ include("states/statemanager.js", true);
 include("states/state.js", true);
 
 var SM = EN.StateManager;
-
 var now = Date.now;
+
+var s_bGamePaused = false;
 
 function Game()
 {
-    function EnvironmentDetection()
-    {
-        /**
-         * @namespace Device
-         * @property {string} os - the OS the current device is running eg. iOS
-         * @property {string} type - the type of device running eg. iPhone5
-         * @property {number} width - the width of the viewport in pixels
-         * @property {number} height - the height of the viewport in pixels
-         * @see EN
-         */
-        var cDevice = {};
+    this.__EnvironmentDetection();
+    this.__Init();
+}
 
-        var cParams = parseQueryParams();
+Game.prototype.__EnvironmentDetection = function(){
+    /**
+    * @namespace Device
+    * @property {string} os - the OS the current device is running eg. ios
+    * @property {string} model - the model of device running eg. IPHONE_5
+    * @property {number} width - the width of the viewport in pixels
+    * @property {number} height - the height of the viewport in pixels
+    * @see EN
+    */
+   var cDevice = {};
 
-        if (isset(cParams.Playground))
-        {
-            cDevice.os = cParams.OS || "unknown";
-            cDevice.model = cParams.Model || "generic";
-        }
-        else if (isset(window.CocoonJS) && isset(CocoonJS.App))
-        {
-            cDevice = CocoonJS.App.getDeviceInfo();
-        }
-        
-        cDevice.width = window.innerWidth;
-        cDevice.height = window.innerHeight;
-        
-        window.EN.device = cDevice;
-    }
-    
-    EnvironmentDetection();
-    
+   var cParams = parseQueryParams();
+
+   if (isset(cParams.Playground))
+   {
+       cDevice.os = cParams.OS || "unknown";
+       cDevice.model = cParams.Model || "generic";
+   }
+   else if (isset(window.CocoonJS) && isset(CocoonJS.App))
+   {
+       cDevice = CocoonJS.App.getDeviceInfo();
+   }
+
+   cDevice.width = window.innerWidth;
+   cDevice.height = window.innerHeight;
+   
+   //console.log(JSON.stringify(cDevice));
+
+   window.EN.device = cDevice;
+};
+
+Game.prototype.__Init = function(){
     Game.Viewport = new EN.Viewport();
     
     var eCanvas = document.createElement(navigator.isCocoonJS ? "screencanvas" : "canvas");
@@ -54,7 +59,19 @@ function Game()
     
     this.m_cRenderer = new EN.Renderer(eCanvas);
     EN.Controller.Init(eCanvas);
-}
+    
+    CocoonJS.App.onActivated.addEventListener(function(){
+        var cEvent = document.createEvent("Event");
+        cEvent.initEvent("AppResumed", true, true);
+        document.dispatchEvent(cEvent);
+    });
+    
+    CocoonJS.App.onSuspended.addEventListener(function(){
+        var cEvent = document.createEvent("Event");
+        cEvent.initEvent("AppPaused", true, true);
+        document.dispatchEvent(cEvent);
+    });
+};
 
 Game.prototype.Update = function(nDt){
     SM.Update(nDt);
@@ -75,6 +92,12 @@ Game.prototype.Run = function(){
     var fUpdate = function(){
         try
         {
+            if (s_bGamePaused)
+            {
+                nLastUpdate = now();
+                s_bGamePaused = false;
+            }
+            
             var nCurrentTime = now();
             var nFrameTime = nCurrentTime - nLastUpdate;
 
@@ -100,6 +123,15 @@ Game.prototype.Run = function(){
     };
 
     fUpdate();
+};
+
+Game.Pause = function(){
+    s_bGamePaused = true;
+    CocoonJS.App.pause();
+};
+
+Game.Resume = function(){
+    CocoonJS.App.resume();
 };
 
 EN.Game = Game;
