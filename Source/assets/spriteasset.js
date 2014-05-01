@@ -6,19 +6,29 @@ include("math/rectangle.js", true);
 
 var Rectangle = EN.Rectangle;
 
-function SpriteAsset(sSpriteSheetFileName, sSpriteName)
+function SpriteAsset(sSpriteSheetFileName, sSpriteName, cOptions)
 {
     //Super constructor
     EN.Asset.call(this, sSpriteSheetFileName);
+
+    var cDefaults = {        
+        visibleWidth: null,
+        visibleHeight: null,
+        tile: false
+    };
+
+    this.m_cOptions = extend(cDefaults, isset(cOptions) ? cOptions : {});
     
     this.Alpha = 1;
 
     this.m_cVisibleRect = new Rectangle();
-    this.m_cImageAreas = {};
     this.m_cBaseImage = null;
-    this.m_sSpriteSheetFileName = sSpriteSheetFileName + ".json";
+    this.m_cBasePattern = null;
+    this.m_sSpriteSheetFileName = "sprites/" + sSpriteSheetFileName + ".json";
 
-    this.m_sSpriteName = sSpriteName
+    this.Offset = new EN.Vector(0, 0);
+
+    this.m_sSpriteName = sSpriteName;
 };
 
 inherits(SpriteAsset, EN.Asset);
@@ -26,7 +36,7 @@ inherits(SpriteAsset, EN.Asset);
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
-    EN.AssetManager.LoadJSON("sprites/" + this.m_sSpriteSheetFileName, function(cErr, cSpriteData){
+    EN.AssetManager.LoadJSON(this.m_sSpriteSheetFileName, function(cErr, cSpriteData){
         if (!cErr)
         {
             if(isset(cSpriteData.image))
@@ -42,14 +52,16 @@ SpriteAsset.prototype.Load = function(fOnLoad){
                             cImageData.rect.h
                         );
 
-
-
-                        self.Width = self.m_cVisibleRect.Width;
-                        self.Height = self.m_cVisibleRect.Height;
+                        self.Width = self.m_cOptions.visibleWidth || self.m_cVisibleRect.Width;
+                        self.Height = self.m_cOptions.visibleHeight || self.m_cVisibleRect.Height;
 
                         self.m_cBaseImage = cImage;
                         fOnLoad(cErr);
-                    }               
+                    }
+                    else
+                    {
+                        throw new Error(self.m_sSpriteName + "sprite name does not exist in " + self.m_sSpriteSheetFileName);
+                    }             
                 });
             }
         }
@@ -62,25 +74,41 @@ SpriteAsset.prototype.Load = function(fOnLoad){
     
 SpriteAsset.prototype.Draw = function(cRenderer){
     EN.Asset.prototype.Draw.call(this, cRenderer);
-    
-    cRenderer.DrawImage(
-        this.m_cTransformMatrix, 
-        this.m_cBaseImage, 
-        this.m_cVisibleRect.Width, 
-        this.m_cVisibleRect.Height, 
-        new EN.Vector(this.m_cVisibleRect.X, this.m_cVisibleRect.Y),
-        this.Alpha);
+
+    if (this.m_cOptions.tile)
+    {
+        if (!this.m_cBasePattern)
+        {
+            this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
+        }
+
+        var cOffset = new EN.Vector(this.m_cVisibleRect.X, this.m_cVisibleRect.Y);
+        cOffset.Add(this.Offset);
+        
+        cRenderer.DrawTiledImage(
+            this.m_cTransformMatrix, 
+            this.m_cBasePattern,
+            this.Width, 
+            this.Height, 
+            cOffset, 
+            this.Alpha
+        );
+    }
+    else
+    {
+        cRenderer.DrawImage(
+            this.m_cTransformMatrix, 
+            this.m_cBaseImage, 
+            this.Width, 
+            this.Height, 
+            new EN.Vector(this.m_cVisibleRect.X, this.m_cVisibleRect.Y),
+            this.Alpha);
+    }
 };
 
-/*SpriteAsset.prototype.CleanUp = function(){
+SpriteAsset.prototype.CleanUp = function(){
     EN.Asset.prototype.CleanUp.call(this);
-    EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
-    
-    for (var sKey in this.m_cImages)
-    {
-        EN.AssetManager.ReleaseImage(cSprite.dependencies["images"][sKey]);
-    }
-};*/
+};
 
 EN.SpriteAsset = SpriteAsset;
 //# sourceURL=engine/assets/spriteasset.js
