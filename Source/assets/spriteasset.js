@@ -27,6 +27,14 @@ function SpriteAsset(sFileName)
 
 inherits(SpriteAsset, EN.Asset);
 
+SpriteAsset.prototype.__SetOffset = function() {
+    //draw current frame straight away
+    var nOffsetX = (this.CurrentFrame * this.Width) % this.m_cImages[this.m_sAnimation].ImageWidth;
+    var nOffsetY = floor((this.CurrentFrame * this.Width) / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height;
+
+    this.m_cImages[this.m_sAnimation].Offset = new Vec(nOffsetX, nOffsetY);
+};
+
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
@@ -108,10 +116,7 @@ SpriteAsset.prototype.InitialUpdate = function(nDt){
             this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
         }
         
-        var nOffsetX = (this.CurrentFrame * this.Width) % this.m_cImages[this.m_sAnimation].ImageWidth;
-        var nOffsetY = floor((this.CurrentFrame * this.Width) / this.m_cImages[this.m_sAnimation].ImageWidth) * this.Height;
-
-        this.m_cImages[this.m_sAnimation].Offset = new Vec(nOffsetX, nOffsetY);
+        this.__SetOffset();
     }
     
     this.m_cImages[this.m_sAnimation].Pos = this.Pos;
@@ -135,6 +140,8 @@ SpriteAsset.prototype.ChangeAnimation = function(sAnimation){
     this.m_cCurrentAnimation = cCurrentAnimation;
     
     this.m_cCurrentImage = this.m_cBaseImages[this.m_sAnimation];
+
+    this.__SetOffset();
     
     this.Width = this.m_cCurrentAnimation.width;
     this.Height = this.m_cCurrentAnimation.height;
