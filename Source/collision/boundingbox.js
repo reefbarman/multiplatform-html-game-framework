@@ -6,7 +6,7 @@ include("collision/collisionbounds.js", true);
 
 function BoundingBox()
 {
-    EN.CollisionBounds.call(this);
+    this._super();
 
     this.Type = EN.CollisionBounds.TYPE_SQUARE;
 }

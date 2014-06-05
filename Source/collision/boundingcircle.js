@@ -6,7 +6,7 @@ include("collision/collisionbounds.js", true);
 
 function BoundingCircle(nRadius)
 {
-    EN.CollisionBounds.call(this);
+    this._super();
 
     this.Radius = nRadius || 0;
 
