@@ -72,7 +72,7 @@ ImageAsset.prototype.Draw = function(cRenderer){
         throw new Error("Image Asset NOT LOADED: " + this.m_sFileName);
     }
     
-    EN.Asset.prototype.Draw.call(this, cRenderer);
+    this._superDraw(cRenderer);
     
     if (this.m_cOptions.tile)
     {
@@ -91,7 +91,7 @@ ImageAsset.prototype.Draw = function(cRenderer){
 };
 
 ImageAsset.prototype.CleanUp = function(){
-    EN.Asset.prototype.CleanUp.call(this);
+    this._superCleanUp();
     EN.AssetManager.ReleaseImage(this.m_sFileName);
 };
 

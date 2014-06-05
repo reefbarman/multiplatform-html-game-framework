@@ -206,7 +206,7 @@ EN.Renderer = function(eCanvas){
         
         m_cCtx.lineTo(cEnd.x, cEnd.y);
         
-        m_cCtx.lineWidth = 0.01;
+        m_cCtx.lineWidth = 30;
         m_cCtx.strokeStyle = GetColor(color);
         m_cCtx.stroke();
         

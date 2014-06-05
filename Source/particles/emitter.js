@@ -149,7 +149,7 @@ Emitter.prototype.Restart = function(){
 Emitter.prototype.FinalUpdate = function(nDt){
     if (this.Enabled)
     {
-        EN.GameObject.prototype.FinalUpdate.call(this, nDt);
+        this._superFinalUpdate(nDt);
 
         var nEmitRate = this.EmissionRate / 1000;
 

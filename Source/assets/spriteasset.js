@@ -104,7 +104,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
 };
     
 SpriteAsset.prototype.InitialUpdate = function(nDt){
-    EN.Asset.prototype.InitialUpdate.call(this, nDt);
+    this._superInitialUpdate(nDt);
     
     if (this.m_bAnimationRunning)
     {
@@ -123,7 +123,7 @@ SpriteAsset.prototype.InitialUpdate = function(nDt){
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){
-    EN.Asset.prototype.Draw.call(this, cRenderer);
+    this._superDraw(cRenderer);
     
     cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cCurrentImage, this.Width, this.Height, this.m_cImages[this.m_sAnimation].Offset, this.Alpha);
 };
@@ -152,7 +152,7 @@ SpriteAsset.prototype.PauseAnimation = function(bPaused){
 };
 
 SpriteAsset.prototype.CleanUp = function(){
-    EN.Asset.prototype.CleanUp.call(this);
+    this._superCleanUp();
     EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
     
     for (var sKey in this.m_cImages)

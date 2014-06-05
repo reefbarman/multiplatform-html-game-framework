@@ -213,6 +213,18 @@ exports = {
 
         child.prototype = new Inherited();
         child.prototype.constructor = child;
+        
+        for (var sKey in parent.prototype)
+        {
+            if (sKey.indexOf("_super") == -1)
+            {
+                Inherited.prototype["_super" + sKey] = (function(sKey){
+                    return function(){
+                        parent.prototype[sKey].apply(this, arguments);
+                    };
+                })(sKey);
+            }
+        }
     },
             
     mixin: function(cObj, cMixin){
