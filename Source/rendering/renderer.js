@@ -177,7 +177,7 @@ EN.Renderer = function(eCanvas){
             m_cCtx.lineTo(aPoints[i].x, aPoints[i].y);
         }
         
-        m_cCtx.lineWidth = 0.01;
+        m_cCtx.lineWidth = 0.1;
         m_cCtx.strokeStyle = GetColor(color);
         m_cCtx.stroke();
         
