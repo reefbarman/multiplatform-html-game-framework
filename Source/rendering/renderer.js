@@ -184,7 +184,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawLine = function(cMatrix, cStart, cEnd, color){
+    this.DrawLine = function(cMatrix, cStart, cEnd, color, nLineWidth){
         m_cCtx.save();
         
         var cCamera = CM.GetCamera();
@@ -206,7 +206,7 @@ EN.Renderer = function(eCanvas){
         
         m_cCtx.lineTo(cEnd.x, cEnd.y);
         
-        m_cCtx.lineWidth = 30;
+        m_cCtx.lineWidth = typeof nLineWidth != "undefined" ? nLineWidth : 1;
         m_cCtx.strokeStyle = GetColor(color);
         m_cCtx.stroke();
         
