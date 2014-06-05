@@ -9,8 +9,8 @@ var Vec = EN.Vector;
 function SpriteAsset(sFileName)
 {
     //Super constructor
-    EN.Asset.call(this, sFileName);
-    
+    this._super(sFileName);
+
     this.Alpha = 1;
     
     this.m_cBaseSprite = null;

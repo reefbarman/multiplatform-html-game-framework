@@ -10,9 +10,8 @@ include("game/gameobject.js", true);
  */
 function Asset(sFileName)
 {
-    //super constructor
-    EN.GameObject.call(this);
-    
+    this._super();
+
     this.m_sFileName = sFileName;
 }
 

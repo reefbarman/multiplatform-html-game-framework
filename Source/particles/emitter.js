@@ -35,7 +35,7 @@ var c_cDefaults = {
 
 function Emitter(cConfig)
 {
-    EN.GameObject.call(this);
+    this._super();
     
     this.Pos = new Vec(0, 0);
     this.Enabled = true;

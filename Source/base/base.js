@@ -213,12 +213,16 @@ exports = {
 
         child.prototype = new Inherited();
         child.prototype.constructor = child;
+
+        child.prototype._super = function(){
+            parent.apply(this, arguments);
+        };
         
         for (var sKey in parent.prototype)
         {
             if (sKey.indexOf("_super") == -1)
             {
-                Inherited.prototype["_super" + sKey] = (function(sKey){
+                child.prototype["_super" + sKey] = (function(sKey){
                     return function(){
                         return parent.prototype[sKey].apply(this, arguments);
                     };

@@ -16,8 +16,8 @@ include("assets/assetmanager.js", true);
  */
 function ImageAsset(sFileName, cOptions)
 {
-    EN.Asset.call(this, sFileName);
-    
+    this._super(sFileName);
+
     var cDefaults = {
         visibleWidth: null,
         visibleHeight: null,
