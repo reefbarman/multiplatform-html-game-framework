@@ -188,23 +188,24 @@ EN.Renderer = function(eCanvas){
         m_cCtx.save();
         
         var cCamera = CM.GetCamera();
-        
+
         m_cTransforMatrix.Reset();
-        
+
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
-        
+        }
+
         m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
-        
+
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();
-        
-        m_cCtx.moveTo(cStart.x, cStart.y);
-        
-        m_cCtx.lineTo(cEnd.x, cEnd.y);
+
+        //TODO this is well hacky figure out a better way of dealing with the cartesian weirdness
+        //Prob works if parent is axis aligned but rotation will prob break it
+        m_cCtx.moveTo(cStart.x, cStart.y *= (cCamera.Cartesian ? -1 : 1));
+        m_cCtx.lineTo(cEnd.x, cEnd.y *= (cCamera.Cartesian ? -1 : 1));
         
         m_cCtx.lineWidth = typeof nLineWidth != "undefined" ? nLineWidth : 1;
         m_cCtx.strokeStyle = GetColor(color);

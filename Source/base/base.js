@@ -220,7 +220,7 @@ exports = {
             {
                 Inherited.prototype["_super" + sKey] = (function(sKey){
                     return function(){
-                        parent.prototype[sKey].apply(this, arguments);
+                        return parent.prototype[sKey].apply(this, arguments);
                     };
                 })(sKey);
             }
