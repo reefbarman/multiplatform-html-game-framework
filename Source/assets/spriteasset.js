@@ -9,7 +9,7 @@ var Vec = EN.Vector;
 function SpriteAsset(sFileName)
 {
     //Super constructor
-    this._super(sFileName);
+    this._Asset(sFileName);
 
     this.Alpha = 1;
     
@@ -104,7 +104,7 @@ SpriteAsset.prototype.Load = function(fOnLoad){
 };
     
 SpriteAsset.prototype.InitialUpdate = function(nDt){
-    this._superInitialUpdate(nDt);
+    this._InitialUpdate_Asset(nDt);
     
     if (this.m_bAnimationRunning)
     {
@@ -123,7 +123,7 @@ SpriteAsset.prototype.InitialUpdate = function(nDt){
 };
     
 SpriteAsset.prototype.Draw = function(cRenderer){
-    this._superDraw(cRenderer);
+    this._Draw_Asset(cRenderer);
     
     cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cCurrentImage, this.Width, this.Height, this.m_cImages[this.m_sAnimation].Offset, this.Alpha);
 };
@@ -152,7 +152,7 @@ SpriteAsset.prototype.PauseAnimation = function(bPaused){
 };
 
 SpriteAsset.prototype.CleanUp = function(){
-    this._superCleanUp();
+    this._CleanUp_Asset();
     EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
     
     for (var sKey in this.m_cImages)

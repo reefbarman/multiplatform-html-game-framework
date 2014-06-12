@@ -35,7 +35,7 @@ var c_cDefaults = {
 
 function Emitter(cConfig)
 {
-    this._super();
+    this._GameObject();
     
     this.Pos = new Vec(0, 0);
     this.Enabled = true;
@@ -149,7 +149,7 @@ Emitter.prototype.Restart = function(){
 Emitter.prototype.FinalUpdate = function(nDt){
     if (this.Enabled)
     {
-        this._superFinalUpdate(nDt);
+        this._FinalUpdate_GameObject(nDt);
 
         var nEmitRate = this.EmissionRate / 1000;
 

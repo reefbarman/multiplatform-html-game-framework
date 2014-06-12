@@ -6,7 +6,7 @@ include("collision/collisionbounds.js", true);
 
 function BoundingCircle(nRadius)
 {
-    this._super();
+    this._CollisionBounds();
 
     this.Radius = nRadius || 0;
 
@@ -24,7 +24,7 @@ BoundingCircle.prototype.CheckCollision = function(cOther){
     }
     else if(cOther.Type == "square")
     {
-        bCollides = this._superCheckCollision(cOther);
+        bCollides = this._CheckCollision_CollisionBounds(cOther);
     }
 
     return bCollides;

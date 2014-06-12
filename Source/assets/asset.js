@@ -10,7 +10,7 @@ include("game/gameobject.js", true);
  */
 function Asset(sFileName)
 {
-    this._super();
+    this._GameObject();
 
     this.m_sFileName = sFileName;
 }
