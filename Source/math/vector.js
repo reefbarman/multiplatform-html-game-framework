@@ -32,6 +32,8 @@ function Vector()
 Vector.prototype.Set = function(cVec){
     this.x = cVec.x;
     this.y = cVec.y;
+
+    return this;
 };
 
 Vector.prototype.Equals = function(cVec){
