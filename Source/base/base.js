@@ -214,15 +214,15 @@ exports = {
         child.prototype = new Inherited();
         child.prototype.constructor = child;
 
-        child.prototype._super = function(){
+        child.prototype["_" + parent.name] = function(){
             parent.apply(this, arguments);
         };
-        
+
         for (var sKey in parent.prototype)
         {
-            if (sKey.indexOf("_super") == -1)
+            if (sKey.indexOf("_") != 0 || sKey.indexOf("__") == 0)
             {
-                child.prototype["_super" + sKey] = (function(sKey){
+                child.prototype["_" + sKey + "_" + parent.name] = (function(sKey){
                     return function(){
                         return parent.prototype[sKey].apply(this, arguments);
                     };

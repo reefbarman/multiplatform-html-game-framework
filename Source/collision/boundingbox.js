@@ -6,7 +6,7 @@ include("collision/collisionbounds.js", true);
 
 function BoundingBox()
 {
-    EN.CollisionBounds.call(this);
+    this._CollisionBounds();
 
     this.Type = EN.CollisionBounds.TYPE_SQUARE;
 }
@@ -25,7 +25,7 @@ BoundingBox.prototype.CheckCollision = function(cOther){
     }
     else if(cOther.Type == EN.CollisionBounds.TYPE_CIRCLE)
     {
-        bCollides = this._superCheckCollision(cOther);
+        bCollides = this._CheckCollision_CollisionBounds(cOther);
     }
 
     return bCollides;

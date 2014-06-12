@@ -16,7 +16,7 @@ include("assets/assetmanager.js", true);
  */
 function ImageAsset(sFileName, cOptions)
 {
-    this._super(sFileName);
+    this._Asset(sFileName);
 
     var cDefaults = {
         visibleWidth: null,
@@ -72,7 +72,7 @@ ImageAsset.prototype.Draw = function(cRenderer){
         throw new Error("Image Asset NOT LOADED: " + this.m_sFileName);
     }
     
-    this._superDraw(cRenderer);
+    this._Draw_Asset(cRenderer);
     
     if (this.m_cOptions.tile)
     {
@@ -91,7 +91,7 @@ ImageAsset.prototype.Draw = function(cRenderer){
 };
 
 ImageAsset.prototype.CleanUp = function(){
-    this._superCleanUp();
+    this._CleanUp_Asset();
     EN.AssetManager.ReleaseImage(this.m_sFileName);
 };
 
