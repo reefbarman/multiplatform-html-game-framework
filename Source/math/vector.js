@@ -51,8 +51,11 @@ Vector.prototype.Dot = function(cVec){
 Vector.prototype.Normalize = function(){
     var nLength = this.Length();
     
-    this.x = this.x / nLength;
-    this.y = this.y / nLength;
+    if(nLength !== 0)
+    {
+        this.x = this.x / nLength;
+        this.y = this.y / nLength;
+    }
     
     return this;
 };
