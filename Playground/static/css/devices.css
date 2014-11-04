@@ -1,20 +1,28 @@
 .cPG_DeviceScale{
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
     position: relative;
 }
 
-.cPG_DeviceFrame{
+.cPG_DeviceFrame:not(.cPG_DeviceFrameFullScreen){
     position: absolute;
     top: 50%;
     left: 50%;
 }
 
+.cPG_DeviceFrame.cPG_DeviceFrameFullScreen{
+    width: 100%;
+    height: 100%;
+}
+
 .cPG_DeviceSandbox{
     position: relative;
+    border: none;
+}
+
+.cPG_DeviceSandbox:not(.cPG_DeviceFrameFullScreen){
     top: 50%;
     left: 50%;
-    border: none;
 }
 
 .cPG_Device_ios_IPHONE_5{

@@ -16,23 +16,40 @@ function DeviceUI(fOnDeviceReady)
                 m_$DeviceScale.remove();
             }
 
+            var nWidth = cOptions.width > 0 ? cOptions.width : "100%";
+            var nHeight = cOptions.height > 0 ? cOptions.height : "100%";
+
             m_$DeviceSandbox = $("<iframe>").addClass("cPG_DeviceSandbox").css({
-                width: cOptions.width,
-                height: cOptions.height,
+                width: nWidth,
+                height: nHeight,
                 transform: "scale(" + 1 / cOptions.pixelRatio + ")",
-                "margin-left": -(cOptions.width / 2),
-                "margin-top": -(cOptions.height / 2)
+                "margin-left": nWidth !== "100%" ? -(cOptions.width / 2) : "auto",
+                "margin-top": nHeight !== "100%" ? -(cOptions.height / 2) : "auto"
             });
 
             m_$DeviceFrame = $("<div>").addClass("cPG_DeviceFrame cPG_Device_" + cOptions.os + "_" + sIdentifier).append(
                 m_$DeviceSandbox
             );
 
+            if (nWidth === "100%" || nHeight === "100%")
+            {
+                m_$DeviceFrame.addClass("cPG_DeviceFrameFullScreen");
+                m_$DeviceSandbox.addClass("cPG_DeviceFrameFullScreen");
+            }
+
             m_$DeviceScale = $("<div>").addClass("cPG_DeviceScale").append(m_$DeviceFrame).css("transform", "scale(" + cOptions.displayScale + ")");
+
+            var $Body = $("body");
+
+            $(window).resize(function(){
+                m_$DeviceScale.height($Body.height() - 34);
+            });
+
+            m_$DeviceScale.height($Body.height() - 34);
 
             var sDeviceUrl = "/Game?Playground=true&OS=" + cOptions.os + "&Model=" + sIdentifier;
 
-            $("body").append(m_$DeviceScale);
+            $Body.append(m_$DeviceScale);
 
             m_$DeviceSandbox.load(function(){
                 fOnDeviceReady($(this).get(0).contentWindow);
@@ -89,5 +106,13 @@ DeviceUI.DEVICES = {
         height: 800,
         pixelRatio: 1,
         displayScale: 0.6
+    },
+    PC: {
+        name: "PC",
+        os: "windows",
+        width: -1,
+        height: -1,
+        pixelRatio: 1,
+        displayScale: 1
     }
 };
