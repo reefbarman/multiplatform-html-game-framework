@@ -1,6 +1,6 @@
 EN.AssetManager = (function(){
     var m_cImages = {};
-    var m_cJSONFiles = {};
+    var m_cFiles = {};
     var m_cAudioFiles = {};
     
     return {
@@ -70,37 +70,37 @@ EN.AssetManager = (function(){
                 }
             }
         },
-        LoadJSON: function(sUrl, fOnLoad){
-            var cJSONFile = null;
+        LoadFile: function(sUrl, fOnLoad){
+            var cFile = null;
             
-            if (isset(m_cJSONFiles[sUrl]))
+            if (isset(m_cFiles[sUrl]))
             {
-                cJSONFile = m_cJSONFiles[sUrl];
+                cFile = m_cFiles[sUrl];
                 
-                if (!cJSONFile.loaded)
+                if (!cFile.loaded)
                 {
-                    cJSONFile.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad, cJSONFile){
-                        return function(cErr, cJSON){
+                    cFile.onLoadCallback = (function(fPreviousOnLoad, fCurrentOnLoad, cFile){
+                        return function(cErr, sContent){
                             if (!cErr)
                             {
-                                cJSONFile.refCount++;
+                                cFile.refCount++;
                             }
                             
-                            fCurrentOnLoad(cErr, cJSON);
-                            fPreviousOnLoad(cErr, cJSON);
+                            fCurrentOnLoad(cErr, sContent);
+                            fPreviousOnLoad(cErr, sContent);
                         };
-                    })(cJSONFile.onLoadCallback, fOnLoad, cJSONFile);
+                    })(cFile.onLoadCallback, fOnLoad, cFile);
                 }
                 else
                 {
-                    cJSONFile.refCount++;
-                    fOnLoad(null, cJSONFile.json);
+                    cFile.refCount++;
+                    fOnLoad(null, cFile.content);
                 }
             }
             else
             {
-                cJSONFile = {
-                    json: null,
+                cFile = {
+                    content: null,
                     onLoadCallback: fOnLoad,
                     loaded: false,
                     refCount: 0
@@ -108,34 +108,35 @@ EN.AssetManager = (function(){
                 
                 ajaxLoad({
                     src: EN.settings.resourcePath + sUrl,
-                    onComplete: (function(cJSONFile){
-                        return function(cErr, cJSON){
+                    dataType: "text",
+                    onComplete: (function(cFile){
+                        return function(cErr, sContent){
                             if (!cErr)
                             {
-                                cJSONFile.loaded = true;
-                                cJSONFile.json = cJSON;
-                                cJSONFile.refCount++;
-                                cJSONFile.onLoadCallback(null, cJSON);
+                                cFile.loaded = true;
+                                cFile.content = sContent;
+                                cFile.refCount++;
+                                cFile.onLoadCallback(null, sContent);
                             }
                             else
                             {
-                                cJSONFile.onLoadCallback(cErr);
+                                cFile.onLoadCallback(cErr);
                             }
                         };
-                    })(cJSONFile)
+                    })(cFile)
                 });
                 
-                m_cJSONFiles[sUrl] = cJSONFile;
+                m_cFiles[sUrl] = cFile;
             }
         },
-        ReleaseJSON: function(sUrl){
-            if (isset(m_cJSONFiles[sUrl]))
+        ReleaseFile: function(sUrl){
+            if (isset(m_cFiles[sUrl]))
             {
-                m_cJSONFiles[sUrl].refCount--;
+                m_cFiles[sUrl].refCount--;
                 
-                if (m_cJSONFiles[sUrl].refCount <= 0)
+                if (m_cFiles[sUrl].refCount <= 0)
                 {
-                    delete m_cJSONFiles[sUrl];
+                    delete m_cFiles[sUrl];
                 }
             }
         },

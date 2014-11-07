@@ -38,63 +38,73 @@ SpriteAsset.prototype.__SetOffset = function() {
 SpriteAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
-    EN.AssetManager.LoadJSON("sprites/" + this.m_sFileName + ".json", function(cErr, cSprite){
+    EN.AssetManager.LoadFile("sprites/" + this.m_sFileName + ".json", function(cErr, sSprite){
         if (!cErr)
         {
-            self.m_cBaseSprite = cSprite;
+            var cSprite = null;
 
-            var aDependencies = [];
-
-            if (isset(cSprite.dependencies))
+            try
             {
-                for (var sKey in cSprite.dependencies)
+                cSprite = JSON.parse(sSprite);
+                self.m_cBaseSprite = cSprite;
+
+                var aDependencies = [];
+
+                if (isset(cSprite.dependencies))
                 {
-                    switch (sKey)
+                    for (var sKey in cSprite.dependencies)
                     {
-                        case "images":
+                        switch (sKey)
+                        {
+                            case "images":
 
-                            for (var sImageKey in cSprite.dependencies[sKey])
-                            {
-                                self.m_cImages[sImageKey] = {
-                                    Offset: new Vec(0, 0)
-                                };
-                                
-                                var fLoadImage = (function(sImageKey, sFileName){
-                                    return {
-                                        Load: function(fOnLoad){
-                                            EN.AssetManager.LoadImage(sFileName, function(cErr, cImage){
-                                                if (!cErr)
-                                                {
-                                                    self.m_cImages[sImageKey].ImageWidth = cImage.width;
-                                                    self.m_cImages[sImageKey].ImageHeight = cImage.height;
-                                                    self.m_cBaseImages[sImageKey] = cImage;
-                                                    fOnLoad();
-                                                }
-                                                else
-                                                {
-                                                    fOnload(cErr);
-                                                }
-                                            });
-                                        }
+                                for (var sImageKey in cSprite.dependencies[sKey])
+                                {
+                                    self.m_cImages[sImageKey] = {
+                                        Offset: new Vec(0, 0)
                                     };
-                                })(sImageKey, cSprite.dependencies[sKey][sImageKey]);
 
-                                aDependencies.push(fLoadImage);
-                            }
+                                    var fLoadImage = (function (sImageKey, sFileName) {
+                                        return {
+                                            Load: function (fOnLoad) {
+                                                EN.AssetManager.LoadImage(sFileName, function (cErr, cImage) {
+                                                    if (!cErr)
+                                                    {
+                                                        self.m_cImages[sImageKey].ImageWidth = cImage.width;
+                                                        self.m_cImages[sImageKey].ImageHeight = cImage.height;
+                                                        self.m_cBaseImages[sImageKey] = cImage;
+                                                        fOnLoad();
+                                                    }
+                                                    else
+                                                    {
+                                                        fOnload(cErr);
+                                                    }
+                                                });
+                                            }
+                                        };
+                                    })(sImageKey, cSprite.dependencies[sKey][sImageKey]);
 
-                            break;
+                                    aDependencies.push(fLoadImage);
+                                }
+
+                                break;
+                        }
                     }
                 }
-            }
 
-            EN.Loader.Load(aDependencies, function(cErr){
-                if (!cErr)
-                {
-                    self.ChangeAnimation(cSprite.default);
-                }
-                
-                fOnLoad(cErr);
-            });
+                EN.Loader.Load(aDependencies, function (cErr) {
+                    if (!cErr)
+                    {
+                        self.ChangeAnimation(cSprite.default);
+                    }
+
+                    fOnLoad(cErr);
+                });
+            }
+            catch (e)
+            {
+                fOnLoad(e);
+            }
         }
         else
         {
@@ -153,7 +163,7 @@ SpriteAsset.prototype.PauseAnimation = function(bPaused){
 
 SpriteAsset.prototype.CleanUp = function(){
     this._CleanUp_Asset();
-    EN.AssetManager.ReleaseJSON("sprites/" + this.m_sFileName + ".json");
+    EN.AssetManager.ReleaseFile("sprites/" + this.m_sFileName + ".json");
     
     for (var sKey in this.m_cImages)
     {
