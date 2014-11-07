@@ -13,7 +13,7 @@ if (typeof EN.settings.enginePath == "undefined" || typeof EN.settings.gamePath 
     
     var cIncludedFiles = {};
     
-    window.include = function(sFile, bEngineInclude){
+    window.include = function(sFile, bEngineInclude, bGlobalLib){
         try
         {
             if (!cIncludedFiles[sFile])
@@ -27,16 +27,24 @@ if (typeof EN.settings.enginePath == "undefined" || typeof EN.settings.gamePath 
 
                 if (cRequest.status === 200)
                 {
-                    (function(){
-                        var exports = {};
-                        
+                    //If its a global lib allow it to pollute namespace
+                    if (bGlobalLib)
+                    {
                         eval(cRequest.responseText);
-                        
-                        for (var sExport in exports)
-                        {
-                            window[sExport] = exports[sExport];
-                        }
-                    })();
+                    }
+                    else
+                    {
+                        (function () {
+                            var exports = {};
+
+                            eval(cRequest.responseText);
+
+                            for (var sExport in exports)
+                            {
+                                window[sExport] = exports[sExport];
+                            }
+                        })();
+                    }
                     
                     cIncludedFiles[sFile] = true;
                 }

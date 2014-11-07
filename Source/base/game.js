@@ -1,3 +1,4 @@
+include("base/device.js", true);
 include("rendering/viewport.js", true);
 include("rendering/renderer.js", true);
 include("control/controller.js", true);
@@ -16,34 +17,7 @@ function Game()
 }
 
 Game.prototype.__EnvironmentDetection = function(){
-    /**
-    * @namespace Device
-    * @property {string} os - the OS the current device is running eg. ios
-    * @property {string} model - the model of device running eg. IPHONE_5
-    * @property {number} width - the width of the viewport in pixels
-    * @property {number} height - the height of the viewport in pixels
-    * @see EN
-    */
-   var cDevice = {};
-
-   var cParams = parseQueryParams();
-
-   if (isset(cParams.Playground))
-   {
-       cDevice.os = cParams.OS || "unknown";
-       cDevice.model = cParams.Model || "generic";
-   }
-   else if (isset(window.CocoonJS) && isset(CocoonJS.App))
-   {
-       cDevice = CocoonJS.App.getDeviceInfo();
-   }
-
-   cDevice.width = window.innerWidth;
-   cDevice.height = window.innerHeight;
-   
-   //console.log(JSON.stringify(cDevice));
-
-   window.EN.device = cDevice;
+    EN.Device.Init();
 };
 
 Game.prototype.__Init = function(){
@@ -52,8 +26,8 @@ Game.prototype.__Init = function(){
     var eCanvas = document.createElement(navigator.isCocoonJS ? "screencanvas" : "canvas");
     eCanvas.screencanvas = true;
 
-    eCanvas.width = EN.device.width;
-    eCanvas.height = EN.device.height;
+    eCanvas.width = EN.Device.Width;
+    eCanvas.height = EN.Device.Height;
 
     document.body.appendChild(eCanvas);
     

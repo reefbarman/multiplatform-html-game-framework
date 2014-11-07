@@ -11,12 +11,12 @@ EN.GameCenter = (function(){
         Init: function(cLeaderboardMap){
             if (navigator.isCocoonJS)
             {
-                switch (EN.device.os)
+                switch (EN.Device.OS)
                 {
-                    case "ios":
+                    case EN.Device.SUPPORTED_OS.iOS:
                         m_cSocialService = CocoonJS.Social.GameCenter.getSocialInterface();
                         break;
-                    case "android":
+                    case EN.Device.SUPPORTED_OS.android:
                         CocoonJS.Social.GooglePlayGames.init({
                             clientId: EN.settings.android.applicationID
                         });
@@ -33,9 +33,9 @@ EN.GameCenter = (function(){
                     {
                         var cLeaderboards = cLeaderboardMap[sKey];
                         
-                        if (isset(cLeaderboards[EN.device.os]))
+                        if (isset(cLeaderboards[EN.Device.OS]))
                         {
-                            m_cLeaderboardMap[sKey] = cLeaderboards[EN.device.os];
+                            m_cLeaderboardMap[sKey] = cLeaderboards[EN.Device.OS];
                         }
                     }
                     

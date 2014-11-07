@@ -52,7 +52,9 @@ function DeviceUI(fOnDeviceReady)
             $Body.append(m_$DeviceScale);
 
             m_$DeviceSandbox.load(function(){
-                fOnDeviceReady($(this).get(0).contentWindow);
+                var cIFrame = $(this).get(0).contentWindow;
+                fOnDeviceReady(cIFrame);
+                cIFrame.focus();
             }).attr("src", sDeviceUrl);
         }
     };

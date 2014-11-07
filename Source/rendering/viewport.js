@@ -7,8 +7,8 @@ function Viewport()
     this.m_cTransformMatrix = new EN.Matrix();
     this.m_cTransformMatrix.SetScale(this.m_cScale);
     
-    this.Width = EN.device.width / this.m_cScale.x;
-    this.Height = EN.device.height / this.m_cScale.y;
+    this.Width = EN.Device.Width / this.m_cScale.x;
+    this.Height = EN.Device.Height / this.m_cScale.y;
 }
 
 Object.defineProperty(Viewport.prototype, "Scale", {
@@ -18,8 +18,8 @@ Object.defineProperty(Viewport.prototype, "Scale", {
    set: function(cScale){
        this.m_cScale = cScale;
        
-       this.Width = EN.device.width / this.m_cScale.x;
-       this.Height = EN.device.height / this.m_cScale.y;
+       this.Width = EN.Device.Width / this.m_cScale.x;
+       this.Height = EN.Device.Height / this.m_cScale.y;
        
        this.m_cTransformMatrix.Reset().SetScale(this.m_cScale);
    }

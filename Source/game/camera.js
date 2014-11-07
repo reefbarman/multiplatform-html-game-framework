@@ -34,7 +34,7 @@ Camera.prototype.Init = function(bCartesian){
     if (this.Cartesian)
     {
         this.m_cAxisFlipMatrix.SetScale(new EN.Vector(1, -1));
-        this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.device.height));
+        this.m_cAxisFlipMatrix.SetTranslation(new EN.Vector(0, EN.Device.Height));
     }
 };
 
