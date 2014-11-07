@@ -5,21 +5,18 @@ var Vec = EN.Vector;
 EN.Controller = (function(){
     var m_eCanvas = null;
     
-    var m_cBoundEvents = {
-        "down": {},
-        "move": {},
-        "up": {}
-    };
-
     var m_cKeyEvents = {};
-    
-    var m_nEventId = 0;
+    var m_cButtonEvents = {};
+    var m_cInputPos = new EN.Vector();
+    var m_nScrollDelta = 0;
     
     function InputStart(e)
     {
         e.preventDefault();
+
+        m_cButtonEvents[e.button] = true;
         
-        try
+        /*try
         {
             var nX = 0;
             var nY = 0;
@@ -44,16 +41,17 @@ EN.Controller = (function(){
         {
             console.error(e.stack);
             throw e;
-        }
+        }*/
         
         return false;
     }
     
     function InputMove(e)
     {
-        e.preventDefault();
-        
-        setTimeout(function(){
+        m_cInputPos.x = e.clientX;
+        m_cInputPos.y = e.clientY;
+
+        /*setTimeout(function(){
             try
             {
                 var nX = 0;
@@ -80,16 +78,16 @@ EN.Controller = (function(){
                 console.error(e.stack);
                 throw e;
             }
-        }, 0);
-        
-        return false;
+        }, 0);*/
     }
     
     function InputEnd(e)
     {
         e.preventDefault();
+
+        m_cButtonEvents[e.button] = false;
         
-        try
+        /*try
         {
             var nX = 0;
             var nY = 0;
@@ -115,7 +113,7 @@ EN.Controller = (function(){
         {
             console.error(e.stack);
             throw e;
-        }
+        }*/
         
         return false;
     }
@@ -129,11 +127,17 @@ EN.Controller = (function(){
     {
         m_cKeyEvents[e.keyCode] = false;
     }
-    
+
+    function Scroll(e)
+    {
+        console.log(e);
+        m_nScrollDelta = (e.wheelDeltaY / 120);
+    }
+
     return {
         Init: function(eCanvas){
             m_eCanvas = eCanvas;
-            
+
             eCanvas.addEventListener("mousedown", InputStart);
             eCanvas.addEventListener("mousemove", InputMove);
             eCanvas.addEventListener("mouseup", InputEnd);
@@ -143,6 +147,13 @@ EN.Controller = (function(){
             {
                 window.onkeydown = KeyDown;
                 window.onkeyup = KeyUp;
+
+                window.onmousewheel = Scroll;
+
+                eCanvas.oncontextmenu = function(e){
+                    e.preventDefault();
+                    return false;
+                };
             }
             else
             {
@@ -150,21 +161,27 @@ EN.Controller = (function(){
                 eCanvas.addEventListener("touchend", InputEnd);
             }
         },
-        Bind: function(sEventType, fOnInput){
-            var nId = m_nEventId++;
-    
-            m_cBoundEvents[sEventType][nId] = fOnInput;
-            
-            return nId;
-        },
-        Unbind: function(sEventType, nEventId){
-            delete m_cBoundEvents[sEventType][nEventId];
+        GetInputPos: function(){
+            return m_cInputPos;
         },
         GetKeyDown: function(nKey){
-            return isset(m_cKeyEvents[nKey]) ? m_cKeyEvents[nKey] : false;
+            return m_cKeyEvents[nKey];
+        },
+        GetButtonDown: function(nButton){
+            return m_cButtonEvents[nButton];
+        },
+        GetScrollDelta: function(){
+            var nScrollDelta = m_nScrollDelta;
+            m_nScrollDelta = 0;
+            return nScrollDelta;
         }
     };
 })();
+
+EN.Controller.Buttons = {
+    LEFT: 1,
+    RIGHT: 2
+}
 
 EN.Controller.Keys = {
     UP: 38,
