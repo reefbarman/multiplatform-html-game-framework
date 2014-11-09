@@ -92,6 +92,7 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
 });
 
 cApp.use("/Game", express.static(process.cwd(), { index: "index.html" }));
+cApp.use("/Tools", express.static(process.cwd() + "/tools", { index: "index.html" }));
 
 cApp.use("/", function(cReq, cRes, fNext){
     if (cReq.url === "/")
