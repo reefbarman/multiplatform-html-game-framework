@@ -130,7 +130,6 @@ EN.Controller = (function(){
 
     function Scroll(e)
     {
-        console.log(e);
         m_nScrollDelta = (e.wheelDeltaY / 120);
     }
 
@@ -179,7 +178,7 @@ EN.Controller = (function(){
 })();
 
 EN.Controller.Buttons = {
-    LEFT: 1,
+    LEFT: 0,
     RIGHT: 2
 }
 

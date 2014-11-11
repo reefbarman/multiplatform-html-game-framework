@@ -1,6 +1,8 @@
 include("math/vector.js", true);
 include("math/matrix.js", true);
 
+var floor = Math.floor;
+
 function Viewport()
 {
     this.m_cScale = new EN.Vector(1, 1);
@@ -18,8 +20,8 @@ Object.defineProperty(Viewport.prototype, "Scale", {
    set: function(cScale){
        this.m_cScale = cScale;
        
-       this.Width = EN.Device.Width / this.m_cScale.x;
-       this.Height = EN.Device.Height / this.m_cScale.y;
+       this.Width = floor(EN.Device.Width / this.m_cScale.x);
+       this.Height = floor(EN.Device.Height / this.m_cScale.y);
        
        this.m_cTransformMatrix.Reset().SetScale(this.m_cScale);
    }

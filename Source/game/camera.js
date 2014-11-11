@@ -25,7 +25,7 @@ Camera.prototype.Init = function(bCartesian){
     
     //Below Matrix is used to flip the Y-Axis to use a cartesian coordinate system
     this.m_cAxisFlipMatrix = new EN.Matrix();
-    
+
     if (isset(bCartesian))
     {
         this.Cartesian = bCartesian;
