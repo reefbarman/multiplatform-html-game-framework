@@ -5,8 +5,6 @@ include("game/gameobject.js", true);
  * @class
  * @constructor
  * @param {string} sFileName - The file name of the asset to load
- * 
- * @extends Asset
  */
 function Asset(sFileName)
 {

@@ -41,6 +41,12 @@ function ImageAsset(sFileName, cOptions)
 
 inherits(ImageAsset, EN.Asset);
 
+Object.defineProperty(ImageAsset.prototype, "BaseImage", {
+    get: function(){
+        return this.m_cBaseImage;
+    }
+});
+
 ImageAsset.prototype.Load = function(fOnLoad){
     var self = this;
     
