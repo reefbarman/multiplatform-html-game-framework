@@ -15,6 +15,7 @@ EN.Renderer = function(eCanvas){
     function Init()
     {
         m_cCtx = m_eCanvas.getContext("2d");
+        m_cCtx.imageSmoothingEnabled = false;
         
         m_cTransforMatrix = new EN.Matrix();
         
