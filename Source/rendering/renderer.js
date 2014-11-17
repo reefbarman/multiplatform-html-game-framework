@@ -65,6 +65,23 @@ EN.Renderer = function(eCanvas){
         m_cCtx.drawImage(cImg, cOffset.x, cOffset.y, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
         m_cCtx.restore();
     };
+
+    this.DrawTexture = function(cMatrix, cTexture, cClippingRegion, cAnchor, nWidth, nHeight){
+        m_cCtx.save();
+
+        var cCamera = CM.GetCamera();
+
+        m_cTransforMatrix.Reset();
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.globalAlpha = 1;
+
+        m_cCtx.drawImage(cTexture, cClippingRegion.x, cClippingRegion.y, cClippingRegion.width, cClippingRegion.height, -nWidth * cAnchor.x, -nHeight * cAnchor.y, nWidth, nHeight);
+
+        m_cCtx.restore();
+    };
     
     this.CreatePattern = function(cImg){
         return m_cCtx.createPattern(cImg, "repeat");
@@ -105,7 +122,7 @@ EN.Renderer = function(eCanvas){
         m_cCtx.restore();
     };
     
-    this.DrawRectangle = function(cMatrix, nWidth, nHeight, color){
+    this.DrawRectangle = function(cMatrix, nWidth, nHeight, cAnchor, color){
         m_cCtx.save();
         
         var cCamera = CM.GetCamera();
@@ -120,7 +137,8 @@ EN.Renderer = function(eCanvas){
         m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
-        m_cCtx.translate(-nWidth / 2, -nHeight / 2);
+
+        m_cCtx.translate(-nWidth * cAnchor.x, -nHeight * (1  - cAnchor.y));
         
         m_cCtx.fillStyle = GetColor(color);
         m_cCtx.fillRect(0, 0, nWidth, nHeight);

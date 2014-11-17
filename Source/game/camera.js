@@ -50,5 +50,10 @@ Camera.prototype.GetTransformMatrix = function(){
     return this.m_cTransformMatrix;
 };
 
+Camera.prototype.GetWorldPos = function(cScreenPos){
+    var cInverse = EN.Matrix.Inverse(this.m_cTransformMatrix);
+    return EN.Vector.MatrixMultiply(cScreenPos, cInverse);
+};
+
 EN.Camera = Camera;
 //# sourceURL=engine/game/camera.js
