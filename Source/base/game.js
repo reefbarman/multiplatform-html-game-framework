@@ -6,7 +6,6 @@ include("states/statemanager.js", true);
 include("states/state.js", true);
 
 var SM = EN.StateManager;
-var now = Date.now;
 
 var s_bGamePaused = false;
 
@@ -60,7 +59,7 @@ Game.prototype.Draw = function(){
 Game.prototype.Run = function(){
     var self = this;
     
-    var nLastUpdate = now();
+    var nLastUpdate = performance.now();
     var nLastDt = 0;
 
     var fUpdate = function(){
@@ -68,11 +67,11 @@ Game.prototype.Run = function(){
         {
             if (s_bGamePaused)
             {
-                nLastUpdate = now();
+                nLastUpdate = performance.now();
                 s_bGamePaused = false;
             }
             
-            var nCurrentTime = now();
+            var nCurrentTime = performance.now();
             var nFrameTime = nCurrentTime - nLastUpdate;
 
             //Send smoothed dt to playground for fps

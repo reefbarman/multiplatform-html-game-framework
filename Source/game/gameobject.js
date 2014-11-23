@@ -18,8 +18,6 @@ function GameObject()
     
     this.Bounds = new EN.BoundingBox();
     
-    this.Active = true;
-    
     this.m_cTransformMatrix = new Mat();
     this.m_cScaleMatrix = new Mat();
     this.m_cTranslationMatrix = new Mat();
