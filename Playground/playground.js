@@ -95,7 +95,7 @@ cApp.use("/Game", express.static(process.cwd(), { index: "index.html" }));
 cApp.use("/Tools", express.static(process.cwd() + "/tools", { index: "index.html" }));
 
 cApp.use("/", function(cReq, cRes, fNext){
-    if (cReq.url === "/")
+    if (cReq.path === "/")
     {
         cRes.render("index.ejsh", {
             title: cPlaygroundConfig.title + " Playground"

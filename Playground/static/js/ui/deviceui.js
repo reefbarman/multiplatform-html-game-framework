@@ -3,6 +3,11 @@ function DeviceUI(fOnDeviceReady)
     var m_$DeviceFrame = null;
     var m_$DeviceSandbox = null;
     var m_$DeviceScale = null;
+
+    function GetParams()
+    {
+        return location.search.length > 0 ? location.search.substring(1) : null;
+    }
     
     this.ChangeDevice = function(sIdentifier){
         var cOptions = DeviceUI.DEVICES[sIdentifier];
@@ -47,7 +52,7 @@ function DeviceUI(fOnDeviceReady)
 
             m_$DeviceScale.height($Body.height() - 34);
 
-            var sDeviceUrl = "/Game?Playground=true&OS=" + cOptions.os + "&Model=" + sIdentifier;
+            var sDeviceUrl = "/Game?Playground=true&OS=" + cOptions.os + "&Model=" + sIdentifier + "&" + GetParams();
 
             $Body.append(m_$DeviceScale);
 
