@@ -1,7 +1,6 @@
 include("math/vector.js", true);
 include("math/matrix.js", true);
 include("rendering/displaylist.js", true);
-include("collision/boundingbox.js", true);
 
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
@@ -15,8 +14,6 @@ function GameObject()
     this.Width = 0;
     this.Height = 0;
     this.zIndex = 0;
-    
-    this.Bounds = new EN.BoundingBox();
     
     this.m_cTransformMatrix = new Mat();
     this.m_cScaleMatrix = new Mat();
@@ -51,7 +48,6 @@ GameObject.prototype.__CalculateTransform = function(cParentMatrix){
 };
 
 GameObject.prototype.Init = function(){
-    this.AddChild(this.Bounds);
 };
 
 GameObject.prototype.GetDisplayList = function(){
@@ -74,35 +70,29 @@ GameObject.prototype.RemoveChild = function(cChild){
     delete this.m_cChildren[cChild.__ChildID];
 };
 
-GameObject.prototype.InitialUpdate = function(nDt){
+GameObject.prototype.UpdateGameObject = function(nDt){
     for (var nId in this.m_cChildren)
     {
-        this.m_cChildren[nId].InitialUpdate(nDt);
+        this.m_cChildren[nId].UpdateGameObject(nDt);
     }
+
+    this.Update(nDt);
 };
 
 GameObject.prototype.UpdateTransform = function(cParentMatrix){
     this.__CalculateTransform(cParentMatrix);
-    
+
     for (var nId in this.m_cChildren)
     {
         this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
     }
 };
 
-GameObject.prototype.FinalUpdate = function(nDt){
-    for (var nId in this.m_cChildren)
-    {
-        this.m_cChildren[nId].FinalUpdate(nDt);
-    }
-};
-
+GameObject.prototype.Update = function(nDt){};
 GameObject.prototype.Draw = function(cRenderer){};
-
 GameObject.prototype.OnCollision = function(cOther){};
 
 GameObject.prototype.CleanUp = function(){
-    this.RemoveChild(this.Bounds);
 };
 
 EN.GameObject = GameObject;

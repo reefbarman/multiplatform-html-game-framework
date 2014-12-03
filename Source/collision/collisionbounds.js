@@ -2,6 +2,7 @@
 // http://www.codezealot.org/archives/55
 // http://gamedev.stackexchange.com/questions/25397/obb-vs-obb-collision-detection
 
+include("game/gameobject.js", true);
 include("math/vector.js", true);
 
 var cos = Math.cos;
@@ -31,6 +32,8 @@ function CollisionBounds(cPos, nWidth, nHeight)
     
     this.__GenerateCorners();
 }
+
+inherits(CollisionBounds, EN.GameObject);
 
 CollisionBounds.DrawDebugBoundingBoxes = false;
 
@@ -159,9 +162,6 @@ CollisionBounds.prototype.CheckCollision = function(cOther){
     
     return bCollides;
 };
-
-CollisionBounds.prototype.InitialUpdate = function(nDt){};
-CollisionBounds.prototype.FinalUpdate = function(nDt){};
 
 CollisionBounds.prototype.UpdateTransform = function(cParentMatrix){
     this.m_cTransformMatrix.Reset()
