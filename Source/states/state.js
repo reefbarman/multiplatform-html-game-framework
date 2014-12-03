@@ -55,19 +55,19 @@ State.prototype.UpdateState = function(nDt){
     this.m_cCamera.Update(nDt);
     this.m_cUICamera.Update(nDt);
 
-    for (var nChild in this.m_cChildren)
-    {
-        this.m_cChildren[nChild].UpdateTransform();
-    }
-
-    EN.CollisionSystem.Update(nDt);
-
     this.Update(nDt);
 
     for (var nChild in this.m_cChildren)
     {
         this.m_cChildren[nChild].UpdateGameObject(nDt);
     }
+
+    for (var nChild in this.m_cChildren)
+    {
+        this.m_cChildren[nChild].UpdateTransform();
+    }
+
+    EN.CollisionSystem.Update(nDt);
 };
 
 /**
