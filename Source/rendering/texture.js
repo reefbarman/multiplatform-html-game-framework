@@ -8,6 +8,11 @@ function Texture(nWidth, nHeight)
 }
 
 Texture.prototype.DrawImage = function(cPos, cImage){
+    if (cImage instanceof  EN.ImageAsset)
+    {
+        cImage = cImage.BaseImage;
+    }
+
     this.m_cCtx.drawImage(cImage, cPos.x, cPos.y);
 };
 

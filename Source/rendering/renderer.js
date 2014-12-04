@@ -62,6 +62,12 @@ EN.Renderer = function(eCanvas){
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
+
+        if (cImg instanceof EN.ImageAsset)
+        {
+            cImg = cImg.BaseImage;
+        }
+
         m_cCtx.drawImage(cImg, cOffset.x, cOffset.y, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
         m_cCtx.restore();
     };

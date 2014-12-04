@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="/css/console.css" />
     </head>
     <body>
-        <script type="text/javascript" src="/js/lib/jquery/jquery-2.1.0-beta2.js"></script>
+        <script type="text/javascript" src="/js/lib/jquery/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="/js/lib/jquery/plugin/jquery.cookie.js"></script>
         <script type="text/javascript" src="/js/lib/dat.gui/dat.gui.min.js"></script>
         
