@@ -229,8 +229,8 @@ EN.Renderer = function(eCanvas){
 
         //TODO this is well hacky figure out a better way of dealing with the cartesian weirdness
         //Prob works if parent is axis aligned but rotation will prob break it
-        m_cCtx.moveTo(cStart.x, cStart.y *= (cCamera.Cartesian ? -1 : 1));
-        m_cCtx.lineTo(cEnd.x, cEnd.y *= (cCamera.Cartesian ? -1 : 1));
+        m_cCtx.moveTo(cStart.x, cStart.y * (cCamera.Cartesian ? -1 : 1));
+        m_cCtx.lineTo(cEnd.x, cEnd.y * (cCamera.Cartesian ? -1 : 1));
         
         m_cCtx.lineWidth = typeof nLineWidth != "undefined" ? nLineWidth : 1;
         m_cCtx.strokeStyle = GetColor(color);

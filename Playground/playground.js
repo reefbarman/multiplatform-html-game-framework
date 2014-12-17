@@ -26,6 +26,11 @@ cApp.set('views', __dirname + '/views');
 
 cApp.use(express.static(__dirname + '/static'));
 cApp.use(express.favicon());
+cApp.use(express.json());
+cApp.use(express.urlencoded({
+    extended: true
+}));
+cApp.use(express.multipart());
 
 cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     
@@ -91,8 +96,34 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     });
 });
 
-cApp.use("/Game", express.static(process.cwd(), { index: "index.html" }));
+cApp.use("/Game", express.static(process.cwd(), { index: "index.html", etag: false }));
 cApp.use("/Tools", express.static(process.cwd() + "/tools", { index: "index.html" }));
+
+cApp.use("/PlatformTools/ModifyFile", function(cReq, cRes, fNext){
+
+    var sFile = cReq.param("file");
+    var sContent = cReq.param("content");
+
+    if (sFile && sContent)
+    {
+        var sFilePath = process.cwd() + sFile;
+
+        fs.writeFile(sFilePath, sContent, function(cErr){
+            if (!cErr)
+            {
+                cRes.send({ success: true });
+            }
+            else
+            {
+                cRes.send({ error: cErr });
+            }
+        });
+    }
+    else
+    {
+        fNext();
+    }
+});
 
 cApp.use("/", function(cReq, cRes, fNext){
     if (cReq.path === "/")
