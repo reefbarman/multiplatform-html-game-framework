@@ -3,9 +3,11 @@ include("rendering/color.js", true);
 
 var CM = EN.CameraManager;
 
-EN.Renderer = function(eCanvas){
-    var m_eCanvas = eCanvas;
-    var m_cCtx = null;
+EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
+    var m_cCtx = cCtx;
+    var m_nWidth = nWidth;
+    var m_nHeight = nHeight;
+    var m_cCamera = cCamera;
     
     var m_cClearColor = new EN.Color();
     
@@ -14,13 +16,24 @@ EN.Renderer = function(eCanvas){
     
     function Init()
     {
-        m_cCtx = m_eCanvas.getContext("2d");
         m_cCtx.imageSmoothingEnabled = false;
         
         m_cTransforMatrix = new EN.Matrix();
         
         m_cScaleInverseMatrix = new EN.Matrix();
         m_cScaleInverseMatrix.SetScale(new EN.Vector(1, -1));
+    }
+
+    function GetCamera()
+    {
+        var cCamera = m_cCamera;
+
+        if (!cCamera)
+        {
+            cCamera = CM.GetCamera();
+        }
+
+        return cCamera;
     }
     
     function GetColor(color)
@@ -39,17 +52,20 @@ EN.Renderer = function(eCanvas){
     
     this.Clear = function(){
         m_cCtx.fillStyle = m_cClearColor.toString();
-        m_cCtx.fillRect(0, 0, m_eCanvas.width, m_eCanvas.height);
+        m_cCtx.fillRect(0, 0, m_nWidth, m_nHeight);
     };
     
     this.SetClearColor = function(cColor){
         m_cClearColor = cColor;
     };
     
-    this.DrawImage = function(cMatrix, cImg, nWidth, nHeight, cOffset, nAlpha){
+    this.DrawImage = function(cMatrix, cImage, nWidth, nHeight, cAnchor, nAlpha){
+        cAnchor = cAnchor ? cAnchor : { x: 0, y: 0 };
+        nAlpha = typeof nAlpha != "undefined" ? nAlpha : 1;
+
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         
@@ -63,29 +79,21 @@ EN.Renderer = function(eCanvas){
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
 
-        if (cImg instanceof EN.ImageAsset)
+        var cBaseImage = cImage;
+
+        if (cImage instanceof EN.ImageAsset)
         {
-            cImg = cImg.BaseImage;
+            cBaseImage = cImage.BaseImage;
+        }
+        else if (cImage instanceof EN.Texture)
+        {
+            cBaseImage = cImage.GetTexture();
         }
 
-        m_cCtx.drawImage(cImg, cOffset.x, cOffset.y, nWidth, nHeight, -nWidth / 2, -nHeight / 2, nWidth, nHeight);
-        m_cCtx.restore();
-    };
+        var nXBasePos = -nWidth * cAnchor.x;
+        var nYBasePos = -nHeight * (1 - cAnchor.y);
 
-    this.DrawTexture = function(cMatrix, cTexture, cClippingRegion, cAnchor, nWidth, nHeight){
-        m_cCtx.save();
-
-        var cCamera = CM.GetCamera();
-
-        m_cTransforMatrix.Reset();
-
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
-
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
-        m_cCtx.globalAlpha = 1;
-
-        m_cCtx.drawImage(cTexture, cClippingRegion.x, cClippingRegion.y, cClippingRegion.width, cClippingRegion.height, -nWidth * cAnchor.x, -nHeight * cAnchor.y, nWidth, nHeight);
-
+        m_cCtx.drawImage(cBaseImage, 0, 0, cBaseImage.width, cBaseImage.height, nXBasePos, nYBasePos, nWidth, nHeight);
         m_cCtx.restore();
     };
     
@@ -107,7 +115,7 @@ EN.Renderer = function(eCanvas){
     this.DrawTiledImage = function(cMatrix, cPattern, nWidth, nHeight, cOffset, nAlpha){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         
@@ -131,7 +139,7 @@ EN.Renderer = function(eCanvas){
     this.DrawRectangle = function(cMatrix, nWidth, nHeight, cAnchor, color){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         
@@ -155,7 +163,7 @@ EN.Renderer = function(eCanvas){
     this.DrawCircle = function(cMatrix, nRadius, color){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         
@@ -180,7 +188,7 @@ EN.Renderer = function(eCanvas){
     this.DrawShape = function(cMatrix, aPoints, color){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         
@@ -212,7 +220,7 @@ EN.Renderer = function(eCanvas){
     this.DrawLine = function(cMatrix, cStart, cEnd, color, nLineWidth){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
 
         m_cTransforMatrix.Reset();
 
@@ -242,7 +250,7 @@ EN.Renderer = function(eCanvas){
     this.DrawText = function(cMatrix, sText, sFont, color, aAlignment){
         m_cCtx.save();
         
-        var cCamera = CM.GetCamera();
+        var cCamera = GetCamera();
         
         m_cTransforMatrix.Reset();
         

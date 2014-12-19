@@ -29,8 +29,8 @@ Game.prototype.__Init = function(){
     eCanvas.height = EN.Device.Height;
 
     document.body.appendChild(eCanvas);
-    
-    this.m_cRenderer = new EN.Renderer(eCanvas);
+
+    this.m_cRenderer = new EN.Renderer(eCanvas.getContext("2d"), eCanvas.width, eCanvas.height);
     EN.Controller.Init(eCanvas);
     
     CocoonJS.App.onActivated.addEventListener(function(){
