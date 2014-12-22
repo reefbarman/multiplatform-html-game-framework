@@ -47,6 +47,7 @@ Game.prototype.__Init = function(){
 };
 
 Game.prototype.Update = function(nDt){
+    EN.Controller.Update(nDt);
     SM.Update(nDt);
 };
 

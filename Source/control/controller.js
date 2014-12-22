@@ -6,6 +6,9 @@ EN.Controller = (function(){
     var m_eCanvas = null;
     
     var m_cKeyEvents = {};
+    var m_cPreviousKeyEvents = {};
+    var m_cKeyPressed = {};
+
     var m_cButtonEvents = {};
     var m_cInputPos = new EN.Vector();
     var m_nScrollDelta = 0;
@@ -120,11 +123,13 @@ EN.Controller = (function(){
 
     function KeyDown(e)
     {
+        m_cPreviousKeyEvents[e.keyCode] = m_cKeyEvents[e.keyCode];
         m_cKeyEvents[e.keyCode] = true;
     }
 
     function KeyUp(e)
     {
+        m_cPreviousKeyEvents[e.keyCode] = m_cKeyEvents[e.keyCode];
         m_cKeyEvents[e.keyCode] = false;
     }
 
@@ -160,11 +165,27 @@ EN.Controller = (function(){
                 eCanvas.addEventListener("touchend", InputEnd);
             }
         },
+        Update: function(nDt){
+            for (var nKey in m_cKeyEvents)
+            {
+                m_cKeyPressed[nKey] = false;
+
+                if (!m_cKeyEvents[nKey] && m_cPreviousKeyEvents[nKey])
+                {
+                    m_cKeyPressed[nKey] = true;
+                }
+
+                m_cPreviousKeyEvents[nKey] = m_cKeyEvents[nKey];
+            }
+        },
         GetInputPos: function(){
             return m_cInputPos;
         },
         GetKeyDown: function(nKey){
             return m_cKeyEvents[nKey];
+        },
+        GetKeyPress: function(nKey){
+            return m_cKeyPressed[nKey];
         },
         GetButtonDown: function(nButton){
             return m_cButtonEvents[nButton];
@@ -188,7 +209,8 @@ EN.Controller.Keys = {
     LEFT: 37,
     RIGHT: 39,
     A: 65,
-    Z: 90
+    Z: 90,
+    ENTER: 13
 };
 
 //# sourceURL=engine/control/controller.js

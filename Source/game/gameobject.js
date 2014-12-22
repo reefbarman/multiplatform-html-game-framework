@@ -14,6 +14,7 @@ function GameObject()
     this.Width = 0;
     this.Height = 0;
     this.zIndex = 0;
+    this.Active = true;
     
     this.m_cTransformMatrix = new Mat();
     this.m_cScaleMatrix = new Mat();
@@ -71,20 +72,26 @@ GameObject.prototype.RemoveChild = function(cChild){
 };
 
 GameObject.prototype.UpdateGameObject = function(nDt){
-    for (var nId in this.m_cChildren)
+    if (this.Active)
     {
-        this.m_cChildren[nId].UpdateGameObject(nDt);
-    }
+        for (var nId in this.m_cChildren)
+        {
+            this.m_cChildren[nId].UpdateGameObject(nDt);
+        }
 
-    this.Update(nDt);
+        this.Update(nDt);
+    }
 };
 
 GameObject.prototype.UpdateTransform = function(cParentMatrix){
-    this.__CalculateTransform(cParentMatrix);
-
-    for (var nId in this.m_cChildren)
+    if (this.Active)
     {
-        this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
+        this.__CalculateTransform(cParentMatrix);
+
+        for (var nId in this.m_cChildren)
+        {
+            this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
+        }
     }
 };
 

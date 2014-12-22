@@ -22,7 +22,10 @@ DisplayList.prototype.Remove = function(cGameObject){
 DisplayList.prototype.Draw = function(cRenderer){
     this.m_aDisplayList.sort(s_fSortFunction);
     this.m_aDisplayList.forEach(function(cGameObject){
-        cGameObject.Draw(cRenderer);
+        if (cGameObject.Active)
+        {
+            cGameObject.Draw(cRenderer);
+        }
     });
 };
 
