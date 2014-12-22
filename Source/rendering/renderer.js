@@ -136,7 +136,9 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         m_cCtx.restore();
     };
     
-    this.DrawRectangle = function(cMatrix, nWidth, nHeight, cAnchor, color){
+    this.DrawRectangle = function(cMatrix, nWidth, nHeight, color, cAnchor){
+        cAnchor = cAnchor ? cAnchor : { x: 0, y: 0 };
+
         m_cCtx.save();
         
         var cCamera = GetCamera();

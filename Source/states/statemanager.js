@@ -16,7 +16,7 @@ var StateManager = (function(){
         cCamera.Init();
         
         var cMatrix = new EN.Matrix();
-        cMatrix.SetTranslation(new EN.Vector(EN.Game.Viewport.Width / 2, EN.Game.Viewport.Height / 2));
+        cMatrix.SetTranslation(new EN.Vector(0, 0));
         
         var cColor = new EN.Color(0, 0, 0, 0);
         
