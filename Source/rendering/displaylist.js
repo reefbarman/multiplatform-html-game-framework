@@ -1,7 +1,15 @@
+var s_fSortFunction = function(a, b){
+    return a.zIndex - b.zIndex;
+};
+
 function DisplayList()
 {
     this.m_aDisplayList = [];
 }
+
+DisplayList.SetSortFunction = function(fSort){
+    s_fSortFunction = fSort;
+};
 
 DisplayList.prototype.Add = function(cGameObject){
     this.m_aDisplayList.push(cGameObject);
@@ -12,10 +20,7 @@ DisplayList.prototype.Remove = function(cGameObject){
 };
 
 DisplayList.prototype.Draw = function(cRenderer){
-    this.m_aDisplayList.sort(function(a, b){
-        return a.zIndex - b.zIndex;
-    });
-
+    this.m_aDisplayList.sort(s_fSortFunction);
     this.m_aDisplayList.forEach(function(cGameObject){
         cGameObject.Draw(cRenderer);
     });
