@@ -103,4 +103,3 @@ GameObject.prototype.CleanUp = function(){
 };
 
 EN.GameObject = GameObject;
-//# sourceURL=engine/base/gameobject.js

@@ -75,5 +75,3 @@ EN.Loader = (function() {
 })();
 
 /** @callback Loader~OnLoadCallback */
-
-//# sourceURL=engine/base/loader.js

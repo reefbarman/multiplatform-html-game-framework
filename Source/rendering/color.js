@@ -42,4 +42,3 @@ Color.prototype.SetHex = function(sHex){
 };
 
 EN.Color = Color;
-//# sourceURL=engine/rendering/color.js

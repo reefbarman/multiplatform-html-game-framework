@@ -41,5 +41,3 @@ EN.Advertisement = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/utilities/advertisement.js

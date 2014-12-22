@@ -47,4 +47,3 @@ BoundingCircle.prototype.__CirclesOverlap = function(cBounds1, cBounds2){
 };
 
 EN.BoundingCircle = BoundingCircle;
-//# sourceURL=engine/collision/boundingcirlce.js

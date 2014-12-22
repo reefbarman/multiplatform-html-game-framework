@@ -54,5 +54,3 @@ EN.CollisionSystem = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/collision/collisionsystem.js

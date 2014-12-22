@@ -211,4 +211,3 @@ StateManager.TRANSITIONS = {
 StateManager.STATES = {};
 
 EN.StateManager = StateManager;
-//# sourceURL=engine/states/statemanager.js

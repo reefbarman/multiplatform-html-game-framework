@@ -15,5 +15,3 @@ EN.CollisionUtils = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/collision/collisionutils.js

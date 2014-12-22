@@ -56,4 +56,3 @@ Camera.prototype.GetWorldPos = function(cScreenPos){
 };
 
 EN.Camera = Camera;
-//# sourceURL=engine/game/camera.js

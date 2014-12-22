@@ -189,5 +189,3 @@ window.playgroundToggleBoundingBoxes = function(bEnabled){
 };
 
 EN.CollisionBounds = CollisionBounds;
-
-//# sourceURL=engine/collision/collisionbounds.js

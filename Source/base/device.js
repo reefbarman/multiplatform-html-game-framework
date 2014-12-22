@@ -66,5 +66,3 @@ EN.Device.SUPPORTED_OS = {
     iOS: "iOS",
     android: "android"
 };
-
-//# sourceURL=engine/base/device.js

@@ -5,5 +5,3 @@ EN.Math = {
         return random() * (nMax - nMin) + nMin;
     }
 };
-
-//# sourceURL=engine/math/math.js

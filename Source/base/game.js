@@ -109,4 +109,3 @@ Game.Resume = function(){
 };
 
 EN.Game = Game;
-//# sourceURL=engine/base/game.js

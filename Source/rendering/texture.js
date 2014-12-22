@@ -34,4 +34,3 @@ Texture.prototype.GetTexture = function(){
 };
 
 EN.Texture = Texture;
-//# sourceURL=engine/rendering/texture.js

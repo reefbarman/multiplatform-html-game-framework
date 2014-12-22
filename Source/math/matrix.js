@@ -130,4 +130,3 @@ Matrix.Inverse = function(cMatrix){
 };
 
 EN.Matrix = Matrix;
-//# sourceURL=engine/math/matrix.js

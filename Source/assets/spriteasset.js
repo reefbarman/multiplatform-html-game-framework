@@ -172,4 +172,3 @@ SpriteAsset.prototype.CleanUp = function(){
 };
 
 EN.SpriteAsset = SpriteAsset;
-//# sourceURL=engine/assets/spriteasset.js

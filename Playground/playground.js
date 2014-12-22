@@ -96,6 +96,33 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     });
 });
 
+cApp.use("/Game", function(cReq, cRes, fNext){
+    var nJSIndex = cReq.path.indexOf(".js");
+
+    if (nJSIndex != -1 && nJSIndex === (cReq.path.length - 3))
+    {
+        fs.readFile(process.cwd() + cReq.path, function(cErr, cData){
+            if (!cErr)
+            {
+                var sSource = cData.toString();
+
+                sSource += "\n//# sourceURL=" + cReq.path;
+
+                cRes.send(sSource);
+            }
+            else
+            {
+                cRes.status(404);
+                cRes.send(cErr.message);
+            }
+        });
+    }
+    else
+    {
+        fNext();
+    }
+});
+
 cApp.use("/Game", express.static(process.cwd(), { index: "index.html", etag: false }));
 cApp.use("/Tools", express.static(process.cwd() + "/tools", { index: "index.html" }));
 

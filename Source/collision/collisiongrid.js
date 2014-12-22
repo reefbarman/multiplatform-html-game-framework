@@ -98,5 +98,3 @@ EN.CollisionGrid = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/collision/collisiongrid.js

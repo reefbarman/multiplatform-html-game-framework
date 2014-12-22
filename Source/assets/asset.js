@@ -38,4 +38,3 @@ Asset.prototype.Load = function(fOnLoad){
  */
 
 EN.Asset = Asset;
-//# sourceURL=engine/assets/asset.js

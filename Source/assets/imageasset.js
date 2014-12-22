@@ -102,4 +102,3 @@ ImageAsset.prototype.CleanUp = function(){
 };
 
 EN.ImageAsset = ImageAsset;
-//# sourceURL=engine/assets/imageasset.js

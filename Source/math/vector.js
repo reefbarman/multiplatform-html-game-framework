@@ -129,4 +129,3 @@ Vector.Lerp = function(cVec1, cVec2, nAlpha){
 };
 
 EN.Vector = Vector;
-//# sourceURL=engine/rendering/vector.js

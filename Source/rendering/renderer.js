@@ -284,5 +284,3 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
     
     Init();
 };
-
-//# sourceURL=engine/rendering/renderer.js

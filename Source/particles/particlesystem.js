@@ -80,5 +80,3 @@ EN.ParticleSystem = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/particles/particlesystem.js

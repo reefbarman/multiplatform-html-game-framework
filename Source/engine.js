@@ -176,5 +176,3 @@ EN.Init = function(fOnInit){
         fInit();
     }
 };
-
-//# sourceURL=engine/engine.js

@@ -13,5 +13,3 @@ EN.CameraManager = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/game/cameramanager.js

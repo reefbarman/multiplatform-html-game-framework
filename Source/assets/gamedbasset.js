@@ -88,4 +88,3 @@ GameDbAsset.prototype.CleanUp = function(){
 };
 
 EN.GameDbAsset = GameDbAsset;
-//# sourceURL=engine/assets/gamedbasset.js

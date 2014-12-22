@@ -74,5 +74,3 @@ console.error = (function(fOrigLog){
         }
     }; 
 })(console.error);
-
-//# sourceURL=engine/base/logging.js

@@ -339,4 +339,3 @@ Emitter.prototype.UpdateValue = function(sValue, value){
 };
 
 EN.Emitter = Emitter;
-//# sourceURL=engine/particles/emitter.js

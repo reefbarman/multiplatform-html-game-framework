@@ -32,4 +32,3 @@ Viewport.prototype.GetTransformMatrix = function(){
 };
 
 EN.Viewport = Viewport;
-//# sourceURL=engine/rendering/viewport.js

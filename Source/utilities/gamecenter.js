@@ -57,5 +57,3 @@ EN.GameCenter = (function(){
         }
     };
 })();
-
-//# sourceURL=engine/utilities/gamecenter.js

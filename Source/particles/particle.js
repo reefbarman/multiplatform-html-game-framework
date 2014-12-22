@@ -127,4 +127,3 @@ Particle.prototype.Update = function(nDt){
 };
 
 EN.Particle = Particle;
-//# sourceURL=engine/particles/particle.js

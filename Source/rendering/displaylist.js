@@ -30,4 +30,3 @@ DisplayList.prototype.Draw = function(cRenderer){
 };
 
 EN.DisplayList = DisplayList;
-//# sourceURL=engine/rendering/displaylist.js

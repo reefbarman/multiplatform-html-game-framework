@@ -212,5 +212,3 @@ EN.Controller.Keys = {
     Z: 90,
     ENTER: 13
 };
-
-//# sourceURL=engine/control/controller.js

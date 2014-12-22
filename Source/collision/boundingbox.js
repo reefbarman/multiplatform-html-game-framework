@@ -85,5 +85,3 @@ function MinMaxOverlap(cMinMax1, cMinMax2)
 }
 
 EN.BoundingBox = BoundingBox;
-
-//# sourceURL=engine/collision/boundingbox.js
