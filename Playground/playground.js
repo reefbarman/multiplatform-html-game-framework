@@ -3,6 +3,7 @@ var extend = require("xtend");
 var fs = require("fs");
 var path = require("path");
 var zip = require("express-zip");
+var sassMiddleware = require("node-sass-middleware");
 
 var cConfig = {};
 
@@ -31,6 +32,13 @@ cApp.use(express.urlencoded({
     extended: true
 }));
 cApp.use(express.multipart());
+cApp.use(sassMiddleware({
+    src: process.cwd() + "/resources/sass",
+    dest: process.cwd() + "/resources/css",
+    debug: false,
+    outputStyle: "expanded",
+    prefix: "/Game/resources/css"
+}));
 
 cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
     
