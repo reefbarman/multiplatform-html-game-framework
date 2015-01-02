@@ -38,12 +38,16 @@ Camera.prototype.Init = function(bCartesian){
     }
 };
 
-Camera.prototype.Update = function(nDt){
+Camera.prototype.UpdateTransform = function(){
     this.m_cTransformMatrix.Reset()
         .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
         .Multiply(this.m_cRotationMatrix.SetRotation(this.Rotation))
         .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos))
         .Multiply(this.m_cAxisFlipMatrix);
+};
+
+Camera.prototype.Update = function(nDt){
+    this.UpdateTransform();
 };
 
 Camera.prototype.GetTransformMatrix = function(){
@@ -53,6 +57,10 @@ Camera.prototype.GetTransformMatrix = function(){
 Camera.prototype.GetWorldPos = function(cScreenPos){
     var cInverse = EN.Matrix.Inverse(this.m_cTransformMatrix);
     return EN.Vector.MatrixMultiply(cScreenPos, cInverse);
+};
+
+Camera.prototype.GetScreenPos = function(cWorldPos){
+    return EN.Vector.MatrixMultiply(cWorldPos, this.m_cTransformMatrix);
 };
 
 EN.Camera = Camera;
