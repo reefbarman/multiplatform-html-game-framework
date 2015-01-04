@@ -16,7 +16,6 @@ var StateManager = (function(){
         cCamera.Init();
         
         var cMatrix = new EN.Matrix();
-        cMatrix.SetTranslation(new EN.Vector(0, 0));
         
         var cColor = new EN.Color(0, 0, 0, 0);
         

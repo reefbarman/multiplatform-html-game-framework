@@ -19,7 +19,7 @@ function Texture(nWidth, nHeight)
 
 Texture.prototype.DrawImage = function(cPos, cImage){
     this.m_cTransformMatrix.Reset();
-    this.m_cTransformMatrix.SetTranslation(cPos);
+    this.m_cTransformMatrix.Translate(cPos);
 
     this.m_cRenderer.DrawImage(this.m_cTransformMatrix, cImage, cImage.Width, cImage.Height);
 };

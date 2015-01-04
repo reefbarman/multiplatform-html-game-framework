@@ -7,99 +7,147 @@ var Mat = EN.Matrix;
 
 function GameObject()
 {
+    var self = this;
+
     this.ID = GameObject.__IDCount++;
-    this.Pos = new Vec(0, 0);
-    this.Rotation = 0;
-    this.Scale = new Vec(1, 1);
     this.Width = 0;
     this.Height = 0;
     this.zIndex = 0;
     this.Active = true;
+
+    this.m_cPos = new Vec(0, 0);
+    this.m_cPos.OnChange(function(x, y){
+        self.__PosChanged(new Vec(x, y));
+    });
+
+    this.m_cScale = new Vec(1, 1);
+    this.m_cScale.OnChange(function(x, y){
+        self.__ScaleChanged(new Vec(x, y));
+    });
+
+    this.m_nRotation = 0;
     
     this.m_cTransformMatrix = new Mat();
-    this.m_cScaleMatrix = new Mat();
-    this.m_cTranslationMatrix = new Mat();
-    this.m_cRotationMatrix = new Mat();
-    
-    this.m_cChildren = {};
-    this.m_nChildren = 0;
-    
-    this.m_nPreviousRotation = 0;
+
+    this.m_cGlobalTransformMatrix = new Mat();
+    this.m_bGlobalTansformUpdated = false;
+
+    this.m_cParent = null;
+    this.m_aChildren = [];
 
     this.__DisplayList = null;
 }
 
 GameObject.__IDCount = 0;
 
-GameObject.prototype.__CalculateTransform = function(cParentMatrix){
-    this.m_cTransformMatrix.Reset().Multiply(this.m_cScaleMatrix.SetScale(this.Scale));
-    
-    if (this.Rotation != this.m_nPreviousRotation)
-    {
-        this.m_cRotationMatrix.SetRotation(this.Rotation);
-        this.m_nPreviousRotation = this.Rotation;
-    }
-    
-    this.m_cTransformMatrix.Multiply(this.m_cRotationMatrix).Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos));
+Object.defineProperty(GameObject.prototype, "GlobalTransform", {
+    get: function(){
+        if (!this.m_bGlobalTansformUpdated)
+        {
+            if (this.m_cParent)
+            {
+                this.m_cGlobalTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, this.m_cParent.GlobalTransform);
+            }
+            else
+            {
+                this.m_cGlobalTransformMatrix = new Mat(this.m_cTransformMatrix);
+            }
 
-    if (cParentMatrix)
-    {
-        this.m_cTransformMatrix.Multiply(cParentMatrix);
+            this.m_bGlobalTansformUpdated = true;
+        }
+
+        return this.m_cGlobalTransformMatrix;
     }
+});
+
+Object.defineProperty(GameObject.prototype, "Pos", {
+    get: function(){
+        return this.m_cPos;
+    },
+    set: function(cPos){
+        var cOldPos = this.m_cPos;
+        this.m_cPos = cPos;
+        this.__PosChanged(Vec.Subtract(cPos, cOldPos));
+    }
+});
+
+Object.defineProperty(GameObject.prototype, "GlobalPos", {
+    get: function(){
+        return this.GlobalTransform.Position;
+    }
+});
+
+Object.defineProperty(GameObject.prototype, "Rotation", {
+    get: function(){
+        return this.m_nRotation;
+    },
+    set: function(nRotation){
+        var nOldRot = this.m_nRotation;
+        this.m_nRotation = nRotation;
+        this.m_cTransformMatrix.Rotate(nRotation - nOldRot);
+        this.m_bGlobalTansformUpdated = false;
+    }
+});
+
+Object.defineProperty(GameObject.prototype, "Scale", {
+    get: function(){
+        return this.m_cScale;
+    },
+    set: function(cScale){
+        var cOldScale = this.m_cScale;
+        this.m_cScale = cScale;
+        this.__ScaleChanged(cScale);//Vec.Subtract(cOldScale, cScale));
+    }
+});
+
+Object.defineProperty(GameObject.prototype, "Parent", {
+    get: function(){
+        return this.m_cParent;
+    },
+    set: function(cParent){
+        this.m_cParent = cParent;
+    }
+});
+
+GameObject.prototype.__PosChanged = function(cVec){
+    this.m_cTransformMatrix.Translate(cVec);
+    this.m_bGlobalTansformUpdated = false;
 };
 
-GameObject.prototype.Init = function(){
-};
-
-GameObject.prototype.GetDisplayList = function(){
-    return this.__DisplayList;
+GameObject.prototype.__ScaleChanged = function(cVec){
+    this.m_cTransformMatrix.Scale(cVec);
+    this.m_bGlobalTansformUpdated = false;
 };
 
 GameObject.prototype.AddChild = function(cChild){
-    cChild.__ChildID = this.m_nChildren;
-    cChild.__Parent = this;
+    cChild.Parent = this;
     cChild.__DisplayList = this.__DisplayList;
-    this.m_cChildren[this.m_nChildren++] = cChild;
-    
+    this.m_aChildren.push(cChild);
     this.__DisplayList.Add(cChild);
 };
 
 GameObject.prototype.RemoveChild = function(cChild){
     this.__DisplayList.Remove(cChild);
-    cChild.__Parent = null;
+    cChild.Parent = null;
     cChild.__DisplayList = null;
-    delete this.m_cChildren[cChild.__ChildID];
+    this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
 };
 
 GameObject.prototype.UpdateGameObject = function(nDt){
     if (this.Active)
     {
-        for (var nId in this.m_cChildren)
-        {
-            this.m_cChildren[nId].UpdateGameObject(nDt);
-        }
-
         this.Update(nDt);
+
+        this.m_aChildren.forEach(function(cChild){
+            cChild.UpdateGameObject(nDt);
+        });
     }
 };
 
-GameObject.prototype.UpdateTransform = function(cParentMatrix){
-    if (this.Active)
-    {
-        this.__CalculateTransform(cParentMatrix);
-
-        for (var nId in this.m_cChildren)
-        {
-            this.m_cChildren[nId].UpdateTransform(this.m_cTransformMatrix);
-        }
-    }
-};
-
+GameObject.prototype.Init = function(){};
 GameObject.prototype.Update = function(nDt){};
 GameObject.prototype.Draw = function(cRenderer){};
 GameObject.prototype.OnCollision = function(cOther){};
-
-GameObject.prototype.CleanUp = function(){
-};
+GameObject.prototype.CleanUp = function(){};
 
 EN.GameObject = GameObject;

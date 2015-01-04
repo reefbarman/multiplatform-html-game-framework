@@ -31,8 +31,8 @@ BoundingCircle.prototype.CheckCollision = function(cOther){
 };
 
 BoundingCircle.prototype.__CirclesOverlap = function(cBounds1, cBounds2){
-    var cPos1 = cBounds1.GetPos();
-    var cPos2 = cBounds2.GetPos();
+    var cPos1 = cBounds1.GlobalPos;
+    var cPos2 = cBounds2.GlobalPos;
 
     var cDist = EN.Vector.Subtract(cPos1, cPos2);
 

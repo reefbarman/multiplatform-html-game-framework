@@ -88,11 +88,11 @@ ImageAsset.prototype.Draw = function(cRenderer){
             this.m_cBasePattern = cRenderer.CreatePattern(this.m_cBaseImage);
         }
         
-        cRenderer.DrawTiledImage(this.m_cTransformMatrix, this.m_cBasePattern, this.Width, this.Height, this.Offset, this.Alpha);
+        cRenderer.DrawTiledImage(this.GlobalTransform, this.m_cBasePattern, this.Width, this.Height, this.Offset, this.Alpha);
     }
     else
     {
-        cRenderer.DrawImage(this.m_cTransformMatrix, this.m_cBaseImage, this.Width, this.Height, this.Offset, this.Alpha);
+        cRenderer.DrawImage(this.GlobalTransform, this.m_cBaseImage, this.Width, this.Height, this.Offset, this.Alpha);
     }
 };
 

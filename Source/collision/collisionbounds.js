@@ -15,17 +15,12 @@ var c_nDegToRadian = Math.PI / 180;
 
 function CollisionBounds(cPos, nWidth, nHeight)
 {
+    this._GameObject();
+
     this.Pos = cPos || new Vec(0, 0);
-    this.Rotation = 0;
     this.Width = nWidth || 0;
     this.Height = nHeight || 0;
-    this.Scale = new Vec(1, 1);
     this.zIndex = 99;
-    
-    this.m_cTransformMatrix = new Mat();
-    this.m_cScaleMatrix = new Mat();
-    this.m_cTranslationMatrix = new Mat();
-    this.m_cRotationMatrix = new Mat();
     
     this.m_aCorners = [];
     this.m_aAxes = [];
@@ -57,19 +52,12 @@ CollisionBounds.prototype.__GenerateCorners = function(){
     ];
 };
 
-CollisionBounds.prototype.__CalculateCornersAxes = function(cParentMatrix){
+CollisionBounds.prototype.__CalculateCornersAxes = function(){
     var aCorners = [];
-    
-    var cTransformMatrix = this.m_cTransformMatrix;
-
-    if (cParentMatrix)
-    {
-        cTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, cParentMatrix);
-    }
     
     for (var i = 0; i < this.m_aCorners.length; i++)
     {
-        aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], cTransformMatrix));
+        aCorners.push(Vec.MatrixMultiply(this.m_aCorners[i], this.GlobalTransform));
     }
     
     this.m_aAxes = [
@@ -80,20 +68,9 @@ CollisionBounds.prototype.__CalculateCornersAxes = function(cParentMatrix){
     return aCorners;
 };
 
-CollisionBounds.prototype.GetPos = function(cParentMatrix) {
-    var cTransformMatrix = this.m_cTransformMatrix;
-
-    if (cParentMatrix)
-    {
-        cTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, cParentMatrix);
-    }
-
-    return Vec.MatrixMultiply(this.Pos, cTransformMatrix);
-};
-
-CollisionBounds.prototype.GetBounds = function(cParentMatrix){
+CollisionBounds.prototype.GetBounds = function(){
     this.__GenerateCorners();
-    var aCorners = this.__CalculateCornersAxes(cParentMatrix);
+    var aCorners = this.__CalculateCornersAxes();
     
     var nMinX = null;
     var nMaxX = null;
@@ -136,7 +113,7 @@ CollisionBounds.prototype.GetBounds = function(cParentMatrix){
 };
 
 CollisionBounds.prototype.__CircleAndSquareOverlaps = function(cCircle, cSquare){
-    var cPos = cCircle.GetPos();
+    var cPos = cCircle.GlobalPos;
     var cBounds = cSquare.GetBounds();
 
     var nX = clamp(cPos.x, cBounds.MinMax.x1, cBounds.MinMax.x2);
@@ -163,19 +140,11 @@ CollisionBounds.prototype.CheckCollision = function(cOther){
     return bCollides;
 };
 
-CollisionBounds.prototype.UpdateTransform = function(cParentMatrix){
-    this.m_cTransformMatrix.Reset()
-        .Multiply(this.m_cScaleMatrix.SetScale(this.Scale))
-        .Multiply(this.m_cRotationMatrix.SetRotation(this.Rotation))
-        .Multiply(this.m_cTranslationMatrix.SetTranslation(this.Pos))
-        .Multiply(cParentMatrix);
-};
-
 CollisionBounds.prototype.Draw = function(cRenderer){
     if (CollisionBounds.DrawDebugBoundingBoxes)
     {
         this.__GenerateCorners();
-        cRenderer.DrawShape(this.m_cTransformMatrix, this.m_aCorners, new EN.Color(255, 0, 0));
+        cRenderer.DrawShape(this.GlobalTransform, this.m_aCorners, new EN.Color(255, 0, 0));
     }
 };
 

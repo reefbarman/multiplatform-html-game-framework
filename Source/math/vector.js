@@ -21,10 +21,37 @@ function Vector()
             throw new Error("Wrong number of arguments passed!");
             break;
     }
-    
-    this.x = x;
-    this.y = y;
+
+    this.m_nX = x;
+    this.m_nY = y;
+    this.m_fOnChange = function(){};
 }
+
+Object.defineProperty(Vector.prototype, "x", {
+    get: function(){
+        return this.m_nX;
+    },
+    set: function(x){
+        var nOldX = this.m_nX;
+        this.m_nX = x;
+        this.m_fOnChange(x - nOldX, 0);
+    }
+});
+
+Object.defineProperty(Vector.prototype, "y", {
+    get: function(){
+        return this.m_nY;
+    },
+    set: function(y){
+        var nOldY = this.m_nY;
+        this.m_nY = y;
+        this.m_fOnChange(0, y - nOldY);
+    }
+});
+
+Vector.prototype.OnChange = function(fOnChange){
+    this.m_fOnChange = fOnChange;
+};
 
 /**
  * Below functions operate on current vector

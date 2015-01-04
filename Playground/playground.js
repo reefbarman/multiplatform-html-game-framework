@@ -114,7 +114,7 @@ cApp.use("/Game", function(cReq, cRes, fNext){
             {
                 var sSource = cData.toString();
 
-                sSource += "\n//# sourceURL=" + cReq.path;
+                sSource += "\n//# sourceURL=http://" + cReq.get("host") + "/Game" + cReq.path;
 
                 cRes.send(sSource);
             }

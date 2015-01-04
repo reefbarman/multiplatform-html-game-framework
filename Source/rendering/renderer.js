@@ -74,7 +74,7 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
@@ -123,8 +123,8 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         }
-        
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
@@ -148,9 +148,9 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
-        
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        }
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
 
@@ -172,9 +172,9 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
-        
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        }
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -197,9 +197,9 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
-        
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        }
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -231,7 +231,7 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
 
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         
@@ -259,9 +259,9 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         if (cCamera.Cartesian)
         {
             m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
-        } 
-        
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+        }
+
+        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
         

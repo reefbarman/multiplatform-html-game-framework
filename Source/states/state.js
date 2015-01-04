@@ -10,8 +10,7 @@ include("rendering/displaylist.js", true);
 function State(sName)
 {
     this.Name = sName;
-    this.m_cChildren = {};
-    this.m_nChildren = 0;
+    this.m_aChildren = [];
     
     this.m_cDisplayList = new EN.DisplayList();
     this.m_cUIDisplayList = new EN.DisplayList();
@@ -21,34 +20,28 @@ function State(sName)
 }
 
 State.prototype.AddChild = function(cChild){
-    cChild.__ChildID = this.m_nChildren;
-    cChild.__Parent = this;
     cChild.__DisplayList = this.m_cDisplayList;
-    this.m_cChildren[this.m_nChildren++] = cChild;
+    this.m_aChildren.push(cChild);
     this.m_cDisplayList.Add(cChild);
 };
 
 State.prototype.RemoveChild = function(cChild){
     this.m_cDisplayList.Remove(cChild);
-    cChild.__Parent = null;
     cChild.__DisplayList = null;
-    delete this.m_cChildren[cChild.__ChildID];
+    this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
 };
 
 State.prototype.AddUI = function(cUIElement){
-    cUIElement.__ChildID = this.m_nChildren;
-    cUIElement.__Parent = this;
     cUIElement.__DisplayList = this.m_cUIDisplayList;
 
-    this.m_cChildren[this.m_nChildren++] = cUIElement;
+    this.m_aChildren.push(cUIElement);
     this.m_cUIDisplayList.Add(cUIElement);
 };
 
 State.prototype.RemoveUI = function(cUIElement){
     this.m_cUIDisplayList.Remove(cUIElement);
-    cUIElement.__Parent = null;
     cUIElement.__DisplayList = null;
-    delete this.m_cChildren[cUIElement.__ChildID];
+    this.m_aChildren.splice(this.m_aChildren.indexOf(cUIElement), 1);
 };
 
 State.prototype.UpdateState = function(nDt){
@@ -57,15 +50,9 @@ State.prototype.UpdateState = function(nDt){
 
     this.Update(nDt);
 
-    for (var nChild in this.m_cChildren)
-    {
-        this.m_cChildren[nChild].UpdateGameObject(nDt);
-    }
-
-    for (var nChild in this.m_cChildren)
-    {
-        this.m_cChildren[nChild].UpdateTransform();
-    }
+    this.m_aChildren.forEach(function(cChild){
+        cChild.UpdateGameObject(nDt);
+    });
 
     EN.CollisionSystem.Update(nDt);
 };
