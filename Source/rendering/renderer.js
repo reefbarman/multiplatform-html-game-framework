@@ -11,14 +11,14 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
     
     var m_cClearColor = new EN.Color();
     
-    var m_cTransforMatrix = null;
+    var m_cTransformMatrix = null;
     var m_cScaleInverseMatrix = null;
     
     function Init()
     {
         m_cCtx.imageSmoothingEnabled = false;
         
-        m_cTransforMatrix = new EN.Matrix();
+        m_cTransformMatrix = new EN.Matrix();
         
         m_cScaleInverseMatrix = new EN.Matrix();
         m_cScaleInverseMatrix.SetScale(new EN.Vector(1, -1));
@@ -67,27 +67,23 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         } 
         
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         m_cCtx.globalAlpha = nAlpha;
 
         var cBaseImage = cImage;
 
-        if (cImage instanceof EN.ImageAsset)
+        if (cImage.GetImage)
         {
-            cBaseImage = cImage.BaseImage;
-        }
-        else if (cImage instanceof EN.Texture)
-        {
-            cBaseImage = cImage.GetTexture();
+            cBaseImage = cImage.GetImage();
         }
 
         var nXBasePos = -nWidth * cAnchor.x;
@@ -117,16 +113,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         m_cCtx.translate((-nWidth / 2) - cOffset.x, (-nHeight / 2) - cOffset.y);
         
         m_cCtx.fillStyle = cPattern;
@@ -143,16 +139,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
 
         m_cCtx.translate(-nWidth * cAnchor.x, -nHeight * (1  - cAnchor.y));
         
@@ -167,16 +163,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         
         m_cCtx.fillStyle = GetColor(color);
         m_cCtx.beginPath();
@@ -192,16 +188,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();
         
@@ -224,16 +220,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
 
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
 
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
 
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();
 
@@ -254,16 +250,16 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         
         var cCamera = GetCamera();
         
-        m_cTransforMatrix.Reset();
+        m_cTransformMatrix.Reset();
         
         if (cCamera.Cartesian)
         {
-            m_cTransforMatrix.Multiply(m_cScaleInverseMatrix);
+            m_cTransformMatrix.Multiply(m_cScaleInverseMatrix);
         }
 
-        m_cTransforMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cMatrix).Multiply(EN.Game.Viewport.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
-        m_cCtx.setTransform.apply(m_cCtx, m_cTransforMatrix.GetCanvasTransform());
+        m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         
         aAlignment = aAlignment || ["middle", "center"];
         

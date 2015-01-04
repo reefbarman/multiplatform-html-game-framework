@@ -29,7 +29,7 @@ Texture.prototype.Flip = function(){
     this.m_cCtx.scale(1, -1);
 };
 
-Texture.prototype.GetTexture = function(){
+Texture.prototype.GetImage = function(){
     return this.m_eCanvas;
 };
 
