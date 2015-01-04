@@ -96,7 +96,11 @@ Object.defineProperty(GameObject.prototype, "Scale", {
     set: function(cScale){
         var cOldScale = this.m_cScale;
         this.m_cScale = cScale;
-        this.__ScaleChanged(cScale);//Vec.Subtract(cOldScale, cScale));
+
+        var nX = 1 / (cOldScale.x / cScale.x);
+        var nY = 1 / (cOldScale.y / cScale.y);
+
+        this.__ScaleChanged(new Vec(nX, nY));
     }
 });
 

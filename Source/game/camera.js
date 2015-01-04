@@ -26,7 +26,7 @@ Camera.prototype.Init = function(bCartesian){
     if (this.Cartesian)
     {
         this.m_cTransformMatrix.Scale(new Vec(1, -1));
-        this.m_cTransformMatrix.Translate(new Vec(0, EN.Device.Height));
+        this.m_cTransformMatrix.Translate(new Vec(0, -EN.Device.Height));
     }
 };
 
