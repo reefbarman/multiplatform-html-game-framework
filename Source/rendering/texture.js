@@ -8,7 +8,7 @@ function Texture(nWidth, nHeight)
     this.m_eCanvas.height = nHeight;
 
     this.m_cCamera = new EN.Camera("Texture");
-    this.m_cCamera.Init();
+    this.m_cCamera.Init(nHeight);
 
     this.m_cCtx = this.m_eCanvas.getContext("2d");
 
@@ -19,14 +19,9 @@ function Texture(nWidth, nHeight)
 
 Texture.prototype.DrawImage = function(cPos, cImage){
     this.m_cTransformMatrix.Reset();
-    this.m_cTransformMatrix.Translate(cPos);
+    this.m_cTransformMatrix.SetTranslation(cPos);
 
     this.m_cRenderer.DrawImage(this.m_cTransformMatrix, cImage, cImage.Width, cImage.Height);
-};
-
-Texture.prototype.Flip = function(){
-    this.m_cCtx.translate(this.m_eCanvas.width / 2, this.m_eCanvas.height / 2);
-    this.m_cCtx.scale(1, -1);
 };
 
 Texture.prototype.GetImage = function(){

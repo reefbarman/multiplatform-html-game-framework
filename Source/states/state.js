@@ -70,8 +70,8 @@ State.prototype.Load = function(fOnLoad){
  * Called when the state is entered after loading. Any initialization post loading and before state updates should be done here
  */
 State.prototype.Enter = function(){
-    this.m_cCamera.Init();
-    this.m_cUICamera.Init(false);
+    this.m_cCamera.Init(EN.Game.Viewport.Height);
+    this.m_cUICamera.Init(EN.Game.Viewport.Height, false);
 
     EN.CameraManager.Push(this.m_cCamera);
 };
