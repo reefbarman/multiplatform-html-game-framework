@@ -118,11 +118,18 @@ GameObject.prototype.__ScaleChanged = function(nNewX, nOldX, nNewY, nOldY){
     this.m_bGlobalTansformUpdated = false;
 };
 
-GameObject.prototype.AddChild = function(cChild){
+GameObject.prototype.AddChild = function(cChild, bInit){
+    bInit = isset(bInit) ? bInit : true;
+
     cChild.Parent = this;
     cChild.__DisplayList = this.__DisplayList;
     this.m_aChildren.push(cChild);
     this.__DisplayList.Add(cChild);
+
+    if (bInit)
+    {
+        cChild.Init();
+    }
 };
 
 GameObject.prototype.RemoveChild = function(cChild){

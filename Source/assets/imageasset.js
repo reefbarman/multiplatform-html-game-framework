@@ -32,7 +32,9 @@ function ImageAsset(sFileName, cOptions)
     this.m_bLoaded = false;
     
     this.Offset = new EN.Vector(0, 0);
-    
+
+    this.Width = 0;
+    this.Height = 0;
     this.ImageHeight = 0;
     this.ImageWidth = 0;
     

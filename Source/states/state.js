@@ -19,10 +19,17 @@ function State(sName)
     this.m_cUICamera = new EN.Camera(this.Name + "UICam");
 }
 
-State.prototype.AddChild = function(cChild){
+State.prototype.AddChild = function(cChild, bInit){
+    bInit = isset(bInit) ? bInit : true;
+
     cChild.__DisplayList = this.m_cDisplayList;
     this.m_aChildren.push(cChild);
     this.m_cDisplayList.Add(cChild);
+
+    if (bInit)
+    {
+        cChild.Init();
+    }
 };
 
 State.prototype.RemoveChild = function(cChild){
