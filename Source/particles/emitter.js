@@ -227,7 +227,7 @@ Emitter.prototype.Draw = function(cRenderer){
             //TODO fix with new matrix system!
             throw new Error("FIX");
             
-            cTransform.Multiply(cParticleTransform).Multiply(EN.Game.Viewport.GetTransformMatrix()).Multiply(cCamera.GetTransformMatrix());
+            cTransform.Multiply(cParticleTransform).Multiply(cCamera.GlobalTransform);
 
             cCtx.setTransform.apply(cCtx, cTransform.GetCanvasTransform());
     
