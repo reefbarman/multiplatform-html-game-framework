@@ -16,13 +16,13 @@ function GameObject()
     this.Active = true;
 
     this.m_cPos = new Vec(0, 0);
-    this.m_cPos.OnChange(function(x, y){
-        self.__PosChanged(new Vec(x, y));
+    this.m_cPos.OnChange(function(nNewX, nOldX, nNewY, nOldY){
+        self.__PosChanged(nNewX, nOldX, nNewY, nOldY);
     });
 
     this.m_cScale = new Vec(1, 1);
-    this.m_cScale.OnChange(function(x, y){
-        self.__ScaleChanged(new Vec(x, y));
+    this.m_cScale.OnChange(function(nNewX, nOldX, nNewY, nOldY){
+        self.__ScaleChanged(nNewX, nOldX, nNewY, nOldY);
     });
 
     this.m_nRotation = 0;
@@ -65,13 +65,7 @@ Object.defineProperty(GameObject.prototype, "Pos", {
         return this.m_cPos;
     },
     set: function(cPos){
-        var self = this;
-        var cOldPos = this.m_cPos;
-        this.m_cPos = cPos;
-        this.m_cPos.OnChange(function(x, y){
-            self.__PosChanged(new Vec(x, y));
-        });
-        this.__PosChanged(Vec.Subtract(cPos, cOldPos));
+        this.m_cPos.Set(cPos);
     }
 });
 
@@ -98,13 +92,7 @@ Object.defineProperty(GameObject.prototype, "Scale", {
         return this.m_cScale;
     },
     set: function(cScale){
-        var cOldScale = this.m_cScale;
-        this.m_cScale = cScale;
-
-        var nX = 1 / (cOldScale.x / cScale.x);
-        var nY = 1 / (cOldScale.y / cScale.y);
-
-        this.__ScaleChanged(new Vec(nX, nY));
+        this.m_cScale.Set(cScale);
     }
 });
 
@@ -117,13 +105,16 @@ Object.defineProperty(GameObject.prototype, "Parent", {
     }
 });
 
-GameObject.prototype.__PosChanged = function(cVec){
-    this.m_cTransformMatrix.Translate(cVec);
+GameObject.prototype.__PosChanged = function(nNewX, nOldX, nNewY, nOldY){
+    this.m_cTransformMatrix.Translate(new Vec(nNewX - nOldX, nNewY - nOldY));
     this.m_bGlobalTansformUpdated = false;
 };
 
-GameObject.prototype.__ScaleChanged = function(cVec){
-    this.m_cTransformMatrix.Scale(cVec);
+GameObject.prototype.__ScaleChanged = function(nNewX, nOldX, nNewY, nOldY){
+    var nX = 1 / (nOldX / nNewX);
+    var nY = 1 / (nOldY / nNewY);
+
+    this.m_cTransformMatrix.Scale(new Vec(nX, nY));
     this.m_bGlobalTansformUpdated = false;
 };
 

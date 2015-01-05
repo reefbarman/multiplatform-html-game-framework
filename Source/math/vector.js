@@ -34,7 +34,7 @@ Object.defineProperty(Vector.prototype, "x", {
     set: function(x){
         var nOldX = this.m_nX;
         this.m_nX = x;
-        this.m_fOnChange(x - nOldX, 0);
+        this.m_fOnChange(x, nOldX, this.m_nY, this.m_nY);
     }
 });
 
@@ -45,7 +45,7 @@ Object.defineProperty(Vector.prototype, "y", {
     set: function(y){
         var nOldY = this.m_nY;
         this.m_nY = y;
-        this.m_fOnChange(0, y - nOldY);
+        this.m_fOnChange(this.m_nX, this.m_nX, y, nOldY);
     }
 });
 
@@ -57,8 +57,13 @@ Vector.prototype.OnChange = function(fOnChange){
  * Below functions operate on current vector
  */
 Vector.prototype.Set = function(cVec){
-    this.x = cVec.x;
-    this.y = cVec.y;
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX = cVec.x;
+    this.m_nY = cVec.y;
+
+    this.m_fOnChange(cVec.x, nX, cVec.y, nY);
 
     return this;
 };
@@ -76,51 +81,78 @@ Vector.prototype.Dot = function(cVec){
 };
 
 Vector.prototype.Normalize = function(){
+    var nX = this.x;
+    var nY = this.y;
+
     var nLength = this.Length();
     
     if(nLength !== 0)
     {
-        this.x = this.x / nLength;
-        this.y = this.y / nLength;
+        this.m_nX = this.x / nLength;
+        this.m_nY = this.y / nLength;
+
+        this.m_fOnChange(this.x, nX, this.y, nY);
     }
     
     return this;
 };
 
 Vector.prototype.Add = function(cVec){
-    this.x += cVec.x;
-    this.y += cVec.y;
-    
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX += cVec.x;
+    this.m_nY += cVec.y;
+
+    this.m_fOnChange(this.x, nX, this.y, nY);
+
     return this;
 };
 
 Vector.prototype.Subtract = function(cVec){
-    this.x -= cVec.x;
-    this.y -= cVec.y;
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX -= cVec.x;
+    this.m_nY -= cVec.y;
+
+    this.m_fOnChange(this.x, nX, this.y, nY);
     
     return this;
 };
 
 Vector.prototype.ScalarMultiply = function(nScalar){
-    this.x *= nScalar;
-    this.y *= nScalar;
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX *= nScalar;
+    this.m_nY *= nScalar;
+
+    this.m_fOnChange(this.x, nX, this.y, nY);
     
     return this;
 };
 
 Vector.prototype.MatrixMultiply = function(cMat){
-    var x = this.x;
-    var y = this.y;
-    
-    this.x = x * cMat.BaseMatrix[0][0] + y * cMat.BaseMatrix[1][0] + cMat.BaseMatrix[2][0];
-    this.y = x * cMat.BaseMatrix[0][1] + y * cMat.BaseMatrix[1][1] + cMat.BaseMatrix[2][1];
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX = nX * cMat.BaseMatrix[0][0] + nY * cMat.BaseMatrix[1][0] + cMat.BaseMatrix[2][0];
+    this.m_nY = nX * cMat.BaseMatrix[0][1] + nY * cMat.BaseMatrix[1][1] + cMat.BaseMatrix[2][1];
+
+    this.m_fOnChange(this.x, nX, this.y, nY);
     
     return this;
 };
 
 Vector.prototype.Lerp = function(cVec, nAlpha){
-    this.x += (cVec.x - this.x) * nAlpha;
-    this.y += (cVec.y - this.y) * nAlpha;
+    var nX = this.x;
+    var nY = this.y;
+
+    this.m_nX += (cVec.x - this.x) * nAlpha;
+    this.m_nY += (cVec.y - this.y) * nAlpha;
+
+    this.m_fOnChange(this.x, nX, this.y, nY);
     
     return this;
 };
