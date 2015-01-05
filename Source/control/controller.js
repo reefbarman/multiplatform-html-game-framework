@@ -121,16 +121,16 @@ EN.Controller = (function(){
         return false;
     }
 
-    function KeyDown(e)
+    function KeyEvent(e)
     {
-        m_cPreviousKeyEvents[e.keyCode] = m_cKeyEvents[e.keyCode];
-        m_cKeyEvents[e.keyCode] = true;
-    }
+        var nKeyCode = e.keyCode;
 
-    function KeyUp(e)
-    {
-        m_cPreviousKeyEvents[e.keyCode] = m_cKeyEvents[e.keyCode];
-        m_cKeyEvents[e.keyCode] = false;
+        //Deal with multiple keycodes for same key
+        //Left CTRL
+        nKeyCode = (nKeyCode == 17 || nKeyCode == 18) ? EN.Controller.Keys.LCTRL : nKeyCode;
+
+        m_cPreviousKeyEvents[nKeyCode] = m_cKeyEvents[nKeyCode];
+        m_cKeyEvents[nKeyCode] = (e.type == "keydown");
     }
 
     function Scroll(e)
@@ -149,8 +149,8 @@ EN.Controller = (function(){
             //Detect platform and bind relevant events
             if (EN.Device.OS == EN.Device.SUPPORTED_OS.Windows || EN.Device.OS == EN.Device.SUPPORTED_OS.MacOSX)
             {
-                window.onkeydown = KeyDown;
-                window.onkeyup = KeyUp;
+                window.onkeydown = KeyEvent;
+                window.onkeyup = KeyEvent;
 
                 window.onmousewheel = Scroll;
 
@@ -201,7 +201,7 @@ EN.Controller = (function(){
 EN.Controller.Buttons = {
     LEFT: 0,
     RIGHT: 2
-}
+};
 
 EN.Controller.Keys = {
     UP: 38,
@@ -210,5 +210,11 @@ EN.Controller.Keys = {
     RIGHT: 39,
     A: 65,
     Z: 90,
-    ENTER: 13
+    ENTER: 13,
+    LCTRL: 17,
+    LSHIFT: 16,
+    LALT: 18,
+    SPACE: 32,
+    ESC: 27,
+    BACKSPACE: 8
 };

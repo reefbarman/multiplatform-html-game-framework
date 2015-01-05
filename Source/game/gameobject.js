@@ -65,8 +65,12 @@ Object.defineProperty(GameObject.prototype, "Pos", {
         return this.m_cPos;
     },
     set: function(cPos){
+        var self = this;
         var cOldPos = this.m_cPos;
         this.m_cPos = cPos;
+        this.m_cPos.OnChange(function(x, y){
+            self.__PosChanged(new Vec(x, y));
+        });
         this.__PosChanged(Vec.Subtract(cPos, cOldPos));
     }
 });
