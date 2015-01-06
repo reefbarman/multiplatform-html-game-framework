@@ -1,3 +1,70 @@
+var floor = Math.floor;
+var abs = Math.abs;
+
+function isset(value)
+{
+    return typeof value != "undefined";
+}
+
+var MAX_LOOPS = 1000000;
+
+function insertionSort(value, array, fCompare)
+{
+    var fFindLoc = function(){
+        var nLow = 0;
+        var nHigh = array.length;
+
+        var nMid = 0;
+
+        var bRunning = nHigh > 0;
+
+        var nLoops = 0;
+
+        while(bRunning)
+        {
+            nMid = floor(nLow + ((nHigh - nLow) / 2));
+
+            var nComp = fCompare(value, array[nMid]);
+
+            if (nComp > 0)
+            {
+                if (nMid == nHigh)
+                {
+                    bRunning = false;
+                }
+                else
+                {
+                    nLow = nMid + 1;
+                }
+            }
+            else if (nComp < 0)
+            {
+                if (nMid == nHigh)
+                {
+                    bRunning = false;
+                }
+                else
+                {
+                    nHigh = nMid;
+                }
+            }
+            else
+            {
+                bRunning = false;
+            }
+
+            if (nLoops++ > MAX_LOOPS)
+            {
+                throw new Error("Possible Infinite Loop Detected!");
+            }
+        }
+
+        return nMid;
+    };
+
+    array.splice(fFindLoc(), 0, value);
+}
+
 exports = {
     /**
      * Tests a non global value to see if its defined
@@ -6,9 +73,7 @@ exports = {
      * 
      * @returns {Boolean} - true|false if the value is set
      */
-    isset: function(value){
-        return typeof value != "undefined";
-    },
+    isset: isset,
     
     /**
      * Parses the query param string on the window url
@@ -236,5 +301,7 @@ exports = {
         {
             cObj.prototype[sKey] = cMixin[sKey];
         }
-    }
+    },
+
+    insertionSort: insertionSort
 };

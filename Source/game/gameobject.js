@@ -115,6 +115,7 @@ GameObject.prototype.__ScaleChanged = function(nNewX, nOldX, nNewY, nOldY){
     var nY = 1 / (nOldY / nNewY);
 
     this.m_cTransformMatrix.Scale(new Vec(nX, nY));
+
     this.m_bGlobalTansformUpdated = false;
 };
 
