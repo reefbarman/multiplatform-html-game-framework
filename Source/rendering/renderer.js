@@ -57,10 +57,7 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         m_cClearColor = cColor;
     };
     
-    this.DrawImage = function(cMatrix, cImage, nWidth, nHeight, cAnchor, nAlpha){
-        cAnchor = cAnchor ? cAnchor : { x: 0, y: 0 };
-        nAlpha = typeof nAlpha != "undefined" ? nAlpha : 1;
-
+    this.DrawImage = function(cImage){
         m_cCtx.save();
         
         var cCamera = GetCamera();
@@ -72,22 +69,18 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
             m_cTransformMatrix.Scale(m_cScaleInverseVector);
         }
         
-        m_cTransformMatrix.Multiply(cMatrix).Multiply(cCamera.GlobalTransform);
+        m_cTransformMatrix.Multiply(cImage.GlobalTransform).Multiply(cCamera.GlobalTransform);
         
         m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
-        m_cCtx.globalAlpha = nAlpha;
+        m_cCtx.globalAlpha = cImage.Alpha;
 
-        var cBaseImage = cImage;
+        var nWidth = cImage.Width;
+        var nHeight = cImage.Height;
 
-        if (cImage.GetImage)
-        {
-            cBaseImage = cImage.GetImage();
-        }
+        var nXBasePos = -nWidth * cImage.Anchor.x;
+        var nYBasePos = -nHeight * (1 - cImage.Anchor.y);
 
-        var nXBasePos = -nWidth * cAnchor.x;
-        var nYBasePos = -nHeight * (1 - cAnchor.y);
-
-        m_cCtx.drawImage(cBaseImage, 0, 0, cBaseImage.width, cBaseImage.height, nXBasePos, nYBasePos, nWidth, nHeight);
+        m_cCtx.drawImage(cImage.GetImage(), cImage.Offset.x, cImage.Offset.y, cImage.ImageWidth, cImage.ImageHeight, nXBasePos, nYBasePos, nWidth, nHeight);
         m_cCtx.restore();
     };
     

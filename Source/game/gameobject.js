@@ -102,6 +102,7 @@ Object.defineProperty(GameObject.prototype, "Parent", {
     },
     set: function(cParent){
         this.m_cParent = cParent;
+        this.m_bGlobalTansformUpdated = false;
     }
 });
 

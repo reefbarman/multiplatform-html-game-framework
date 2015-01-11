@@ -1,27 +1,30 @@
 include("game/camera.js", true);
 include("rendering/renderer.js", true);
 
-function Texture(nWidth, nHeight)
+function Texture(nCanvasWidth, nCanvasHeight)
 {
+    this._ImageAsset();
     this.m_eCanvas = document.createElement("canvas");
-    this.m_eCanvas.width = nWidth;
-    this.m_eCanvas.height = nHeight;
+    this.m_eCanvas.width = nCanvasWidth;
+    this.m_eCanvas.height = nCanvasHeight;
+
+    this.ImageWidth = nCanvasWidth;
+    this.ImageHeight = nCanvasHeight;
 
     this.m_cCamera = new EN.Camera("Texture");
-    this.m_cCamera.Init(nHeight);
+    this.m_cCamera.Init(nCanvasHeight);
 
     this.m_cCtx = this.m_eCanvas.getContext("2d");
 
-    this.m_cRenderer = new EN.Renderer(this.m_cCtx, nWidth, nHeight, this.m_cCamera);
+    this.m_cRenderer = new EN.Renderer(this.m_cCtx, nCanvasWidth, nCanvasHeight, this.m_cCamera);
 
-    this.m_cTransformMatrix = new EN.Matrix();
+    this.m_bLoaded = true;
 }
 
-Texture.prototype.DrawImage = function(cPos, cImage){
-    this.m_cTransformMatrix.Reset();
-    this.m_cTransformMatrix.SetTranslation(cPos);
+inherits(Texture, EN.ImageAsset);
 
-    this.m_cRenderer.DrawImage(this.m_cTransformMatrix, cImage, cImage.Width, cImage.Height);
+Texture.prototype.DrawImage = function(cImage){
+    this.m_cRenderer.DrawImage(cImage);
 };
 
 Texture.prototype.GetImage = function(){
