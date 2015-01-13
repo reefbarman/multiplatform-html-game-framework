@@ -115,4 +115,11 @@ ImageAsset.prototype.CleanUp = function(){
     EN.AssetManager.ReleaseImage(this.m_sFileName);
 };
 
+ImageAsset.Clone = function(cOtherImageAsset){
+    var cNewImageAsset = new ImageAsset(cOtherImageAsset.FileName, cOtherImageAsset.m_cOptions);
+    cNewImageAsset.__InitImage(cNewImageAsset.m_cBaseImage);
+
+    return cNewImageAsset;
+};
+
 EN.ImageAsset = ImageAsset;
