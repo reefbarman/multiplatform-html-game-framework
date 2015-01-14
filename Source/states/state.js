@@ -24,7 +24,11 @@ State.prototype.AddChild = function(cChild, bInit){
 
     cChild.__DisplayList = this.m_cDisplayList;
     this.m_aChildren.push(cChild);
-    this.m_cDisplayList.Add(cChild);
+
+    if (cChild.Renderable)
+    {
+        this.m_cDisplayList.Add(cChild);
+    }
 
     if (bInit)
     {
@@ -33,7 +37,11 @@ State.prototype.AddChild = function(cChild, bInit){
 };
 
 State.prototype.RemoveChild = function(cChild){
-    this.m_cDisplayList.Remove(cChild);
+    if (cChild.Renderable)
+    {
+        this.m_cDisplayList.Remove(cChild);
+    }
+
     cChild.__DisplayList = null;
     this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
 };

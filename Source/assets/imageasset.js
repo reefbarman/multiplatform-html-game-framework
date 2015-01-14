@@ -19,6 +19,7 @@ include("assets/assetmanager.js", true);
 function ImageAsset(sFileName, cOptions)
 {
     this._Asset(sFileName);
+    this.Renderable = true;
 
     var cDefaults = {
         visibleWidth: null,

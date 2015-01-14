@@ -20,7 +20,7 @@ function CollisionBounds(cPos, nWidth, nHeight)
     this.Pos = cPos || new Vec(0, 0);
     this.Width = nWidth || 0;
     this.Height = nHeight || 0;
-    this.zIndex = 99;
+    this.zIndexLocal = 99;
     
     this.m_aCorners = [];
     this.m_aAxes = [];

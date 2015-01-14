@@ -12,7 +12,7 @@ function GameObject()
     this.ID = GameObject.__IDCount++;
     this.Width = 0;
     this.Height = 0;
-    this.zIndex = 0;
+    this.zIndexLocal = 0;
     this.Active = true;
 
     this.m_cPos = new Vec(0, 0);
@@ -35,6 +35,7 @@ function GameObject()
     this.m_cParent = null;
     this.m_aChildren = [];
 
+    this.Renderable = false;
     this.__DisplayList = null;
 }
 
@@ -57,6 +58,23 @@ Object.defineProperty(GameObject.prototype, "GlobalTransform", {
         }
 
         return this.m_cGlobalTransformMatrix;
+    }
+});
+
+Object.defineProperty(GameObject.prototype, "zIndex", {
+    get: function(){
+        var nZIndex = 0;
+
+        if (this.m_cParent)
+        {
+            nZIndex = this.m_cParent.zIndex + this.zIndexLocal;
+        }
+        else
+        {
+            nZIndex = this.zIndexLocal;
+        }
+
+        return nZIndex;
     }
 });
 
@@ -126,7 +144,11 @@ GameObject.prototype.AddChild = function(cChild, bInit){
     cChild.Parent = this;
     cChild.__DisplayList = this.__DisplayList;
     this.m_aChildren.push(cChild);
-    this.__DisplayList.Add(cChild);
+
+    if (cChild.Renderable)
+    {
+        this.__DisplayList.Add(cChild);
+    }
 
     if (bInit)
     {
@@ -135,7 +157,11 @@ GameObject.prototype.AddChild = function(cChild, bInit){
 };
 
 GameObject.prototype.RemoveChild = function(cChild){
-    this.__DisplayList.Remove(cChild);
+    if (cChild.Renderable)
+    {
+        this.__DisplayList.Remove(cChild);
+    }
+
     cChild.Parent = null;
     cChild.__DisplayList = null;
     this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
