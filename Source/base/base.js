@@ -62,7 +62,11 @@ function insertionSort(value, array, fCompare)
         return nMid;
     };
 
-    array.splice(fFindLoc(), 0, value);
+    var nIndex = fFindLoc();
+
+    array.splice(nIndex, 0, value);
+
+    return nIndex;
 }
 
 exports = {
