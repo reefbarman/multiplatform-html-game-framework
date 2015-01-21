@@ -35,6 +35,12 @@ function insertionSort(value, array, fCompare)
                 else
                 {
                     nLow = nMid + 1;
+
+                    if (nLow >= nHigh)
+                    {
+                        bRunning = false;
+                        nMid = nLow;
+                    }
                 }
             }
             else if (nComp < 0)
