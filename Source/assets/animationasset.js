@@ -3,9 +3,11 @@
 include("assets/asset.js", true);
 include("assets/imageasset.js", true);
 include("assets/assetmanager.js", true);
+include("timing/timer.js", true);
 
 var floor = Math.floor;
 var Vec = EN.Vector;
+var Timer = EN.Timer;
 
 function AnimationAsset(sFileName)
 {
@@ -91,12 +93,12 @@ AnimationAsset.prototype.Init = function(){
     this.AddChild(this.m_cBaseImage);
 };
 
-AnimationAsset.prototype.Update = function(nDt){
-    this._Update_Asset(nDt);
+AnimationAsset.prototype.Update = function(){
+    this._Update_Asset();
     
     if (this.m_bAnimationRunning)
     {
-        this.m_nPreviousFramesElapsed += nDt / this.m_cCurrentAnimation.frameDelta;
+        this.m_nPreviousFramesElapsed += Timer.DeltaTime / this.m_cCurrentAnimation.frameDelta;
 
         if (this.m_nPreviousFramesElapsed >= 1)
         {

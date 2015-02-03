@@ -1,6 +1,9 @@
 include("rendering/color.js", true);
+include("timing/timer.js", true);
 
 var Vec = EN.Vector;
+var Timer = EN.Timer;
+
 var cos = Math.cos;
 var sin = Math.sin;
 
@@ -107,7 +110,9 @@ Object.defineProperty(Particle.prototype, "Angle", {
     }
 });
 
-Particle.prototype.Update = function(nDt){
+Particle.prototype.Update = function(){
+    var nDt = Timer.DeltaTime;
+
     this.Life -= nDt;
     this.m_nUsedLife += nDt;
     

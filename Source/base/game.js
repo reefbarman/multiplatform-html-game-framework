@@ -4,10 +4,10 @@ include("rendering/renderer.js", true);
 include("control/controller.js", true);
 include("states/statemanager.js", true);
 include("states/state.js", true);
+include("timing/timer.js", true);
 
 var SM = EN.StateManager;
-
-var s_bGamePaused = false;
+var Timer = EN.Timer;
 
 function Game()
 {
@@ -46,9 +46,9 @@ Game.prototype.__Init = function(){
     });
 };
 
-Game.prototype.Update = function(nDt){
-    EN.Controller.Update(nDt);
-    SM.Update(nDt);
+Game.prototype.Update = function(){
+    EN.Controller.Update();
+    SM.Update();
 };
 
 Game.prototype.Draw = function(){
@@ -59,33 +59,21 @@ Game.prototype.Draw = function(){
     
 Game.prototype.Run = function(){
     var self = this;
-    
-    var nLastUpdate = performance.now();
-    var nLastDt = 0;
 
+    Timer.Init();
+    
     var fUpdate = function(){
         try
         {
-            if (s_bGamePaused)
-            {
-                nLastUpdate = performance.now();
-                s_bGamePaused = false;
-            }
-            
-            var nCurrentTime = performance.now();
-            var nFrameTime = nCurrentTime - nLastUpdate;
+            Timer.Update();
 
             //Send smoothed dt to playground for fps
             if (window.playgroundFPS)
             {
-                var nUpdateDt = nFrameTime * 0.02 + nLastDt * 0.98;
-                window.playgroundFPS(nUpdateDt);
-                nLastDt = nUpdateDt;
+                window.playgroundFPS(Timer.DeltaTimeSmoothed);
             }
 
-            nLastUpdate = nCurrentTime;
-            
-            self.Update(nFrameTime);
+            self.Update();
             self.Draw();
             requestAnimationFrame(fUpdate);
         }
@@ -100,12 +88,13 @@ Game.prototype.Run = function(){
 };
 
 Game.Pause = function(){
-    s_bGamePaused = true;
+    Timer.Active = false;
     CocoonJS.App.pause();
 };
 
 Game.Resume = function(){
     CocoonJS.App.resume();
+    Timer.Active = true;
 };
 
 EN.Game = Game;

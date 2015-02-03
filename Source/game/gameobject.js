@@ -185,19 +185,19 @@ GameObject.prototype.RemoveChild = function(cChild){
     this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
 };
 
-GameObject.prototype.UpdateGameObject = function(nDt){
+GameObject.prototype.UpdateGameObject = function(){
     if (this.Active)
     {
-        this.Update(nDt);
+        this.Update();
 
         this.m_aChildren.forEach(function(cChild){
-            cChild.UpdateGameObject(nDt);
+            cChild.UpdateGameObject();
         });
     }
 };
 
 GameObject.prototype.Init = function(){};
-GameObject.prototype.Update = function(nDt){};
+GameObject.prototype.Update = function(){};
 GameObject.prototype.Draw = function(cRenderer){};
 GameObject.prototype.OnCollision = function(cOther){};
 GameObject.prototype.CleanUp = function(){};

@@ -1,4 +1,7 @@
 include("math/vector.js", true);
+include("timing/timer.js", true);
+
+var Timer = EN.Timer;
 
 var StateManager = (function(){
     var m_cRegisteredStats = {};
@@ -27,8 +30,8 @@ var StateManager = (function(){
             var bSwitch = false;
             
             return {
-                Update: function(nDt){
-                    nCurrentTime += nDt;
+                Update: function(){
+                    nCurrentTime += Timer.DeltaTime;
                     
                     var nTimePercent = nCurrentTime / nFadeTime;
                     bFade = nTimePercent < 0.5;
@@ -57,7 +60,7 @@ var StateManager = (function(){
 
         m_cTransitions[StateManager.TRANSITIONS.INSTANT] = function(fOnSwitch, fOnEnd){
             return {
-                Update: function(nDt){
+                Update: function(){
                     fOnSwitch();
                     fOnEnd();
                 },
@@ -167,14 +170,14 @@ var StateManager = (function(){
         PopState: function(){
             ChangeStates(m_aStateStack[m_aStateStack.length - 2], ReplaceStates);
         },
-        Update: function(nDt){
+        Update: function(){
             m_aStateStack.forEach(function(sState){
-                m_cRegisteredStats[sState].UpdateState(nDt);
+                m_cRegisteredStats[sState].UpdateState();
             });
             
             if (m_cTransitionUpdate)
             {
-                m_cTransitionUpdate.Update(nDt);
+                m_cTransitionUpdate.Update();
             }
         },
         Draw: function(cRenderer){

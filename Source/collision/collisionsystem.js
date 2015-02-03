@@ -42,7 +42,7 @@ EN.CollisionSystem = (function(){
         Init: function(nWorldWidth, nWorldHeight, nPrecision){
             CollisionGrid.Init(m_nCollisionGridSize, nWorldWidth, nWorldHeight, nPrecision);
         },
-        Update: function(nDt){
+        Update: function(){
             CollisionGrid.UpdateGrid(m_aGameObjects);
             HandleCollisions();
         },

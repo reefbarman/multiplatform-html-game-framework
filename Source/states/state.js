@@ -59,17 +59,17 @@ State.prototype.RemoveUI = function(cUIElement){
     this.m_aChildren.splice(this.m_aChildren.indexOf(cUIElement), 1);
 };
 
-State.prototype.UpdateState = function(nDt){
-    this.m_cCamera.Update(nDt);
-    this.m_cUICamera.Update(nDt);
+State.prototype.UpdateState = function(){
+    this.m_cCamera.Update();
+    this.m_cUICamera.Update();
 
-    this.Update(nDt);
+    this.Update();
 
     this.m_aChildren.forEach(function(cChild){
-        cChild.UpdateGameObject(nDt);
+        cChild.UpdateGameObject();
     });
 
-    EN.CollisionSystem.Update(nDt);
+    EN.CollisionSystem.Update();
 };
 
 /**
@@ -110,10 +110,8 @@ State.prototype.Pause = function(){};
 
 /**
  * Called once per frame to update the frame if it is the active state.
- * 
- * @param {number} nDt - The delta time between this frame and last.
  */
-State.prototype.Update = function(nDt){};
+State.prototype.Update = function(){};
 
 /**
  * Called once per frame to draw the state if it is the active state.

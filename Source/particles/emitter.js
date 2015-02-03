@@ -4,9 +4,11 @@ include("game/gameobject.js", true);
 include("math/math.js", true);
 include("math/vector.js", true);
 include("rendering/color.js", true);
+include("timing/timer.js", true);
 
 var CM = EN.CameraManager;
 var Vec = EN.Vector;
+var Timer = EN.Timer;
 
 var floor = Math.floor;
 var random = EN.Math.Random;
@@ -146,15 +148,15 @@ Emitter.prototype.Restart = function(){
     });
 };
 
-Emitter.prototype.FinalUpdate = function(nDt){
+Emitter.prototype.FinalUpdate = function(){
     if (this.Enabled)
     {
-        this._FinalUpdate_GameObject(nDt);
+        this._FinalUpdate_GameObject();
 
         var nEmitRate = this.EmissionRate / 1000;
 
         var nParticles = 0;
-        var nParticlesToEmit = this.m_nEmitAccumulator + nEmitRate * nDt;
+        var nParticlesToEmit = this.m_nEmitAccumulator + nEmitRate * Timer.DeltaTime;
         var nCount = floor(nParticlesToEmit);
         var nParticlesEmitted = 0;
 
@@ -173,7 +175,7 @@ Emitter.prototype.FinalUpdate = function(nDt){
 
             if (cParticle.Life > 0)
             {
-                cParticle.Update(nDt);
+                cParticle.Update();
                 bActive = true;
             }
             else if (this.Continuous)

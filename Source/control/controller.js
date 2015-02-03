@@ -165,7 +165,7 @@ EN.Controller = (function(){
                 eCanvas.addEventListener("touchend", InputEnd);
             }
         },
-        Update: function(nDt){
+        Update: function(){
             for (var nKey in m_cKeyEvents)
             {
                 m_cKeyPressed[nKey] = false;
