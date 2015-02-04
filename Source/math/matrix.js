@@ -132,6 +132,10 @@ Matrix.prototype.Multiply = function(cMatrix){
     return this;
 };
 
+Matrix.prototype.Inverse = function(){
+    return Matrix.Inverse(this);
+};
+
 Matrix.prototype.GetCanvasTransform = function(){
     return [
         this.BaseMatrix[0][0],
