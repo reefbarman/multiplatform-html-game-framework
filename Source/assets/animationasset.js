@@ -68,6 +68,11 @@ AnimationAsset.prototype.Load = function(fOnLoad){
         {
             var cSprite = JSON.parse(sSprite);
 
+            for (var sAnimation in cSprite.animations)
+            {
+                cSprite.animations[sAnimation] = extend({}, cSprite.baseInfo, cSprite.animations[sAnimation]);
+            }
+
             self.m_cAnimationInfo = cSprite;
             self.m_cBaseImage = new EN.ImageAsset(cSprite.spriteSheet);
 
