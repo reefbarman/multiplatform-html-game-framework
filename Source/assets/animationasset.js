@@ -11,19 +11,21 @@ var Timer = EN.Timer;
 
 function AnimationAsset(sFileName)
 {
-    var self = this;
-
     //Super constructor
     this._Asset(sFileName);
 
-    this.m_cAnimationInfo = null;
-    this.m_cBaseImage = null;
-    this.m_nOrigWidth = 0;
-    this.m_nOrigHeight = 0;
-    
-    this.m_sAnimation = "";
-    this.m_cCurrentAnimation = null;
+    var self = this;
+
+    this.Renderable = true;
+
     this.CurrentFrame = 0;
+
+    this.m_cAnimationInfo = {};
+    this.m_aImages = [];
+
+    this.m_sAnimation = "";
+    this.m_cCurrentImage = null;
+    this.m_cCurrentAnimation = null;
     this.m_nPreviousFramesElapsed = 0;
     this.m_bAnimationRunning = false;
 
@@ -47,16 +49,16 @@ Object.defineProperty(AnimationAsset.prototype, "Offset", {
 AnimationAsset.prototype.__OffsetChanged = function(x, y){
     if (this.m_cCurrentAnimation)
     {
-        this.m_cBaseImage.Pos.x = -this.m_cCurrentAnimation.width * x;
-        this.m_cBaseImage.Pos.y = -this.m_cCurrentAnimation.height * y;
+        this.m_cCurrentImage.Pos.x = -this.m_cCurrentAnimation.width * x;
+        this.m_cCurrentImage.Pos.y = -this.m_cCurrentAnimation.height * y;
     }
 };
 
 AnimationAsset.prototype.__SetFrame = function() {
-    var nOffsetX = (this.CurrentFrame * this.m_cCurrentAnimation.width) % this.m_nOrigWidth;
-    var nOffsetY = floor((this.CurrentFrame * this.m_cCurrentAnimation.width) / this.m_nOrigWidth) * this.m_cCurrentAnimation.height + this.m_cCurrentAnimation.rowOffset;
+    var nOffsetX = (this.CurrentFrame * this.m_cCurrentAnimation.width) % this.m_cCurrentAnimation.origWidth;
+    var nOffsetY = floor((this.CurrentFrame * this.m_cCurrentAnimation.width) / this.m_cCurrentAnimation.origWidth) * this.m_cCurrentAnimation.height + this.m_cCurrentAnimation.rowOffset;
 
-    this.m_cBaseImage.Offset = new Vec(nOffsetX, nOffsetY);
+    this.m_cCurrentImage.Offset = new Vec(nOffsetX, nOffsetY);
 };
 
 AnimationAsset.prototype.Load = function(fOnLoad){
@@ -68,19 +70,33 @@ AnimationAsset.prototype.Load = function(fOnLoad){
         {
             var cSprite = JSON.parse(sSprite);
 
-            for (var sAnimation in cSprite.animations)
+            self.m_aImages = [];
+
+            for (var sAnimKey in cSprite.spriteSheets)
             {
-                cSprite.animations[sAnimation] = extend({}, cSprite.baseInfo, cSprite.animations[sAnimation]);
+                var cImage = new EN.ImageAsset(cSprite.spriteSheets[sAnimKey]);
+                self.m_aImages.push(cImage);
+
+                for (var sAnimation in cSprite.animations[sAnimKey])
+                {
+                    var cBaseInfo = extend({}, cSprite.baseInfo.base, cSprite.baseInfo[sAnimKey]);
+
+                    self.m_cAnimationInfo[sAnimation] = extend({}, cBaseInfo, cSprite.animations[sAnimKey][sAnimation]);
+                    self.m_cAnimationInfo[sAnimation].image = cImage;
+                }
             }
 
-            self.m_cAnimationInfo = cSprite;
-            self.m_cBaseImage = new EN.ImageAsset(cSprite.spriteSheet);
-
             EN.Loader.Load([
-                self.m_cBaseImage
+                self.m_aImages
             ], function(){
-                self.m_nOrigWidth = self.m_cBaseImage.Width;
-                self.m_nOrigHeight = self.m_cBaseImage.Height;
+
+                for (var sAnimation in self.m_cAnimationInfo)
+                {
+                    var cImage = self.m_cAnimationInfo[sAnimation].image;
+
+                    self.m_cAnimationInfo[sAnimation].origWidth = cImage.Width;
+                    self.m_cAnimationInfo[sAnimation].origHeight = cImage.Height;
+                }
 
                 fOnLoad();
             });
@@ -95,12 +111,17 @@ AnimationAsset.prototype.Load = function(fOnLoad){
 AnimationAsset.prototype.Init = function(){
     this._Init_Asset();
 
-    this.AddChild(this.m_cBaseImage);
+    var self = this;
+
+    this.m_aImages.forEach(function(cImage){
+        cImage.Renderable = false;
+        self.AddChild(cImage);
+    });
 };
 
 AnimationAsset.prototype.Update = function(){
     this._Update_Asset();
-    
+
     if (this.m_bAnimationRunning)
     {
         this.m_nPreviousFramesElapsed += Timer.DeltaTime / this.m_cCurrentAnimation.frameDelta;
@@ -110,9 +131,13 @@ AnimationAsset.prototype.Update = function(){
             this.CurrentFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
             this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
         }
-        
+
         this.__SetFrame();
     }
+};
+
+AnimationAsset.prototype.Draw = function(cRenderer){
+    cRenderer.DrawImage(this.m_cCurrentImage);
 };
 
 AnimationAsset.prototype.ChangeAnimation = function(sAnimation){
@@ -123,13 +148,15 @@ AnimationAsset.prototype.ChangeAnimation = function(sAnimation){
         this.CurrentFrame = 0;
         this.m_nPreviousFramesElapsed = 0;
 
-        var cCurrentAnimation = this.m_cAnimationInfo.animations[this.m_sAnimation];
+        var cCurrentAnimation = this.m_cAnimationInfo[this.m_sAnimation];
 
         cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
         this.m_cCurrentAnimation = cCurrentAnimation;
 
-        this.m_cBaseImage.Width = this.m_cBaseImage.ImageWidth = cCurrentAnimation.width;
-        this.m_cBaseImage.Height = this.m_cBaseImage.ImageHeight = cCurrentAnimation.height;
+        this.m_cCurrentImage = cCurrentAnimation.image;
+
+        this.m_cCurrentImage.Width = this.m_cCurrentImage.ImageWidth = cCurrentAnimation.width;
+        this.m_cCurrentImage.Height = this.m_cCurrentImage.ImageHeight = cCurrentAnimation.height;
 
         this.__OffsetChanged(this.m_cOffset.x, this.m_cOffset.y);
         this.__SetFrame();
@@ -148,7 +175,10 @@ AnimationAsset.prototype.Play = function(bPlay){
 AnimationAsset.prototype.CleanUp = function(){
     this._CleanUp_Asset();
     EN.AssetManager.ReleaseFile("animations/" + this.m_sFileName + ".json");
-    this.m_cBaseImage.CleanUp();
+
+    this.m_aImages.forEach(function(cImage){
+        cImage.CleanUp();
+    });
 };
 
 EN.AnimationAsset = AnimationAsset;

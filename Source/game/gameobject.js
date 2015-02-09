@@ -30,7 +30,7 @@ function GameObject()
     this.m_cTransformMatrix = new Mat();
 
     this.m_cGlobalTransformMatrix = new Mat();
-    this.m_bGlobalTransformUpdated = false;
+    this.m_bGlobalTransformUpdate = true;
 
     this.m_cParent = null;
     this.m_aChildren = [];
@@ -41,15 +41,22 @@ function GameObject()
 
 GameObject.__IDCount = 0;
 
-Object.defineProperty(GameObject.prototype, "__GlobalTransformUpdated", {
-    get: function(){
-        return this.m_bGlobalTransformUpdated && (!this.Parent || this.Parent.__GlobalTransformUpdated);
+Object.defineProperty(GameObject.prototype, "__GlobalTransformUpdate", {
+    set: function(bUpdate){
+        this.m_bGlobalTransformUpdate = bUpdate;
+
+        if (bUpdate)
+        {
+            this.m_aChildren.forEach(function(cChild){
+                cChild.__GlobalTransformUpdate = true;
+            });
+        }
     }
 });
 
 Object.defineProperty(GameObject.prototype, "GlobalTransform", {
     get: function(){
-        if (!this.__GlobalTransformUpdated)
+        if (this.m_bGlobalTransformUpdate)
         {
             if (this.m_cParent)
             {
@@ -60,7 +67,7 @@ Object.defineProperty(GameObject.prototype, "GlobalTransform", {
                 this.m_cGlobalTransformMatrix = new Mat(this.m_cTransformMatrix);
             }
 
-            this.m_bGlobalTransformUpdated = true;
+            this.m_bGlobalTransformUpdate = false;
         }
 
         return this.m_cGlobalTransformMatrix;
@@ -109,7 +116,7 @@ Object.defineProperty(GameObject.prototype, "Rotation", {
         {
             this.m_nRotation = nRotation;
             this.m_cTransformMatrix.Rotate(nRotation - nOldRot);
-            this.m_bGlobalTransformUpdated = false;
+            this.__GlobalTransformUpdate = true;
         }
     }
 });
@@ -131,7 +138,7 @@ Object.defineProperty(GameObject.prototype, "Parent", {
         if (cParent != this.m_cParent)
         {
             this.m_cParent = cParent;
-            this.m_bGlobalTransformUpdated = false;
+            this.__GlobalTransformUpdate = true;
         }
     }
 });
@@ -140,7 +147,7 @@ GameObject.prototype.__PosChanged = function(nNewX, nOldX, nNewY, nOldY){
     if (nNewX != nOldX || nNewY != nOldY)
     {
         this.m_cTransformMatrix.Translate(new Vec(nNewX - nOldX, nNewY - nOldY));
-        this.m_bGlobalTransformUpdated = false;
+        this.__GlobalTransformUpdate = true;
     }
 };
 
@@ -152,7 +159,7 @@ GameObject.prototype.__ScaleChanged = function(nNewX, nOldX, nNewY, nOldY){
 
         this.m_cTransformMatrix.Scale(new Vec(nX, nY));
 
-        this.m_bGlobalTransformUpdated = false;
+        this.__GlobalTransformUpdate = true;
     }
 };
 
