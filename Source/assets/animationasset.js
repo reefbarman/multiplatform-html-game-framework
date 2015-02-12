@@ -14,7 +14,7 @@ function AnimationAsset(sFileName)
     //Super constructor
     this._Asset(sFileName);
 
-    var self = this;
+    this.m_bLoaded = false;
 
     this.Renderable = true;
 
@@ -30,6 +30,9 @@ function AnimationAsset(sFileName)
     this.m_bAnimationRunning = false;
 
     this.m_cOffset = new EN.Vector();
+
+    var self = this;
+
     this.m_cOffset.OnChange(function(nNewX, nOldX, nNewY, nOldY){
         self.__OffsetChanged(nNewX, nNewY);
     });
@@ -98,6 +101,7 @@ AnimationAsset.prototype.Load = function(fOnLoad){
                     self.m_cAnimationInfo[sAnimation].origHeight = cImage.Height;
                 }
 
+                self.m_bLoaded = true;
                 fOnLoad();
             });
         }
@@ -137,11 +141,14 @@ AnimationAsset.prototype.Update = function(){
 };
 
 AnimationAsset.prototype.Draw = function(cRenderer){
-    cRenderer.DrawImage(this.m_cCurrentImage);
+    if (this.m_cCurrentAnimation)
+    {
+        cRenderer.DrawImage(this.m_cCurrentImage);
+    }
 };
 
 AnimationAsset.prototype.ChangeAnimation = function(sAnimation){
-    if (sAnimation != this.m_sAnimation)
+    if (sAnimation != this.m_sAnimation && this.m_bLoaded)
     {
         this.m_sAnimation = sAnimation;
 
