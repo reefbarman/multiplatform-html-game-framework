@@ -6,6 +6,7 @@ include("assets/assetmanager.js", true);
 include("timing/timer.js", true);
 
 var floor = Math.floor;
+
 var Vec = EN.Vector;
 var Timer = EN.Timer;
 
@@ -46,6 +47,12 @@ Object.defineProperty(AnimationAsset.prototype, "Offset", {
     },
     set: function(cOffset){
         this.m_cOffset.Set(cOffset);
+    }
+});
+
+Object.defineProperty(AnimationAsset.prototype, "CurrentAnim", {
+    get: function(){
+        return this.m_sAnimation;
     }
 });
 
@@ -132,7 +139,18 @@ AnimationAsset.prototype.Update = function(){
 
         if (this.m_nPreviousFramesElapsed >= 1)
         {
-            this.CurrentFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
+            var nNextFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
+
+            if (nNextFrame < this.CurrentFrame && !this.m_cCurrentAnimation.looping)
+            {
+                this.CurrentFrame = this.m_cCurrentAnimation.frames - 1;
+                this.m_bAnimationRunning = false;
+            }
+            else
+            {
+                this.CurrentFrame = nNextFrame;
+            }
+
             this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
         }
 
@@ -176,7 +194,16 @@ AnimationAsset.prototype.Reset = function(){
 };
 
 AnimationAsset.prototype.Play = function(bPlay){
+    if (this.IsFinished())
+    {
+        this.Reset();
+    }
+
     this.m_bAnimationRunning = bPlay;
+};
+
+AnimationAsset.prototype.IsFinished = function(){
+    return this.m_bAnimationRunning && this.CurrentFrame == (this.m_cCurrentAnimation.frames - 1);
 };
 
 AnimationAsset.prototype.CleanUp = function(){
