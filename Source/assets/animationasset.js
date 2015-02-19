@@ -191,14 +191,11 @@ AnimationAsset.prototype.ChangeAnimation = function(sAnimation){
 AnimationAsset.prototype.Reset = function(){
     this.CurrentFrame = 0;
     this.m_nPreviousFramesElapsed = 0;
+
+    this.__SetFrame();
 };
 
 AnimationAsset.prototype.Play = function(bPlay){
-    if (this.IsFinished())
-    {
-        this.Reset();
-    }
-
     this.m_bAnimationRunning = bPlay;
 };
 
