@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "express": "3.x",
-    "node-sass-middleware": "0.4.x",
-    "express-zip": "1.0.x",
+    "babel-core": "^4.3.0",
     "ejs": "0.8.x",
+    "express": "3.x",
+    "express-zip": "1.0.x",
+    "node-sass-middleware": "0.4.x",
     "xtend": "2.1.x"
   }
 }

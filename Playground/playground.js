@@ -4,6 +4,7 @@ var fs = require("fs");
 var path = require("path");
 var zip = require("express-zip");
 var sassMiddleware = require("node-sass-middleware");
+var babel = require("babel-core");
 
 var cConfig = {};
 
@@ -114,7 +115,15 @@ cApp.use("/Game", function(cReq, cRes, fNext){
             {
                 var sSource = cData.toString();
 
-                sSource += "\n//# sourceURL=http://" + cReq.get("host") + "/Game" + cReq.path;
+                if (sSource.indexOf("//ECMAScript6") == 0)
+                {
+                    var cResult = babel.transform(sSource, {ast: false, sourceMap: "inline", sourceFileName: "http://" + cReq.get("host") + "/Game" + cReq.path});
+                    sSource = cResult.code;
+                }
+                else
+                {
+                    sSource += "\n//# sourceURL=http://" + cReq.get("host") + "/Game" + cReq.path;
+                }
 
                 cRes.send(sSource);
             }
