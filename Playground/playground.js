@@ -117,7 +117,7 @@ cApp.use("/Game", function(cReq, cRes, fNext){
 
                 if (sSource.indexOf("//ECMAScript6") == 0)
                 {
-                    var cResult = babel.transform(sSource, {ast: false, sourceMap: "inline", sourceFileName: "http://" + cReq.get("host") + "/Game" + cReq.path});
+                    var cResult = babel.transform(sSource, {ast: false, sourceMap: "inline", sourceFileName: "http://" + cReq.get("host") + "/Game" + cReq.path, loose: ["es6.classes"]});
                     sSource = cResult.code;
                 }
                 else

@@ -1,3 +1,5 @@
+//ECMAScript6
+
 include("math/vector.js", true);
 include("math/matrix.js", true);
 include("rendering/displaylist.js", true);
@@ -5,57 +7,53 @@ include("rendering/displaylist.js", true);
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
 
-function GameObject()
+class GameObject
 {
-    var self = this;
 
-    this.ID = GameObject.__IDCount++;
-    this.Width = 0;
-    this.Height = 0;
-    this.zIndexLocal = 0;
-    this.Active = true;
+    //////////////////////////////////////////////////////////
+    //region Constructor
 
-    this.m_cPos = new Vec(0, 0);
-    this.m_cPos.OnChange(function(nNewX, nOldX, nNewY, nOldY){
-        self.__PosChanged(nNewX, nOldX, nNewY, nOldY);
-    });
+    constructor()
+    {
+        var self = this;
 
-    this.m_cScale = new Vec(1, 1);
-    this.m_cScale.OnChange(function(nNewX, nOldX, nNewY, nOldY){
-        self.__ScaleChanged(nNewX, nOldX, nNewY, nOldY);
-    });
+        this.ID = GameObject.__IDCount++;
+        this.Width = 0;
+        this.Height = 0;
+        this.zIndexLocal = 0;
+        this.Active = true;
 
-    this.m_nRotation = 0;
-    
-    this.m_cTransformMatrix = new Mat();
+        this.m_cPos = new Vec(0, 0);
+        this.m_cPos.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
+            self.__PosChanged(nNewX, nOldX, nNewY, nOldY);
+        });
 
-    this.m_cGlobalTransformMatrix = new Mat();
-    this.m_bGlobalTransformUpdate = true;
+        this.m_cScale = new Vec(1, 1);
+        this.m_cScale.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
+            self.__ScaleChanged(nNewX, nOldX, nNewY, nOldY);
+        });
 
-    this.m_cParent = null;
-    this.m_aChildren = [];
+        this.m_nRotation = 0;
 
-    this.Renderable = false;
-    this.__DisplayList = null;
-}
+        this.m_cTransformMatrix = new Mat();
 
-GameObject.__IDCount = 0;
+        this.m_cGlobalTransformMatrix = new Mat();
+        this.m_bGlobalTransformUpdate = true;
 
-Object.defineProperty(GameObject.prototype, "__GlobalTransformUpdate", {
-    set: function(bUpdate){
-        this.m_bGlobalTransformUpdate = bUpdate;
+        this.m_cParent = null;
+        this.m_aChildren = [];
 
-        if (bUpdate)
-        {
-            this.m_aChildren.forEach(function(cChild){
-                cChild.__GlobalTransformUpdate = true;
-            });
-        }
+        this.Renderable = false;
+        this.__DisplayList = null;
     }
-});
 
-Object.defineProperty(GameObject.prototype, "GlobalTransform", {
-    get: function(){
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Public Accessors
+
+    get GlobalTransform()
+    {
         if (this.m_bGlobalTransformUpdate)
         {
             if (this.m_cParent)
@@ -72,10 +70,9 @@ Object.defineProperty(GameObject.prototype, "GlobalTransform", {
 
         return this.m_cGlobalTransformMatrix;
     }
-});
 
-Object.defineProperty(GameObject.prototype, "zIndex", {
-    get: function(){
+    get zIndex()
+    {
         var nZIndex = 0;
 
         if (this.m_cParent)
@@ -89,28 +86,27 @@ Object.defineProperty(GameObject.prototype, "zIndex", {
 
         return nZIndex;
     }
-});
 
-Object.defineProperty(GameObject.prototype, "Pos", {
-    get: function(){
+    get Pos()
+    {
         return this.m_cPos;
-    },
-    set: function(cPos){
+    }
+    set Pos(cPos)
+    {
         this.m_cPos.Set(cPos);
     }
-});
 
-Object.defineProperty(GameObject.prototype, "GlobalPos", {
-    get: function(){
+    get GlobalPos()
+    {
         return this.GlobalTransform.Position;
     }
-});
 
-Object.defineProperty(GameObject.prototype, "Rotation", {
-    get: function(){
+    get Rotation()
+    {
         return this.m_nRotation;
-    },
-    set: function(nRotation){
+    }
+    set Rotation(nRotation)
+    {
         var nOldRot = this.m_nRotation;
         if (nOldRot != nRotation)
         {
@@ -119,94 +115,125 @@ Object.defineProperty(GameObject.prototype, "Rotation", {
             this.__GlobalTransformUpdate = true;
         }
     }
-});
 
-Object.defineProperty(GameObject.prototype, "Scale", {
-    get: function(){
+    get Scale()
+    {
         return this.m_cScale;
-    },
-    set: function(cScale){
+    }
+    set Scale(cScale)
+    {
         this.m_cScale.Set(cScale);
     }
-});
 
-Object.defineProperty(GameObject.prototype, "Parent", {
-    get: function(){
+    get Parent()
+    {
         return this.m_cParent;
-    },
-    set: function(cParent){
+    }
+    set Parent(cParent)
+    {
         if (cParent != this.m_cParent)
         {
             this.m_cParent = cParent;
             this.__GlobalTransformUpdate = true;
         }
     }
-});
 
-GameObject.prototype.__PosChanged = function(nNewX, nOldX, nNewY, nOldY){
-    if (nNewX != nOldX || nNewY != nOldY)
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Public Functions
+
+    AddChild(cChild, bInit)
     {
-        this.m_cTransformMatrix.Translate(new Vec(nNewX - nOldX, nNewY - nOldY));
-        this.__GlobalTransformUpdate = true;
-    }
-};
+        bInit = isset(bInit) ? bInit : true;
 
-GameObject.prototype.__ScaleChanged = function(nNewX, nOldX, nNewY, nOldY){
-    if (nNewX != nOldX || nNewY != nOldY)
-    {
-        var nX = 1 / (nOldX / nNewX);
-        var nY = 1 / (nOldY / nNewY);
+        cChild.Parent = this;
+        cChild.__DisplayList = this.__DisplayList;
+        this.m_aChildren.push(cChild);
 
-        this.m_cTransformMatrix.Scale(new Vec(nX, nY));
+        if (cChild.Renderable)
+        {
+            this.__DisplayList.Add(cChild);
+        }
 
-        this.__GlobalTransformUpdate = true;
-    }
-};
-
-GameObject.prototype.AddChild = function(cChild, bInit){
-    bInit = isset(bInit) ? bInit : true;
-
-    cChild.Parent = this;
-    cChild.__DisplayList = this.__DisplayList;
-    this.m_aChildren.push(cChild);
-
-    if (cChild.Renderable)
-    {
-        this.__DisplayList.Add(cChild);
+        if (bInit)
+        {
+            cChild.Init();
+        }
     }
 
-    if (bInit)
+    RemoveChild(cChild)
     {
-        cChild.Init();
-    }
-};
+        if (cChild.Renderable)
+        {
+            this.__DisplayList.Remove(cChild);
+        }
 
-GameObject.prototype.RemoveChild = function(cChild){
-    if (cChild.Renderable)
+        cChild.Parent = null;
+        cChild.__DisplayList = null;
+        this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
+    }
+
+    UpdateGameObject()
     {
-        this.__DisplayList.Remove(cChild);
+        if (this.Active)
+        {
+            this.Update();
+
+            this.m_aChildren.forEach(function(cChild){
+                cChild.UpdateGameObject();
+            });
+        }
     }
 
-    cChild.Parent = null;
-    cChild.__DisplayList = null;
-    this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
-};
+    Init(){}
+    Update(){}
+    Draw(cRenderer){}
+    OnCollision(cOther){}
+    CleanUp(){}
 
-GameObject.prototype.UpdateGameObject = function(){
-    if (this.Active)
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Private Functions
+
+    __PosChanged(nNewX, nOldX, nNewY, nOldY)
     {
-        this.Update();
-
-        this.m_aChildren.forEach(function(cChild){
-            cChild.UpdateGameObject();
-        });
+        if (nNewX != nOldX || nNewY != nOldY)
+        {
+            this.m_cTransformMatrix.Translate(new Vec(nNewX - nOldX, nNewY - nOldY));
+            this.__GlobalTransformUpdate = true;
+        }
     }
-};
 
-GameObject.prototype.Init = function(){};
-GameObject.prototype.Update = function(){};
-GameObject.prototype.Draw = function(cRenderer){};
-GameObject.prototype.OnCollision = function(cOther){};
-GameObject.prototype.CleanUp = function(){};
+    __ScaleChanged(nNewX, nOldX, nNewY, nOldY)
+    {
+        if (nNewX != nOldX || nNewY != nOldY)
+        {
+            var nX = 1 / (nOldX / nNewX);
+            var nY = 1 / (nOldY / nNewY);
+
+            this.m_cTransformMatrix.Scale(new Vec(nX, nY));
+
+            this.__GlobalTransformUpdate = true;
+        }
+    }
+
+    set __GlobalTransformUpdate(bUpdate)
+    {
+        this.m_bGlobalTransformUpdate = bUpdate;
+
+        if (bUpdate)
+        {
+            this.m_aChildren.forEach(function(cChild){
+                cChild.__GlobalTransformUpdate = true;
+            });
+        }
+    }
+
+    //endregion
+}
+
+GameObject.__IDCount = 0;
 
 EN.GameObject = GameObject;
