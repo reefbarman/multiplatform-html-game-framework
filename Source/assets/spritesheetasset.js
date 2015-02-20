@@ -1,83 +1,98 @@
+//ECMAScript6
+
 include("assets/asset.js", true);
 include("assets/imageasset.js", true);
 
-function SpriteSheetAsset(sFileName)
+class SpriteSheetAsset extends EN.Asset
 {
-    this._Asset(sFileName);
+    //////////////////////////////////////////////////////////
+    //region Constructor
+    constructor(sFileName)
+    {
+        super(sFileName);
 
-    this.m_sDescriptorFile = "images/" + sFileName + ".json";
-    this.m_sSpriteFile =  sFileName + ".png";
+        this.m_sDescriptorFile = "images/" + sFileName + ".json";
+        this.m_sSpriteFile =  sFileName + ".png";
 
-    this.m_cDescriptor = null;
-    this.m_cImage = null;
+        this.m_cDescriptor = null;
+        this.m_cImage = null;
 
-    this.m_cImageAssets = {};
+        this.m_cImageAssets = {};
 
-    this.Loaded = false;
-}
+        this.Loaded = false;
+    }
 
-inherits(SpriteSheetAsset, EN.Asset);
+    //endregion
 
-SpriteSheetAsset.prototype.Load = function(fOnLoad){
-    var self = this;
+    //////////////////////////////////////////////////////////
+    //region Public Method
 
-    EN.AssetManager.LoadFile(this.m_sDescriptorFile, function(cErr, sSpriteSheetDescription){
-        if (!cErr)
-        {
-            self.m_cDescriptor = JSON.parse(sSpriteSheetDescription);
+    Load(fOnLoad)
+    {
+        var self = this;
 
-            if (self.m_cDescriptor.frames)
+        EN.AssetManager.LoadFile(this.m_sDescriptorFile, function(cErr, sSpriteSheetDescription){
+            if (!cErr)
             {
-                EN.AssetManager.LoadImage(self.m_sSpriteFile, function(cErr, cImage){
-                    if (!cErr)
-                    {
-                        self.m_cImage = cImage;
+                self.m_cDescriptor = JSON.parse(sSpriteSheetDescription);
 
-                        for (var sKey in self.m_cDescriptor.frames)
+                if (self.m_cDescriptor.frames)
+                {
+                    EN.AssetManager.LoadImage(self.m_sSpriteFile, function(cErr, cImage){
+                        if (!cErr)
                         {
-                            var cFrame = self.m_cDescriptor.frames[sKey];
+                            self.m_cImage = cImage;
 
-                            self.m_cImageAssets[sKey] = new EN.ImageAsset(sKey, {
-                                visibleWidth: cFrame.frame.w,
-                                visibleHeight: cFrame.frame.h,
-                                offset: {
-                                    x: cFrame.frame.x,
-                                    y: cFrame.frame.y
-                                },
-                                baseImage: self.m_cImage
-                            });
+                            for (var sKey in self.m_cDescriptor.frames)
+                            {
+                                var cFrame = self.m_cDescriptor.frames[sKey];
+
+                                self.m_cImageAssets[sKey] = new EN.ImageAsset(sKey, {
+                                    visibleWidth: cFrame.frame.w,
+                                    visibleHeight: cFrame.frame.h,
+                                    offset: {
+                                        x: cFrame.frame.x,
+                                        y: cFrame.frame.y
+                                    },
+                                    baseImage: self.m_cImage
+                                });
+                            }
+
+                            self.Loaded = true;
+
+                            fOnLoad();
                         }
-
-                        self.Loaded = true;
-
-                        fOnLoad();
-                    }
-                    else
-                    {
-                        throw cErr;
-                    }
-                });
+                        else
+                        {
+                            throw cErr;
+                        }
+                    });
+                }
+                else
+                {
+                    throw new Error("Texture Packer Descriptor Format Wrong!");
+                }
             }
             else
             {
-                throw new Error("Texture Packer Descriptor Format Wrong!");
+                fOnLoad();
             }
-        }
-        else
-        {
-            fOnLoad();
-        }
-    });
-};
+        });
+    }
 
-SpriteSheetAsset.prototype.GetImage = function(sImageName){
-    return this.m_cImageAssets[sImageName];
-};
+    GetImage(sImageName)
+    {
+        return this.m_cImageAssets[sImageName];
+    }
 
-SpriteSheetAsset.prototype.CleanUp = function(){
-    this._CleanUp_Asset();
-    EN.AssetManager.ReleaseFile(this.m_sDescriptorFile);
-    EN.AssetManager.ReleaseImage(this.m_sSpriteFile);
-};
+    CleanUp()
+    {
+        super.CleanUp();
+        EN.AssetManager.ReleaseFile(this.m_sDescriptorFile);
+        EN.AssetManager.ReleaseImage(this.m_sSpriteFile);
+    }
+
+    //endregion
+}
 
 EN.SpriteSheetAsset = SpriteSheetAsset;

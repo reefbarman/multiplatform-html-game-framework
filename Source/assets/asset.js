@@ -1,40 +1,25 @@
+//ECMAScript6
+
 include("game/gameobject.js", true);
 
-/**
- * 
- * @class
- * @constructor
- * @param {string} sFileName - The file name of the asset to load
- */
-function Asset(sFileName)
+class Asset extends EN.GameObject
 {
-    this._GameObject();
+    constructor(sFileName)
+    {
+        super();
 
-    this.m_sFileName = sFileName;
-}
+        this.m_sFileName = sFileName;
+    }
 
-inherits(Asset, EN.GameObject);
-
-Object.defineProperty(Asset.prototype, "FileName", {
-    get: function(){
+    get FileName()
+    {
         return this.m_sFileName;
-    },
-    enumerable: true
-});
+    }
 
-/**
- * Load the asset and its dependencies
- *  
- * @param {Asset~OnLoadCallback} fOnLoad - Callback on assets and dependencies loaded
- */
-Asset.prototype.Load = function(fOnLoad){
-    fOnLoad();
-};
-
-/** 
- * @callback Asset~OnLoadCallback 
- * 
- * @param {Error|undefined} cErr - An error if anything failed to load otherwise not set
- */
+    Load(fOnLoad)
+    {
+        fOnLoad();
+    }
+}
 
 EN.Asset = Asset;

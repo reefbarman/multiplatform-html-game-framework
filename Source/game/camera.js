@@ -1,3 +1,5 @@
+//ECMAScript6
+
 include("math/vector.js", true);
 include("math/matrix.js", true);
 include("game/gameobject.js", true);
@@ -5,38 +7,42 @@ include("game/gameobject.js", true);
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
 
-function Camera(sName)
+class Camera extends EN.GameObject
 {
-    this._GameObject();
+    constructor(sName)
+    {
+        super();
 
-    this.Name = sName;
-    this.Cartesian = true;
+        this.Name = sName;
+        this.Cartesian = true;
+    }
+
+    Init(nViewPortHeight, bCartesian)
+    {
+        super.Init();
+
+        if (isset(bCartesian))
+        {
+            this.Cartesian = bCartesian;
+        }
+
+        if (this.Cartesian)
+        {
+            this.m_cTransformMatrix.Scale(new Vec(1, -1));
+            this.m_cTransformMatrix.Translate(new Vec(0, -nViewPortHeight));
+        }
+    }
+
+    ConvertScreenToWorldPos(cScreenPos)
+    {
+        var cInverse = Mat.Inverse(this.m_cTransformMatrix);
+        return Vec.MatrixMultiply(cScreenPos, cInverse);
+    }
+
+    ConvertWorldToScreenPos(cWorldPos)
+    {
+        return Vec.MatrixMultiply(cWorldPos, this.m_cTransformMatrix);
+    }
 }
-
-inherits(Camera, EN.GameObject);
-
-Camera.prototype.Init = function(nViewPortHeight, bCartesian){
-    this._Init_GameObject();
-
-    if (isset(bCartesian))
-    {
-        this.Cartesian = bCartesian;
-    }
-    
-    if (this.Cartesian)
-    {
-        this.m_cTransformMatrix.Scale(new Vec(1, -1));
-        this.m_cTransformMatrix.Translate(new Vec(0, -nViewPortHeight));
-    }
-};
-
-Camera.prototype.ConvertScreenToWorldPos = function(cScreenPos){
-    var cInverse = Mat.Inverse(this.m_cTransformMatrix);
-    return Vec.MatrixMultiply(cScreenPos, cInverse);
-};
-
-Camera.prototype.ConvertWorldToScreenPos = function(cWorldPos){
-    return Vec.MatrixMultiply(cWorldPos, this.m_cTransformMatrix);
-};
 
 EN.Camera = Camera;

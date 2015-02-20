@@ -1,4 +1,4 @@
-//TODO deal with update image assets without making children
+//ECMAScript6
 
 include("assets/asset.js", true);
 include("assets/imageasset.js", true);
@@ -10,206 +10,237 @@ var floor = Math.floor;
 var Vec = EN.Vector;
 var Timer = EN.Timer;
 
-function AnimationAsset(sFileName)
+class AnimationAsset extends EN.Asset
 {
-    //Super constructor
-    this._Asset(sFileName);
+    //////////////////////////////////////////////////////////
+    //region Constructor
 
-    this.m_bLoaded = false;
+    constructor(sFileName)
+    {
+        super(sFileName);
 
-    this.Renderable = true;
+        this.m_bLoaded = false;
 
-    this.CurrentFrame = 0;
+        this.Renderable = true;
 
-    this.m_cAnimationInfo = {};
-    this.m_aImages = [];
+        this.CurrentFrame = 0;
 
-    this.m_sAnimation = "";
-    this.m_cCurrentImage = null;
-    this.m_cCurrentAnimation = null;
-    this.m_nPreviousFramesElapsed = 0;
-    this.m_bAnimationRunning = false;
+        this.m_cAnimationInfo = {};
+        this.m_aImages = [];
 
-    this.m_cOffset = new EN.Vector();
+        this.m_sAnimation = "";
+        this.m_cCurrentImage = null;
+        this.m_cCurrentAnimation = null;
+        this.m_nPreviousFramesElapsed = 0;
+        this.m_bAnimationRunning = false;
 
-    var self = this;
+        this.m_cOffset = new EN.Vector();
 
-    this.m_cOffset.OnChange(function(nNewX, nOldX, nNewY, nOldY){
-        self.__OffsetChanged(nNewX, nNewY);
-    });
-};
+        var self = this;
 
-inherits(AnimationAsset, EN.Asset);
+        this.m_cOffset.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
+            self.__OffsetChanged(nNewX, nNewY);
+        });
+    }
 
-Object.defineProperty(AnimationAsset.prototype, "Offset", {
-    get: function(){
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Public Accessors
+
+    get Offset()
+    {
         return this.m_cOffset;
-    },
-    set: function(cOffset){
+    }
+    set Offset(cOffset)
+    {
         this.m_cOffset.Set(cOffset);
     }
-});
 
-Object.defineProperty(AnimationAsset.prototype, "CurrentAnim", {
-    get: function(){
+    get CurrentAnim()
+    {
         return this.m_sAnimation;
     }
-});
 
-AnimationAsset.prototype.__OffsetChanged = function(x, y){
-    if (this.m_cCurrentAnimation)
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Public Methods
+
+    Load(fOnLoad)
     {
-        this.m_cCurrentImage.Pos.x = -this.m_cCurrentAnimation.width * x;
-        this.m_cCurrentImage.Pos.y = -this.m_cCurrentAnimation.height * y;
-    }
-};
+        var self = this;
 
-AnimationAsset.prototype.__SetFrame = function() {
-    var nOffsetX = (this.CurrentFrame * this.m_cCurrentAnimation.width) % this.m_cCurrentAnimation.origWidth;
-    var nOffsetY = floor((this.CurrentFrame * this.m_cCurrentAnimation.width) / this.m_cCurrentAnimation.origWidth) * this.m_cCurrentAnimation.height + this.m_cCurrentAnimation.rowOffset;
-
-    this.m_cCurrentImage.Offset = new Vec(nOffsetX, nOffsetY);
-};
-
-AnimationAsset.prototype.Load = function(fOnLoad){
-    var self = this;
-
-    //TODO gen file name once
-    EN.AssetManager.LoadFile("animations/" + this.m_sFileName + ".json", function(cErr, sSprite){
-        if (!cErr)
-        {
-            var cSprite = JSON.parse(sSprite);
-
-            self.m_aImages = [];
-
-            for (var sAnimKey in cSprite.spriteSheets)
+        //TODO gen file name once
+        EN.AssetManager.LoadFile("animations/" + this.m_sFileName + ".json", function(cErr, sSprite){
+            if (!cErr)
             {
-                var cImage = new EN.ImageAsset(cSprite.spriteSheets[sAnimKey]);
-                self.m_aImages.push(cImage);
+                var cSprite = JSON.parse(sSprite);
 
-                for (var sAnimation in cSprite.animations[sAnimKey])
+                self.m_aImages = [];
+
+                for (var sAnimKey in cSprite.spriteSheets)
                 {
-                    var cBaseInfo = extend({}, cSprite.baseInfo.base, cSprite.baseInfo[sAnimKey]);
+                    var cImage = new EN.ImageAsset(cSprite.spriteSheets[sAnimKey]);
+                    self.m_aImages.push(cImage);
 
-                    self.m_cAnimationInfo[sAnimation] = extend({}, cBaseInfo, cSprite.animations[sAnimKey][sAnimation]);
-                    self.m_cAnimationInfo[sAnimation].image = cImage;
-                }
-            }
+                    for (var sAnimation in cSprite.animations[sAnimKey])
+                    {
+                        var cBaseInfo = extend({}, cSprite.baseInfo.base, cSprite.baseInfo[sAnimKey]);
 
-            EN.Loader.Load([
-                self.m_aImages
-            ], function(){
-
-                for (var sAnimation in self.m_cAnimationInfo)
-                {
-                    var cImage = self.m_cAnimationInfo[sAnimation].image;
-
-                    self.m_cAnimationInfo[sAnimation].origWidth = cImage.Width;
-                    self.m_cAnimationInfo[sAnimation].origHeight = cImage.Height;
+                        self.m_cAnimationInfo[sAnimation] = extend({}, cBaseInfo, cSprite.animations[sAnimKey][sAnimation]);
+                        self.m_cAnimationInfo[sAnimation].image = cImage;
+                    }
                 }
 
-                self.m_bLoaded = true;
-                fOnLoad();
-            });
-        }
-        else
-        {
-            throw cErr;
-        }
-    });
-};
+                EN.Loader.Load([
+                    self.m_aImages
+                ], function(){
 
-AnimationAsset.prototype.Init = function(){
-    this._Init_Asset();
+                    for (var sAnimation in self.m_cAnimationInfo)
+                    {
+                        var cImage = self.m_cAnimationInfo[sAnimation].image;
 
-    var self = this;
+                        self.m_cAnimationInfo[sAnimation].origWidth = cImage.Width;
+                        self.m_cAnimationInfo[sAnimation].origHeight = cImage.Height;
+                    }
 
-    this.m_aImages.forEach(function(cImage){
-        cImage.Renderable = false;
-        self.AddChild(cImage);
-    });
-};
-
-AnimationAsset.prototype.Update = function(){
-    this._Update_Asset();
-
-    if (this.m_bAnimationRunning)
-    {
-        this.m_nPreviousFramesElapsed += Timer.DeltaTime / this.m_cCurrentAnimation.frameDelta;
-
-        if (this.m_nPreviousFramesElapsed >= 1)
-        {
-            var nNextFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
-
-            if (nNextFrame < this.CurrentFrame && !this.m_cCurrentAnimation.looping)
-            {
-                this.CurrentFrame = this.m_cCurrentAnimation.frames - 1;
-                this.m_bAnimationRunning = false;
+                    self.m_bLoaded = true;
+                    fOnLoad();
+                });
             }
             else
             {
-                this.CurrentFrame = nNextFrame;
+                throw cErr;
+            }
+        });
+    }
+
+    Init()
+    {
+        super.Init();
+
+        var self = this;
+
+        this.m_aImages.forEach(function(cImage){
+            cImage.Renderable = false;
+            self.AddChild(cImage);
+        });
+    }
+
+    Update()
+    {
+        super.Update();
+
+        if (this.m_bAnimationRunning)
+        {
+            this.m_nPreviousFramesElapsed += Timer.DeltaTime / this.m_cCurrentAnimation.frameDelta;
+
+            if (this.m_nPreviousFramesElapsed >= 1)
+            {
+                var nNextFrame = floor(this.CurrentFrame + this.m_nPreviousFramesElapsed) % this.m_cCurrentAnimation.frames;
+
+                if (nNextFrame < this.CurrentFrame && !this.m_cCurrentAnimation.looping)
+                {
+                    this.CurrentFrame = this.m_cCurrentAnimation.frames - 1;
+                    this.m_bAnimationRunning = false;
+                }
+                else
+                {
+                    this.CurrentFrame = nNextFrame;
+                }
+
+                this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
             }
 
-            this.m_nPreviousFramesElapsed = this.m_nPreviousFramesElapsed - floor(this.m_nPreviousFramesElapsed);
+            this.__SetFrame();
         }
-
-        this.__SetFrame();
     }
-};
 
-AnimationAsset.prototype.Draw = function(cRenderer){
-    if (this.m_cCurrentAnimation)
+    Draw(cRenderer)
     {
-        cRenderer.DrawImage(this.m_cCurrentImage);
+        if (this.m_cCurrentAnimation)
+        {
+            cRenderer.DrawImage(this.m_cCurrentImage);
+        }
     }
-};
 
-AnimationAsset.prototype.ChangeAnimation = function(sAnimation){
-    if (sAnimation != this.m_sAnimation && this.m_bLoaded)
+    ChangeAnimation(sAnimation)
     {
-        this.m_sAnimation = sAnimation;
+        if (sAnimation != this.m_sAnimation && this.m_bLoaded)
+        {
+            this.m_sAnimation = sAnimation;
 
+            this.CurrentFrame = 0;
+            this.m_nPreviousFramesElapsed = 0;
+
+            var cCurrentAnimation = this.m_cAnimationInfo[this.m_sAnimation];
+
+            cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
+            this.m_cCurrentAnimation = cCurrentAnimation;
+
+            this.m_cCurrentImage = cCurrentAnimation.image;
+
+            this.m_cCurrentImage.Width = this.m_cCurrentImage.ImageWidth = cCurrentAnimation.width;
+            this.m_cCurrentImage.Height = this.m_cCurrentImage.ImageHeight = cCurrentAnimation.height;
+
+            this.__OffsetChanged(this.m_cOffset.x, this.m_cOffset.y);
+            this.__SetFrame();
+        }
+    }
+
+    Reset()
+    {
         this.CurrentFrame = 0;
         this.m_nPreviousFramesElapsed = 0;
 
-        var cCurrentAnimation = this.m_cAnimationInfo[this.m_sAnimation];
-
-        cCurrentAnimation.frameDelta = 1000 / cCurrentAnimation.fps;
-        this.m_cCurrentAnimation = cCurrentAnimation;
-
-        this.m_cCurrentImage = cCurrentAnimation.image;
-
-        this.m_cCurrentImage.Width = this.m_cCurrentImage.ImageWidth = cCurrentAnimation.width;
-        this.m_cCurrentImage.Height = this.m_cCurrentImage.ImageHeight = cCurrentAnimation.height;
-
-        this.__OffsetChanged(this.m_cOffset.x, this.m_cOffset.y);
         this.__SetFrame();
     }
-};
 
-AnimationAsset.prototype.Reset = function(){
-    this.CurrentFrame = 0;
-    this.m_nPreviousFramesElapsed = 0;
+    Play(bPlay)
+    {
+        this.m_bAnimationRunning = bPlay;
+    }
 
-    this.__SetFrame();
-};
+    IsFinished()
+    {
+        return this.m_bAnimationRunning && this.CurrentFrame == (this.m_cCurrentAnimation.frames - 1);
+    }
 
-AnimationAsset.prototype.Play = function(bPlay){
-    this.m_bAnimationRunning = bPlay;
-};
+    CleanUp()
+    {
+        super.CleanUp();
 
-AnimationAsset.prototype.IsFinished = function(){
-    return this.m_bAnimationRunning && this.CurrentFrame == (this.m_cCurrentAnimation.frames - 1);
-};
+        EN.AssetManager.ReleaseFile("animations/" + this.m_sFileName + ".json");
 
-AnimationAsset.prototype.CleanUp = function(){
-    this._CleanUp_Asset();
-    EN.AssetManager.ReleaseFile("animations/" + this.m_sFileName + ".json");
+        this.m_aImages.forEach(function(cImage){
+            cImage.CleanUp();
+        });
+    }
 
-    this.m_aImages.forEach(function(cImage){
-        cImage.CleanUp();
-    });
-};
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Private Region
+
+    __OffsetChanged(x, y)
+    {
+        if (this.m_cCurrentAnimation)
+        {
+            this.m_cCurrentImage.Pos.x = -this.m_cCurrentAnimation.width * x;
+            this.m_cCurrentImage.Pos.y = -this.m_cCurrentAnimation.height * y;
+        }
+    }
+
+    __SetFrame()
+    {
+        var nOffsetX = (this.CurrentFrame * this.m_cCurrentAnimation.width) % this.m_cCurrentAnimation.origWidth;
+        var nOffsetY = floor((this.CurrentFrame * this.m_cCurrentAnimation.width) / this.m_cCurrentAnimation.origWidth) * this.m_cCurrentAnimation.height + this.m_cCurrentAnimation.rowOffset;
+
+        this.m_cCurrentImage.Offset = new Vec(nOffsetX, nOffsetY);
+    }
+
+    //endregion
+}
 
 EN.AnimationAsset = AnimationAsset;
