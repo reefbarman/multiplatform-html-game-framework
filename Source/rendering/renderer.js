@@ -174,7 +174,7 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         m_cCtx.restore();
     };
     
-    this.DrawShape = function(cMatrix, aPoints, color){
+    this.DrawShape = function(cMatrix, aPoints, color, nLineWidth){
         m_cCtx.save();
         
         var cCamera = GetCamera();
@@ -199,7 +199,7 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
             m_cCtx.lineTo(aPoints[i].x, aPoints[i].y);
         }
         
-        m_cCtx.lineWidth = 0.1;
+        m_cCtx.lineWidth = nLineWidth;
         m_cCtx.strokeStyle = GetColor(color);
         m_cCtx.stroke();
         

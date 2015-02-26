@@ -43,7 +43,7 @@ class GameObject
         this.m_cParent = null;
         this.m_aChildren = [];
 
-        this.Renderable = false;
+        this.m_bRenderable = false;
         this.__DisplayList = null;
     }
 
@@ -69,22 +69,6 @@ class GameObject
         }
 
         return this.m_cGlobalTransformMatrix;
-    }
-
-    get zIndex()
-    {
-        var nZIndex = 0;
-
-        if (this.m_cParent)
-        {
-            nZIndex = this.m_cParent.zIndex + this.zIndexLocal;
-        }
-        else
-        {
-            nZIndex = this.zIndexLocal;
-        }
-
-        return nZIndex;
     }
 
     get Pos()
@@ -136,6 +120,43 @@ class GameObject
             this.m_cParent = cParent;
             this.__GlobalTransformUpdate = true;
         }
+    }
+
+    get zIndex()
+    {
+        var nZIndex = 0;
+
+        if (this.m_cParent)
+        {
+            nZIndex = this.m_cParent.zIndex + this.zIndexLocal;
+        }
+        else
+        {
+            nZIndex = this.zIndexLocal;
+        }
+
+        return nZIndex;
+    }
+
+    get Renderable()
+    {
+        return this.m_bRenderable;
+    }
+    set Renderable(bRenderable)
+    {
+        if (this.__DisplayList && bRenderable != this.m_bRenderable)
+        {
+            if (bRenderable)
+            {
+                this.__DisplayList.Add(this);
+            }
+            else
+            {
+                this.__DisplayList.Remove(this);
+            }
+        }
+
+        this.m_bRenderable = bRenderable;
     }
 
     //endregion

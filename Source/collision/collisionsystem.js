@@ -1,4 +1,6 @@
 include("collision/collisiongrid.js", true);
+include("collision/boundingbox.js", true);
+include("collision/boundingcircle.js", true);
 
 var CollisionGrid = EN.CollisionGrid;
 

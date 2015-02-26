@@ -1,4 +1,4 @@
-EN.CollisionUtils = (function(){
+/*EN.CollisionUtils = (function(){
     return {
         TestPointIntersect: function(cPos, cCollidable){
             var cBounds = cCollidable.GetBounds();
@@ -14,4 +14,35 @@ EN.CollisionUtils = (function(){
             return bCollision;
         }
     };
-})();
+})();*/
+
+var isBetween = EN.Math.IsBetween;
+
+EN.CollisionUtils = {
+    MinMaxOverlap: function (cMinMax1, cMinMax2){
+        return isBetween(cMinMax2.min, cMinMax1.min, cMinMax1.max) || isBetween(cMinMax1.min, cMinMax2.min, cMinMax2.max);
+    },
+    SATTest: function(cAxis, aCorners){
+        var cMinMax = {
+            min: null,
+            max: null
+        };
+
+        for(var i = 0 ; i < aCorners.length ; i++)
+        {
+            var nDot = aCorners[i].Dot(cAxis);
+
+            if (cMinMax.min === null || nDot < cMinMax.min)
+            {
+                cMinMax.min = nDot;
+            }
+
+            if (cMinMax.max === null || nDot > cMinMax.max)
+            {
+                cMinMax.max = nDot;
+            }
+        }
+
+        return cMinMax;
+    }
+};

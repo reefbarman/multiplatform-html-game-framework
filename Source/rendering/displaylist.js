@@ -12,11 +12,19 @@ DisplayList.SetSortFunction = function(fSort){
 };
 
 DisplayList.prototype.Add = function(cGameObject){
-    this.m_aDisplayList.push(cGameObject);
+    if (this.m_aDisplayList.indexOf(cGameObject) == -1)
+    {
+        this.m_aDisplayList.push(cGameObject);
+    }
 };
 
 DisplayList.prototype.Remove = function(cGameObject){
-    this.m_aDisplayList.splice(this.m_aDisplayList.indexOf(cGameObject), 1);
+    var nIndex = this.m_aDisplayList.indexOf(cGameObject);
+
+    if (nIndex >= 0)
+    {
+        this.m_aDisplayList.splice(nIndex, 1);
+    }
 };
 
 DisplayList.prototype.Draw = function(cRenderer){
