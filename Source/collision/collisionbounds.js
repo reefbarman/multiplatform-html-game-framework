@@ -12,9 +12,6 @@ var sin = Math.sin;
 var clamp = EN.Math.Clamp;
 
 var Vec = EN.Vector;
-var Mat = EN.Matrix;
-
-var DEG_TO_RAD = Math.PI / 180;
 
 class CollisionBounds extends EN.GameObject
 {
@@ -106,7 +103,7 @@ class CollisionBounds extends EN.GameObject
     __GenerateCorners()
     {
         //Previous method finding corners rotated around center
-        var nRadians = 0;
+        /*var nRadians = 0;
 
         var cXAxis = new Vec(cos(nRadians), sin(nRadians));
         var cYAxis = new Vec(-sin(nRadians), cos(nRadians));
@@ -119,11 +116,22 @@ class CollisionBounds extends EN.GameObject
             Vec.Add(this.Pos, cXAxis).Subtract(cYAxis),
             Vec.Add(this.Pos, cXAxis).Add(cYAxis),
             Vec.Subtract(this.Pos, cXAxis).Add(cYAxis)
+        ];*/
+
+        //TODO only update on a change
+        var cRelativeOffset = new Vec(this.Offset.x * this.Width, this.Offset.y * this.Height);
+
+        this.m_aCorners = [
+            Vec.Subtract(this.Pos, cRelativeOffset),
+            new Vec(this.Pos.x + (this.Width - cRelativeOffset.x), this.Pos.y - cRelativeOffset.y),
+            new Vec(this.Pos.x + (this.Width - cRelativeOffset.x), this.Pos.y + (this.Height - cRelativeOffset.y)),
+            new Vec(this.Pos.x - cRelativeOffset.x, this.Pos.y + (this.Height - cRelativeOffset.y))
         ];
     }
 
     __CalculateCornersAxes()
     {
+        //TODO only update on a change
         var aCorners = [];
 
         for (var i = 0; i < this.m_aCorners.length; i++)

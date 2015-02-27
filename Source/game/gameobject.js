@@ -18,19 +18,20 @@ class GameObject
         var self = this;
 
         this.ID = GameObject.__IDCount++;
-        this.Width = 0;
-        this.Height = 0;
         this.zIndexLocal = 0;
         this.Active = true;
 
+        this.m_nWidth = 0;
+        this.m_nHeight = 0;
+
         this.m_cPos = new Vec(0, 0);
         this.m_cPos.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
-            self.__PosChanged(nNewX, nOldX, nNewY, nOldY);
+            self._PosChanged(nNewX, nOldX, nNewY, nOldY);
         });
 
         this.m_cScale = new Vec(1, 1);
         this.m_cScale.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
-            self.__ScaleChanged(nNewX, nOldX, nNewY, nOldY);
+            self._ScaleChanged(nNewX, nOldX, nNewY, nOldY);
         });
 
         this.m_nRotation = 0;
@@ -45,12 +46,32 @@ class GameObject
 
         this.m_bRenderable = false;
         this.__DisplayList = null;
+
+        this.m_cBounds = null;
     }
 
     //endregion
 
     //////////////////////////////////////////////////////////
     //region Public Accessors
+
+    get Width()
+    {
+        return this.m_nWidth;
+    }
+    set Width(nWidth)
+    {
+        this.m_nWidth = nWidth;
+    }
+
+    get Height()
+    {
+        return this.m_nHeight;
+    }
+    set Height(nHeight)
+    {
+        this.m_nHeight = nHeight;
+    }
 
     get GlobalTransform()
     {
@@ -159,10 +180,27 @@ class GameObject
         this.m_bRenderable = bRenderable;
     }
 
+    get Bounds()
+    {
+        return this.m_cBounds;
+    }
+    set Bounds(cBounds)
+    {
+        this.m_cBounds = cBounds;
+    }
+
     //endregion
 
     //////////////////////////////////////////////////////////
     //region Public Functions
+
+    Init()
+    {
+        if (this.m_cBounds)
+        {
+            this.AddChild(this.m_cBounds);
+        }
+    }
 
     AddChild(cChild, bInit)
     {
@@ -207,7 +245,6 @@ class GameObject
         }
     }
 
-    Init(){}
     Update(){}
     Draw(cRenderer){}
     OnCollision(cOther){}
@@ -216,9 +253,9 @@ class GameObject
     //endregion
 
     //////////////////////////////////////////////////////////
-    //region Private Functions
+    //region Protected Functions
 
-    __PosChanged(nNewX, nOldX, nNewY, nOldY)
+    _PosChanged(nNewX, nOldX, nNewY, nOldY)
     {
         if (nNewX != nOldX || nNewY != nOldY)
         {
@@ -227,7 +264,7 @@ class GameObject
         }
     }
 
-    __ScaleChanged(nNewX, nOldX, nNewY, nOldY)
+    _ScaleChanged(nNewX, nOldX, nNewY, nOldY)
     {
         if (nNewX != nOldX || nNewY != nOldY)
         {
@@ -239,6 +276,14 @@ class GameObject
             this.__GlobalTransformUpdate = true;
         }
     }
+
+    _WidthChanged(nNewWidth, nOldWidth) {}
+    _HeightChanged(nNewWidth, nOldWidth) {}
+
+    //endregion
+
+    //////////////////////////////////////////////////////////
+    //region Private Functions
 
     set __GlobalTransformUpdate(bUpdate)
     {

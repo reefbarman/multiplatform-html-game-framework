@@ -178,16 +178,17 @@ EN.Renderer = function(cCtx, nWidth, nHeight, cCamera){
         m_cCtx.save();
         
         var cCamera = GetCamera();
-        
+
         m_cTransformMatrix.Reset();
 
-        if (cCamera.Cartesian)
+        //TODO figure out why this is flipping things ways we don't expect!
+        /*if (cCamera.Cartesian)
         {
             m_cTransformMatrix.Scale(m_cScaleInverseVector);
-        }
+        }*/
 
         m_cTransformMatrix.Multiply(cMatrix).Multiply(cCamera.GlobalTransform);
-        
+
         m_cCtx.setTransform.apply(m_cCtx, m_cTransformMatrix.GetCanvasTransform());
         
         m_cCtx.beginPath();

@@ -1,15 +1,48 @@
+//ECMAScript6
 include("collision/collisiongrid.js", true);
 include("collision/boundingbox.js", true);
 include("collision/boundingcircle.js", true);
 
 var CollisionGrid = EN.CollisionGrid;
 
-EN.CollisionSystem = (function(){
-    var m_nCollisionGridSize = 100;
-    
-    var m_aGameObjects = [];
-    
-    function HandleCollisions()
+class CollisionSystem
+{
+    constructor()
+    {
+        this.m_nCollisionGridSize = 100;
+        this.m_aGameObjects = [];
+    }
+
+    Init(nWorldWidth, nWorldHeight, nPrecision)
+    {
+        CollisionGrid.Init(this.m_nCollisionGridSize, nWorldWidth, nWorldHeight, nPrecision);
+    }
+
+    Add(cGameObject)
+    {
+        if (this.m_aGameObjects.indexOf(cGameObject) == -1)
+        {
+            this.m_aGameObjects.push(cGameObject);
+        }
+    }
+
+    Remove(cGameObject)
+    {
+        var nIndex = this.m_aGameObjects.indexOf(cGameObject);
+
+        if (nIndex >= 0)
+        {
+            this.m_aGameObjects.splice(nIndex, 1);
+        }
+    }
+
+    Update()
+    {
+        CollisionGrid.UpdateGrid(this.m_aGameObjects);
+        this.__HandleCollisions();
+    }
+
+    __HandleCollisions()
     {
         CollisionGrid.IterateGrid(function(aGameObjects){
             var cChecked = {};
@@ -39,20 +72,6 @@ EN.CollisionSystem = (function(){
             }
         });
     }
-    
-    return {
-        Init: function(nWorldWidth, nWorldHeight, nPrecision){
-            CollisionGrid.Init(m_nCollisionGridSize, nWorldWidth, nWorldHeight, nPrecision);
-        },
-        Update: function(){
-            CollisionGrid.UpdateGrid(m_aGameObjects);
-            HandleCollisions();
-        },
-        Add: function(cGameObject){
-            m_aGameObjects.push(cGameObject);
-        },
-        Remove: function(cGameObject){
-            m_aGameObjects.splice(m_aGameObjects.indexOf(cGameObject), 1);
-        }
-    };
-})();
+}
+
+EN.CollisionSystem = new CollisionSystem();
