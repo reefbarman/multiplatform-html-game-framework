@@ -9,13 +9,12 @@ class CollisionSystem
 {
     constructor()
     {
-        this.m_nCollisionGridSize = 100;
         this.m_aGameObjects = [];
     }
 
-    Init(nWorldWidth, nWorldHeight, nPrecision)
+    Init(nWorldWidth, nWorldHeight, nCellSize)
     {
-        CollisionGrid.Init(this.m_nCollisionGridSize, nWorldWidth, nWorldHeight, nPrecision);
+        CollisionGrid.Init(nWorldWidth, nWorldHeight, nCellSize);
     }
 
     Add(cGameObject)
@@ -34,6 +33,22 @@ class CollisionSystem
         {
             this.m_aGameObjects.splice(nIndex, 1);
         }
+    }
+
+    GetPointCollision(cPos)
+    {
+        var aGameObjects = CollisionGrid.GetObjectsAtPoint(cPos);
+
+        var aColliding = [];
+
+        aGameObjects.forEach(function(cGameObject){
+            if (EN.CollisionUtils.TestPointIntersect(cPos, cGameObject.Bounds))
+            {
+                aColliding.push(cGameObject);
+            }
+        });
+
+        return aColliding;
     }
 
     Update()

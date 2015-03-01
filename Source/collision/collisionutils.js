@@ -19,6 +19,11 @@
 var isBetween = EN.Math.IsBetween;
 
 EN.CollisionUtils = {
+    TestPointIntersect: function(cPos, cCollidable){
+        var cBounds = cCollidable.GetBounds();
+
+        return !(cPos.x < cBounds.MinMax.x1 || cPos.x > cBounds.MinMax.x2 || cPos.y < cBounds.MinMax.y1 || cPos.y > cBounds.MinMax.y2);
+    },
     MinMaxOverlap: function (cMinMax1, cMinMax2){
         return isBetween(cMinMax2.min, cMinMax1.min, cMinMax1.max) || isBetween(cMinMax1.min, cMinMax2.min, cMinMax2.max);
     },
