@@ -8,6 +8,7 @@
     "express": "3.x",
     "express-zip": "1.0.x",
     "node-sass-middleware": "0.4.x",
+    "react-tools": "^0.12.2",
     "xtend": "2.1.x"
   }
 }
