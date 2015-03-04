@@ -36,8 +36,7 @@ cApp.use(express.urlencoded({
 cApp.use(express.multipart());
 cApp.use(sassMiddleware({
     src: process.cwd() + "/resources/sass",
-    dest: process.cwd() + "/resources/css",
-    debug: false,
+    response: true,
     outputStyle: "expanded",
     prefix: "/Game/resources/css"
 }));

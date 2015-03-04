@@ -4,6 +4,7 @@ class Events
 {
     constructor()
     {
+        this.m_nIDs = 0;
         this.m_cEvents = {};
     }
 
@@ -11,19 +12,19 @@ class Events
     {
         if (!this.m_cEvents[sEventName])
         {
-            this.m_cEvents[sEventName] = [];
+            this.m_cEvents[sEventName] = {};
         }
 
-        this.m_cEvents[sEventName].push(fOnEvent);
+        this.m_cEvents[sEventName][this.m_nIDs] = fOnEvent;
+
+        return this.m_nIDs++;
     }
 
-    DeregisterEvent(sEventName, fOnEvent)
+    DeregisterEvent(sEventName, nID)
     {
-        if (this.m_cEvents[sEventName])
+        if (this.m_cEvents[sEventName] && this.m_cEvents[sEventName][nID])
         {
-            var nIndex = this.m_cEvents[sEventName].indexOf(fOnEvent);
-
-            this.m_cEvents[sEventName].splice(nIndex, 1);
+            delete this.m_cEvents[sEventName][nID];
         }
     }
 
@@ -31,9 +32,10 @@ class Events
     {
         if (this.m_cEvents[sEventName])
         {
-            this.m_cEvents.forEach(function(fEvent){
-                fEvent(...aArgs);
-            });
+            for (var nID in this.m_cEvents[sEventName])
+            {
+                this.m_cEvents[sEventName][nID](...aArgs);
+            }
         }
     }
 }
