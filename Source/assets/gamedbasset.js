@@ -78,9 +78,9 @@ class GameDbAsset extends EN.Asset
         });
     }
 
-    CleanUp()
+    Destroy()
     {
-        super.CleanUp();
+        super.Destroy();
 
         EN.AssetManager.ReleaseFile("dbs/" + this.m_sFileName + ".csv");
         this.m_cGameDB = {};

@@ -172,7 +172,7 @@ var StateManager = (function(){
         },
         Update: function(){
             m_aStateStack.forEach(function(sState){
-                m_cRegisteredStats[sState].UpdateState();
+                m_cRegisteredStats[sState].Update();
             });
             
             if (m_cTransitionUpdate)

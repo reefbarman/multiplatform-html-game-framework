@@ -85,9 +85,9 @@ class SpriteSheetAsset extends EN.Asset
         return this.m_cImageAssets[sImageName];
     }
 
-    CleanUp()
+    Destroy()
     {
-        super.CleanUp();
+        super.Destroy();
         EN.AssetManager.ReleaseFile(this.m_sDescriptorFile);
         EN.AssetManager.ReleaseImage(this.m_sSpriteFile);
     }

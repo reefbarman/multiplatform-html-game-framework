@@ -5,6 +5,7 @@ var Vec = EN.Vector;
 
 var cos = Math.cos;
 var sin = Math.sin;
+var atan2 = Math.atan2;
 
 var c_nDegToRadian = Math.PI / 180;
 
@@ -38,7 +39,19 @@ Matrix.prototype.Reset = function(){
 
 Object.defineProperty(Matrix.prototype, "Position", {
     get: function(){
-        return new EN.Vector(this.BaseMatrix[2][0], this.BaseMatrix[2][1]);
+        return new Vec(this.BaseMatrix[2][0], this.BaseMatrix[2][1]);
+    }
+});
+
+Object.defineProperty(Matrix.prototype, "rotation", {
+    get: function(){
+        return atan2(-this.BaseMatrix[0][1], this.BaseMatrix[0][0])
+    }
+});
+
+Object.defineProperty(Matrix.prototype, "scale", {
+    get: function(){
+        return new Vec(this.BaseMatrix[0][0], this.BaseMatrix[1][1]);
     }
 });
 

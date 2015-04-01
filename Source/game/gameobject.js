@@ -3,9 +3,11 @@
 include("math/vector.js", true);
 include("math/matrix.js", true);
 include("rendering/displaylist.js", true);
+include("game/gameobjectmanager.js", true);
 
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
+var Manager = EN.GameObjectManager;
 
 class GameObject
 {
@@ -19,7 +21,9 @@ class GameObject
 
         this.ID = GameObject.__IDCount++;
         this.zIndexLocal = 0;
-        this.Active = true;
+
+        this.m_bActive = true;
+        this.m_bInited = false;
 
         this.m_nWidth = 0;
         this.m_nHeight = 0;
@@ -48,12 +52,23 @@ class GameObject
         this.__DisplayList = null;
 
         this.m_cBounds = null;
+
+        Manager.RegisterGameObject(this);
     }
 
     //endregion
 
     //////////////////////////////////////////////////////////
     //region Public Accessors
+
+    get Active()
+    {
+        return this.m_bActive && this.m_bInited && (!this.m_cParent || this.m_cParent.Active);
+    }
+    set Active(bActive)
+    {
+        this.m_bActive = bActive;
+    }
 
     get Width()
     {
@@ -165,15 +180,20 @@ class GameObject
     }
     set Renderable(bRenderable)
     {
-        if (this.__DisplayList && bRenderable != this.m_bRenderable)
+        if (bRenderable != this.m_bRenderable)
         {
             if (bRenderable)
             {
-                this.__DisplayList.Add(this);
+                Manager.RegisterRenderable(this);
             }
             else
             {
-                this.__DisplayList.Remove(this);
+                if (this.__DisplayList)
+                {
+                    this.__DisplayList.Remove(this);
+                }
+
+                this.__DisplayList = null;
             }
         }
 
@@ -200,6 +220,8 @@ class GameObject
         {
             this.AddChild(this.m_cBounds);
         }
+
+        this.m_bInited = true;
     }
 
     AddChild(cChild, bInit)
@@ -207,13 +229,7 @@ class GameObject
         bInit = isset(bInit) ? bInit : true;
 
         cChild.Parent = this;
-        cChild.__DisplayList = this.__DisplayList;
         this.m_aChildren.push(cChild);
-
-        if (cChild.Renderable)
-        {
-            this.__DisplayList.Add(cChild);
-        }
 
         if (bInit)
         {
@@ -223,32 +239,18 @@ class GameObject
 
     RemoveChild(cChild)
     {
-        if (cChild.Renderable)
-        {
-            this.__DisplayList.Remove(cChild);
-        }
-
         cChild.Parent = null;
-        cChild.__DisplayList = null;
         this.m_aChildren.splice(this.m_aChildren.indexOf(cChild), 1);
-    }
-
-    UpdateGameObject()
-    {
-        if (this.Active)
-        {
-            this.Update();
-
-            this.m_aChildren.forEach(function(cChild){
-                cChild.UpdateGameObject();
-            });
-        }
     }
 
     Update(){}
     Draw(cRenderer){}
     OnCollision(cOther){}
-    CleanUp(){}
+
+    Destroy()
+    {
+        Manager.DeregisterGameObject(this);
+    }
 
     //endregion
 

@@ -111,9 +111,9 @@ class ImageAsset extends EN.Asset
         }
     }
 
-    CleanUp()
+    Destroy()
     {
-        super.CleanUp();
+        super.Destroy();
         EN.AssetManager.ReleaseImage(this.m_sFileName);
     };
 

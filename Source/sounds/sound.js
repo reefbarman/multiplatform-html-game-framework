@@ -76,7 +76,7 @@ Sound.prototype.Pause = function(){
     this.Playing = false;
 };
 
-Sound.prototype.CleanUp = function(){
+Sound.prototype.Destroy = function(){
     EN.AssetManager.ReleaseAudio(this.m_sFileName);
 };
 

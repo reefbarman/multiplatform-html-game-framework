@@ -207,14 +207,14 @@ class AnimationAsset extends EN.Asset
         return this.m_bAnimationRunning && this.CurrentFrame == (this.m_cCurrentAnimation.frames - 1);
     }
 
-    CleanUp()
+    Destroy()
     {
-        super.CleanUp();
+        super.Destroy();
 
         EN.AssetManager.ReleaseFile("animations/" + this.m_sFileName + ".json");
 
         this.m_aImages.forEach(function(cImage){
-            cImage.CleanUp();
+            cImage.Destroy();
         });
     }
 
