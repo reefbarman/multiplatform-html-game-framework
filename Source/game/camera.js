@@ -28,20 +28,20 @@ class Camera extends EN.GameObject
 
         if (this.Cartesian)
         {
-            this.m_cTransformMatrix.Scale(new Vec(1, -1));
-            this.m_cTransformMatrix.Translate(new Vec(0, -nViewPortHeight));
+            this.transform.localMatrix.Scale(new Vec(1, -1));
+            this.transform.localMatrix.Translate(new Vec(0, -nViewPortHeight));
         }
     }
 
     ConvertScreenToWorldPos(cScreenPos)
     {
-        var cInverse = Mat.Inverse(this.m_cTransformMatrix);
+        var cInverse = Mat.Inverse(this.transform.localMatrix);
         return Vec.MatrixMultiply(cScreenPos, cInverse);
     }
 
     ConvertWorldToScreenPos(cWorldPos)
     {
-        return Vec.MatrixMultiply(cWorldPos, this.m_cTransformMatrix);
+        return Vec.MatrixMultiply(cWorldPos, this.transform.localMatrix);
     }
 }
 

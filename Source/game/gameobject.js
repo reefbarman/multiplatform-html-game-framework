@@ -4,6 +4,7 @@ include("math/vector.js", true);
 include("math/matrix.js", true);
 include("rendering/displaylist.js", true);
 include("game/gameobjectmanager.js", true);
+include("game/transform.js", true);
 
 var Vec = EN.Vector;
 var Mat = EN.Matrix;
@@ -28,22 +29,10 @@ class GameObject
         this.m_nWidth = 0;
         this.m_nHeight = 0;
 
-        this.m_cPos = new Vec(0, 0);
-        this.m_cPos.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
-            self._PosChanged(nNewX, nOldX, nNewY, nOldY);
+        this.m_cTransform = new EN.Transform();
+        this.m_cTransform.OnChange(() => {
+            this.__OnTransformUpdate();
         });
-
-        this.m_cScale = new Vec(1, 1);
-        this.m_cScale.OnChange(function (nNewX, nOldX, nNewY, nOldY) {
-            self._ScaleChanged(nNewX, nOldX, nNewY, nOldY);
-        });
-
-        this.m_nRotation = 0;
-
-        this.m_cTransformMatrix = new Mat();
-
-        this.m_cGlobalTransformMatrix = new Mat();
-        this.m_bGlobalTransformUpdate = true;
 
         this.m_cParent = null;
         this.m_aChildren = [];
@@ -88,61 +77,46 @@ class GameObject
         this.m_nHeight = nHeight;
     }
 
+    get transform()
+    {
+        return this.m_cTransform;
+    }
+
     get GlobalTransform()
     {
-        if (this.m_bGlobalTransformUpdate)
-        {
-            if (this.m_cParent)
-            {
-                this.m_cGlobalTransformMatrix = Mat.Multiply(this.m_cTransformMatrix, this.m_cParent.GlobalTransform);
-            }
-            else
-            {
-                this.m_cGlobalTransformMatrix = new Mat(this.m_cTransformMatrix);
-            }
-
-            this.m_bGlobalTransformUpdate = false;
-        }
-
-        return this.m_cGlobalTransformMatrix;
+        return this.m_cTransform.matrix;
     }
 
     get Pos()
     {
-        return this.m_cPos;
+        return this.m_cTransform.localPosition;
     }
     set Pos(cPos)
     {
-        this.m_cPos.Set(cPos);
+        this.m_cTransform.localPosition = cPos;
     }
 
     get GlobalPos()
     {
-        return this.GlobalTransform.Position;
+        return this.m_cTransform.position;
     }
 
     get Rotation()
     {
-        return this.m_nRotation;
+        return this.m_cTransform.localRotation;
     }
     set Rotation(nRotation)
     {
-        var nOldRot = this.m_nRotation;
-        if (nOldRot != nRotation)
-        {
-            this.m_nRotation = nRotation;
-            this.m_cTransformMatrix.Rotate(nRotation - nOldRot);
-            this.__GlobalTransformUpdate = true;
-        }
+        this.m_cTransform.localRotation = nRotation;
     }
 
     get Scale()
     {
-        return this.m_cScale;
+        return this.m_cTransform.scale;
     }
     set Scale(cScale)
     {
-        this.m_cScale.Set(cScale);
+        this.m_cTransform.localScale = cScale;
     }
 
     get Parent()
@@ -154,7 +128,7 @@ class GameObject
         if (cParent != this.m_cParent)
         {
             this.m_cParent = cParent;
-            this.__GlobalTransformUpdate = true;
+            this.m_cTransform.parent = cParent ? cParent.transform : null;
         }
     }
 
@@ -255,48 +229,13 @@ class GameObject
     //endregion
 
     //////////////////////////////////////////////////////////
-    //region Protected Functions
-
-    _PosChanged(nNewX, nOldX, nNewY, nOldY)
-    {
-        if (nNewX != nOldX || nNewY != nOldY)
-        {
-            this.m_cTransformMatrix.Translate(new Vec(nNewX - nOldX, nNewY - nOldY));
-            this.__GlobalTransformUpdate = true;
-        }
-    }
-
-    _ScaleChanged(nNewX, nOldX, nNewY, nOldY)
-    {
-        if (nNewX != nOldX || nNewY != nOldY)
-        {
-            var nX = 1 / (nOldX / nNewX);
-            var nY = 1 / (nOldY / nNewY);
-
-            this.m_cTransformMatrix.Scale(new Vec(nX, nY));
-
-            this.__GlobalTransformUpdate = true;
-        }
-    }
-
-    _WidthChanged(nNewWidth, nOldWidth) {}
-    _HeightChanged(nNewWidth, nOldWidth) {}
-
-    //endregion
-
-    //////////////////////////////////////////////////////////
     //region Private Functions
 
-    set __GlobalTransformUpdate(bUpdate)
+    __OnTransformUpdate()
     {
-        this.m_bGlobalTransformUpdate = bUpdate;
-
-        if (bUpdate)
-        {
-            this.m_aChildren.forEach(function(cChild){
-                cChild.__GlobalTransformUpdate = true;
-            });
-        }
+        this.m_aChildren.forEach(function(cChild){
+            cChild.transform.SetDirty();
+        });
     }
 
     //endregion
