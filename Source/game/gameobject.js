@@ -7,7 +7,6 @@ include("game/gameobjectmanager.js", true);
 include("game/transform.js", true);
 
 var Vec = EN.Vector;
-var Mat = EN.Matrix;
 var Manager = EN.GameObjectManager;
 
 class GameObject
@@ -18,8 +17,6 @@ class GameObject
 
     constructor()
     {
-        var self = this;
-
         this.ID = GameObject.__IDCount++;
         this.zIndexLocal = 0;
 
