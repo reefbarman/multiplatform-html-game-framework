@@ -15,6 +15,18 @@ class Camera extends EN.GameObject
 
         this.Name = sName;
         this.Cartesian = true;
+
+        this.m_cWorldScale = Vec.one;
+    }
+
+    get WorldScale()
+    {
+        return this.m_cWorldScale;
+    }
+    set WorldScale(cWorldScale)
+    {
+        this.m_cWorldScale = cWorldScale;
+        this.transform.localScale = new Vec(this.m_cWorldScale);
     }
 
     Init(nViewPortHeight, bCartesian)
