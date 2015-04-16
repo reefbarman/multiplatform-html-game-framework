@@ -161,6 +161,18 @@ Vector.prototype.Lerp = function(cVec, nAlpha){
  * Below functions will are static and will return a new vector
  */
 
+Object.defineProperty(Vector, "one", {
+    get: function(){
+        return new Vector(1, 1);
+    }
+});
+
+Object.defineProperty(Vector, "zero", {
+    get: function(){
+        return new Vector();
+    }
+});
+
 Vector.Add = function(cVec1, cVec2){
     return new Vector(cVec1.x + cVec2.x, cVec1.y + cVec2.y);
 };

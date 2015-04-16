@@ -5,7 +5,6 @@ var path = require("path");
 var zip = require("express-zip");
 var sassMiddleware = require("node-sass-middleware");
 var babel = require("babel-core");
-var reactTools = require("react-tools");
 
 var cConfig = {};
 
@@ -106,43 +105,16 @@ cApp.use("/Game/game.zip", function(cReq, cRes, fNext){
 });
 
 cApp.use("/Game", function(cReq, cRes, fNext){
-    var nJSXIndex = cReq.path.indexOf(".jsx");
+    var sExtName = path.extname(cReq.path);
 
-    if (nJSXIndex != -1 && nJSXIndex === (cReq.path.length - 4))
+    if (sExtName == ".js" || sExtName == ".jsx")
     {
         fs.readFile(process.cwd() + cReq.path, function(cErr, cData){
             if (!cErr)
             {
                 var sSource = cData.toString();
 
-                sSource = reactTools.transform(sSource, {harmony: true, sourceMap: true, sourceFilename: "http://" + cReq.get("host") + "/Game" + cReq.path});
-
-                cRes.send(sSource);
-            }
-            else
-            {
-                cRes.status(404);
-                cRes.send(cErr.message);
-            }
-        });
-    }
-    else
-    {
-        fNext();
-    }
-});
-
-cApp.use("/Game", function(cReq, cRes, fNext){
-    var nJSIndex = cReq.path.indexOf(".js");
-
-    if (nJSIndex != -1 && nJSIndex === (cReq.path.length - 3))
-    {
-        fs.readFile(process.cwd() + cReq.path, function(cErr, cData){
-            if (!cErr)
-            {
-                var sSource = cData.toString();
-
-                if (sSource.indexOf("//ECMAScript6") == 0)
+                if (sSource.indexOf("//ECMAScript6") == 0 || sExtName == ".jsx")
                 {
                     var cResult = babel.transform(sSource, {ast: false, sourceMap: "inline", sourceFileName: "http://" + cReq.get("host") + "/Game" + cReq.path, loose: ["es6.classes"]});
                     sSource = cResult.code;
